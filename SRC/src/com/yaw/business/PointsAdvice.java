@@ -1,0 +1,80 @@
+package com.yaw.business;
+
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.struts2.ServletActionContext;
+import com.common.web.WebContextUtil;
+import com.yaw.entity.MemberAccount;
+import com.yaw.service.MemberAccountService;
+
+/**
+ * 类型描述:积分逻辑通知,根据具体织入业务方法中去;
+ * </br>创建时期: 2014年12月24日
+ * @author hyq
+ */
+public class PointsAdvice implements MethodInterceptor {
+	MemberAccountService memberAccountService;
+	
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {		
+		System.out.println("11111111111111111111111111");
+		Object rs=invocation.proceed();
+		System.out.println("222222222222222222222222222");
+		Points an=invocation.getMethod().getAnnotation(Points.class);
+
+		int points=generatePoints(an.action());
+		MemberAccount user=null;
+		/*计积分*/
+		if(an.index()!=-1)			
+			user=memberAccountService.getById((String)invocation.getArguments()[an.index()]);
+		else{
+			HttpServletRequest request=ServletActionContext.getRequest();
+			user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(request.getSession());
+		}				
+		user.setMaPoints(user.getMaPoints()+points);
+		memberAccountService.update(user);	
+		return rs;
+	
+		
+	}
+	
+	/**
+	 * 根据用户当前的操作，生成对应的积分数 
+	 * @return 应积分数
+	 */
+	private int generatePoints(ActionType actionType) {	
+		if(actionType==ActionType.POINTS_LOGIN)
+			return 2;
+		if(actionType==ActionType.POINTS_PHOTO)
+			return 5;
+		if(actionType==ActionType.POINTS_REPLAY)
+			return 2;
+		if(actionType==ActionType.POINTS_REPORT)
+			return 10;
+		if(actionType==ActionType.POINTS_SUGGEST)
+			return 5;
+		if(actionType==ActionType.POINTS_SUGGEST_REJECTED)
+			return 50;
+		if(actionType==ActionType.POINTS_BEFOCUS)
+			return 1;
+		if(actionType==ActionType.POINTS_BEFOCUS_PHOTO)
+			return 1;
+		if(actionType==ActionType.POINTS_MESSAGE)
+			return 2;
+		if(actionType==ActionType.POINTS_PUBLISH_TRIPPLAN)
+			return 5;
+		if(actionType==ActionType.POINTS_TAG)
+			return 2;
+		if(actionType==ActionType.POINTS_RECOMMEND)
+			return 2;
+		return 0;
+	}
+
+}

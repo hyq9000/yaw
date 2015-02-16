@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>Yaw</display-name>
+	<context-param>
+		<param-name>upload</param-name>
+		<param-value>/upload</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath*:spring*.xml
+		</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>
+			org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+		<url-pattern>*.action</url-pattern>
+
+	</filter-mapping>
+
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>com.common.filters.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encode</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>UserAccessFilter</filter-name>
+		<filter-class>com.common.filters.UserAccessFilter</filter-class>
+		<init-param>
+			<param-name>loginUri</param-name>
+			<!--将登陆页URI配置到此 -->
+			<param-value>/login.html</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ignoredRequest</param-name>
+			<!--请求action的某些方法不需要用户登录验证，将这些方法名配置到此 -->
+			<param-value>regist,login</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>UserAccessFilter</filter-name>
+		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
+		<url-pattern>/back/*</url-pattern>
+		<url-pattern>/mng/*</url-pattern>
+	</filter-mapping>
+</web-app>

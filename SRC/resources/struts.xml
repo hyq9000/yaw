@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+	"http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<constant name="struts.devMode" value="true"></constant>
+	<package name="yaw" extends="struts-default" namespace="/action" >
+	
+		<action name="fa" class="com.yaw.action.FrontAction"></action>
+		<action name="common" class="com.yaw.action.CommonAction"></action>
+		<action name="member" class="com.yaw.action.MemberAccountAction"></action>
+		<action name="captchasss" class="com.common.web.CaptchaAction"/>
+	</package>
+</struts>
