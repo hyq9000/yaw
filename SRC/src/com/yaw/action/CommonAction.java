@@ -47,16 +47,17 @@ public class CommonAction extends Struts2Action {
 	private File image; //struts文件上传后临时文件名
 	private String imageContextType;
 	
-	/**
-	 * 提交视频/身份/健康/导游等认证申请,并及时通知后台处理;
-	 * @param atype :认证类型
-	 */
-	String submitAuthentication(){
+	/*
+	 * 提交视频/身份/健康/导游/qq/微信等人工认证申请,并及时通知后台处理;
+	 * @param atype :认证类型1,2,3,4,5,6;ApplyAuthenticationService之TYPE开头的常量
+	 
+	public String submitAuthentication(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String atype=request.getParameter("atype");
 			byte authenticationType=Byte.parseByte(atype);
 			applyAuthenticationService.submitAuthentication(user.getMaLoginName(), authenticationType);
+			out.print(WebUtils.responseCode(1));
 		} catch (NumberFormatException  ne){
 			out.print(WebUtils.responseInputCheckError("认证类型码不正确!"));
 		}catch (Exception e) {
@@ -64,7 +65,7 @@ public class CommonAction extends Struts2Action {
 			out.print(WebUtils.responseServerException());
 		}	
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 图片上传到服务器,并生成多个规格的图片保存，返回一个生成的URL,该方法与具体业务无关,只是把图片(按约定规格、格式)放到指定地方,

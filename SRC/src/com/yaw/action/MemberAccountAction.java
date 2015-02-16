@@ -312,7 +312,7 @@ public class MemberAccountAction extends Struts2Action {
 	
 	/**
 	 * 注册会员,成功后跳到控制后台,引导完成资料登记;
-	 * @param ln 登陆名
+	 * @param ln 登陆名 ,建议使用邮箱名
 	 * @param pwd 密码
 	 * @param sex 性别 (男|女)
 	 * @param  mt 会员类型:0为游客,1为伴游
@@ -366,7 +366,7 @@ public class MemberAccountAction extends Struts2Action {
 	
 	
 	/**
-	 * 提请会员等级升级,由会员提请升级请求,生成下单、付款记录,通知后台处理;
+	 * 提交会员等级升级,由会员提请升级请求,生成下单、付款记录,通知后台处理;
 	 * @param vg 会员等级所对应的增值服务的ID:
 	 * @return {code:1,约啊币消费正常,-1,服务器异常,-2会话超时}
 	 */
@@ -398,7 +398,7 @@ public class MemberAccountAction extends Struts2Action {
 	}
 	
 	/**
-	 * 提请"会员充值"订单,一元人民币换成一个"约啊币";由会员提请求充值请求,生成下单、付款记录,通知后台处理;
+	 * 提交"会员充值"订单,一元人民币换成一个"约啊币";由会员提请求充值请求,生成下单、付款记录,通知后台处理;
 	 * @param money 元
 	 * @return json对象
 	 * {code:1充值成功,-1服务器异常,-3,老密码输入不正确,-14:输入验证不正确}
@@ -431,8 +431,8 @@ public class MemberAccountAction extends Struts2Action {
 	}
 	
 	/**
-	 * 由会员提求视频认证申请,并生成申请认证记录,通知后台管理员处理;
-	 * @param authType  认证类型码;描述如下:1：视频认证2：身份认证3：导游认证4：健康认证5：加入伴游俱乐部申请
+	 * 由会员提交各类人工认证申请,并生成申请认证记录,通知后台管理员处理;
+	 * @param authType  认证类型码;描述如下:1：视频认证2：身份认证3：导游认证4：健康认证5：加入伴游俱乐部申请,6,QQ认证,7,微信认证
 	 * @return  {code:1充值成功,-1服务器异常,-3,老密码输入不正确,-14:输入验证不正确}
 	 */
 	public String applyAuthentication(){
@@ -448,6 +448,27 @@ public class MemberAccountAction extends Struts2Action {
 		}
 		return null;
 	}
+	
+	/**
+	 * 发送邮箱认证连接信:根据,发送一个验证链接到用户录入的邮箱中.
+	 * @param email
+	 * @return {code:1,-1,-2}
+	 */
+	public String sendEmailAuthenticationLink(){
+		//TODO:邮箱认证
+		return null;
+	}
+	
+	/**
+	 * 当用户从邮箱中点击邮箱认证连接过来时,验证该用户邮箱是否是用户填写的邮箱;
+	 * @param 验证码
+	 * @return {code:1,-1,-2}
+	 */
+	public String handleEmailAuthentication(){
+		//TODO 处理邮箱认证
+		return null;
+	}
+	
 	public void setOrderService(OrderService orderService) {
 		this.orderService = orderService;
 	}

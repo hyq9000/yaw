@@ -21,8 +21,11 @@ public interface ApplyAuthenticationService extends EntityService<ApplyAuthentic
 	/**健康认证*/
 	byte TYPE_HEALTH=4;
 	/**加入伴游俱乐部申请*/
-	byte TYPE_JOIN_CLUB=5;	
-
+	byte TYPE_JOIN_CLUB=5;		
+	/**QQ认证*/
+	byte TYPE_QQ=6;
+	/**微信认证*/
+	byte TYPE_WEIXIN=7;	
 	/**
 	 * 视频认证受理,分页查取待处理的视频认证;
 	 * 用户点了视频验证,就会生成一个认证申请记录,客服线下完成	QQ认证后,则可打开本方法的结果,在线上作一下受理操作,改变用户的认证状态;

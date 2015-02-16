@@ -16,7 +16,7 @@ public class TestMain {
 	}
 	
 	
-	public static void testQrCode(){
+	public static void testQrCode() throws Exception{
 		 String content = "120605181003;http://www.cnblogs.com/jtmjx";
 	     String path = "C:/Users/Administrator/Desktop/testImage";	     
 	     MultiFormatWriter multiFormatWriter = new MultiFormatWriter();	     
@@ -24,7 +24,7 @@ public class TestMain {
 	     hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 	     BitMatrix bitMatrix = multiFormatWriter.encode(content, BarcodeFormat.QR_CODE, 400, 400,hints);
 	     File file1 = new File(path,"test.jpg");
-	     MatrixToImageWriter (bitMatrix, "jpg", file1);
+	     //MatrixToImageWriter (bitMatrix, "jpg", file1);
 	}
 	///登陆:http://localhost:8088/yaw/action/member!login.action?loginName=hyq9000&password=123456&captcha=f3hg
 }
