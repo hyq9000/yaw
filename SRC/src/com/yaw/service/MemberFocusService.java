@@ -36,6 +36,7 @@ public interface MemberFocusService extends EntityService<MemberFocus> {
 	 */
 	void gernateFocusRecord(String focusMemberId,String befocusMemberId,byte focusType) throws Exception;
 	
+		
 	/*
 	 * 取得指定关注与被关注会员的关注记录
 	 * @param befoucusMemberId 被关注会员的ID
