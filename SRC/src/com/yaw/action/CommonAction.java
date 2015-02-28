@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
+import com.common.tools.ImageCompressor;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.yaw.common.BusinessServiceImpl;
@@ -47,17 +48,16 @@ public class CommonAction extends Struts2Action {
 	private File image; //struts文件上传后临时文件名
 	private String imageContextType;
 	
-	/*
-	 * 提交视频/身份/健康/导游/qq/微信等人工认证申请,并及时通知后台处理;
-	 * @param atype :认证类型1,2,3,4,5,6;ApplyAuthenticationService之TYPE开头的常量
-	 
-	public String submitAuthentication(){
+	/**
+	 * 提交视频/身份/健康/导游等认证申请,并及时通知后台处理;
+	 * @param atype :认证类型
+	 */
+	String submitAuthentication(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String atype=request.getParameter("atype");
 			byte authenticationType=Byte.parseByte(atype);
 			applyAuthenticationService.submitAuthentication(user.getMaLoginName(), authenticationType);
-			out.print(WebUtils.responseCode(1));
 		} catch (NumberFormatException  ne){
 			out.print(WebUtils.responseInputCheckError("认证类型码不正确!"));
 		}catch (Exception e) {
@@ -65,7 +65,7 @@ public class CommonAction extends Struts2Action {
 			out.print(WebUtils.responseServerException());
 		}	
 		return null;
-	}*/
+	}
 	
 	/**
 	 * 图片上传到服务器,并生成多个规格的图片保存，返回一个生成的URL,该方法与具体业务无关,只是把图片(按约定规格、格式)放到指定地方,
@@ -91,8 +91,8 @@ public class CommonAction extends Struts2Action {
 		 */
 		FileInputStream input=new FileInputStream(image);
 		String path=request.getRealPath(application.getInitParameter("upload"));
-		String fileName=System.currentTimeMillis()+"."+imageContextType;
-		FileOutputStream fout=new FileOutputStream(path+"/"+fileName);
+		String fileName=System.currentTimeMillis()+"";
+		FileOutputStream fout=new FileOutputStream(path+"/"+fileName+"."+imageContextType);
 		byte[] buffer=new byte[1024*1024];
 		while(input.read(buffer)!=-1);
 		fout.write(buffer);
@@ -101,8 +101,10 @@ public class CommonAction extends Struts2Action {
 		input.close();
 		
 		/*
-		 * TODO：生成多个规则的图文件，按命名规则保存到硬盘
+		 * 生成多个规则的图文件，按命名规则（同名加后辍）保存到硬盘
 		 */
+		ImageCompressor imageCompressor=new ImageCompressor(path+"/"+fileName+"."+imageContextType);		
+		imageCompressor.resizeFix(PhotoService.DEMENSION_LIST_WIDTH, PhotoService.DEMENSION_LIST_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_LIST_FILE+"."+imageContextType);
 		
 		/*
 		 * 写相片数据行,并设置会员相关值(信息完整度);
@@ -141,9 +143,7 @@ public class CommonAction extends Struts2Action {
 		return null;
 	}
 	
-	
-	
-	
+		
 	/**
 	 * 上传形象照:将已经上传了的图片的URL,赋值给该伴游的形象照字段;
 	 * @param image 上传后的临时文件路径
