@@ -21,16 +21,15 @@ public interface PhotoService extends EntityService<Photo> {
 	/**头像规格*/
 	byte DEMENSION_HEAD=2;
 	
-	//TODO:  列表规格及头像规则后定
 	/** 列表规格宽值*/
-	int DEMENSION_LIST_WIDTH=240;
+	int DEMENSION_LIST_WIDTH=222; //根据UI原型来确定的。
 	/** 列表规格高值*/
-	int DEMENSION_LIST_HEIGHT=180;
-	//TODO:  列表规格及头像规则后定
+	int DEMENSION_LIST_HEIGHT=138;
+	
 	/** 头像规格宽值*/
-	int DEMENSION_HEAD_WIDTH=60;
+	int DEMENSION_HEAD_WIDTH=48;
 	/** 头像规格高值*/
-	int DEMENSION_HEAD_HEIGHT=40;
+	int DEMENSION_HEAD_HEIGHT=48;
 	/** 头像规格文件名后辍*/
 	String DEMENSION_HEAD_FILE="-HEAD";
 	/** 列表规格文件名后辍*/

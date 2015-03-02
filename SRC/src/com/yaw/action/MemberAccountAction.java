@@ -2,11 +2,17 @@ package com.yaw.action;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+
 import org.apache.commons.codec.digest.DigestUtils;
+
+import com.common.freemark.FreeMarkUtil;
 import com.common.log.ExceptionLogger;
+import com.common.sendmail.SendMail;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
+import com.yaw.common.ApplicationConfig;
 import com.yaw.common.BusinessException;
 import com.yaw.common.SystemServiceImpl;
 import com.yaw.common.WebUtils;
@@ -39,7 +45,9 @@ public class MemberAccountAction extends Struts2Action {
 			//游客后台管理主页
 			URL_BACK_TOURIST_MAIN="/back/touristMain.html",
 			//存储会员找回密码时所提交的email址;
-			SESSION_KEY_LOOKFOR_PASSWORD_EMAIL="SESSION_KEY_LOOKFOR_PASSWORD_EMAIL";
+			SESSION_KEY_LOOKFOR_PASSWORD_EMAIL="SESSION_KEY_LOOKFOR_PASSWORD_EMAIL",
+			//存储会员邮箱验证时所提交内容的key
+			SESSION_KEY_EMAIL_AUTHENTICATION="SESSION_KEY_EMAIL_AUTHENTICATION";
 	/**
 	 * 会话中存储会员基本信息对象的key;
 	 */
@@ -450,22 +458,54 @@ public class MemberAccountAction extends Struts2Action {
 	}
 	
 	/**
-	 * 发送邮箱认证连接信:根据,发送一个验证链接到用户录入的邮箱中.
+	 * 发送认证连接到用户注册邮箱:根据随机码,发送一个验证链接到用户注册的邮箱中.
 	 * @param email
 	 * @return {code:1,-1,-2}
 	 */
 	public String sendEmailAuthenticationLink(){
-		//TODO:邮箱认证
+		String email=request.getParameter("email");
+		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+		
+		String userEmail=user.getMaEmail();
+		String userLoginName=user.getMaLoginName();
+		/*
+		 * 将用户注册邮箱加密后作为key，邮箱明文作为值，存储到session中去，
+		 */
+		String codeKey=DigestUtils.md5Hex(userEmail+ApplicationConfig.SCRET_KEY);
+		session.setAttribute(codeKey, userEmail);
+		
+		/*
+		 * 用freemark模块技术，向用户邮箱发送”点回“链接（加密后的邮箱址作为“点回“链接的参数）
+		 */
+		Map<String,Object> data=new Hashtable<String,Object>();
+		data.put("userName", user.getMaLoginName());
+		data.put("code",codeKey);
+		String path=request.getRealPath("/template/emailAuthentication.ftl");
+		String emailBody=FreeMarkUtil.getContent(path, data);
+		try {
+			SendMail.sendMail("约啊网邮箱认证", emailBody,email);
+			out.print(WebUtils.responseCode(1));
+		} catch (Exception e) {
+			ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException());
+		}
 		return null;
 	}
 	
 	/**
-	 * 当用户从邮箱中点击邮箱认证连接过来时,验证该用户邮箱是否是用户填写的邮箱;
+	 * 当用户从邮箱中点击邮箱认证连接过来时,验证该用户邮箱是否是用户填写的邮箱,没有问题，则设置该用户邮箱认证状态为已经认证；
 	 * @param 验证码
 	 * @return {code:1,-1,-2}
 	 */
 	public String handleEmailAuthentication(){
-		//TODO 处理邮箱认证
+		String key=request.getParameterNames().nextElement().toString();
+		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+		String token=(String)session.getAttribute(key);
+		if(token!=null && token.equals(user.getMaEmail())){
+			this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
+			out.print(WebUtils.responseCode(1));
+		}else
+			out.print(WebUtils.responseCode(1));
 		return null;
 	}
 	
@@ -494,5 +534,4 @@ public class MemberAccountAction extends Struts2Action {
 	public void setTouristInfoService(TouristInfoService touristInfoService) {
 		this.touristInfoService = touristInfoService;
 	}
-
 }

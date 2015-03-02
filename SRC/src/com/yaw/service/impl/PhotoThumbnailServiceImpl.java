@@ -17,15 +17,12 @@ public class PhotoThumbnailServiceImpl extends DaoHibernateImpl<PhotoThumbnail> 
 	@Override
 	public String getDemensionThumnbnail(byte demensionType, int nativePicId)
 			throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void generateThumbnail(byte demesionType, byte[] nativePic,
-			String path) throws Exception {
-		// TODO Auto-generated method stub
-		
+			String path) throws Exception {		
 	}	
 
 }

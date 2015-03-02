@@ -253,4 +253,9 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		String ql="from MemberAccount where maLoginName in("+ids+") order by maLoginName ";
 		return this.query(ql, memberIds);
 	}
+
+	@Override
+	public void setAuthentication(MemberAccount member, byte type) {
+		// 设置用户的认证状态			
+	}
 }

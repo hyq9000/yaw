@@ -101,10 +101,11 @@ public class CommonAction extends Struts2Action {
 		input.close();
 		
 		/*
-		 * 生成多个规则的图文件，按命名规则（同名加后辍）保存到硬盘
+		 * 生成列表的图规格文件，按命名规则（同名加后辍）保存到硬盘
 		 */
 		ImageCompressor imageCompressor=new ImageCompressor(path+"/"+fileName+"."+imageContextType);		
 		imageCompressor.resizeFix(PhotoService.DEMENSION_LIST_WIDTH, PhotoService.DEMENSION_LIST_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_LIST_FILE+"."+imageContextType);
+		imageCompressor.resizeFix(PhotoService.DEMENSION_HEAD_WIDTH, PhotoService.DEMENSION_HEAD_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_HEAD_FILE+"."+imageContextType);
 		
 		/*
 		 * 写相片数据行,并设置会员相关值(信息完整度);
