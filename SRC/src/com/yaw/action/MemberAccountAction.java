@@ -505,7 +505,8 @@ public class MemberAccountAction extends Struts2Action {
 			this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
 			out.print(WebUtils.responseCode(1));
 		}else
-			out.print(WebUtils.responseCode(1));
+			//TODO 报错
+			out.print(WebUtils.responseError("邮箱异常！", -21));
 		return null;
 	}
 	
