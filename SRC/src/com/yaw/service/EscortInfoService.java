@@ -22,10 +22,11 @@ public interface EscortInfoService extends EntityService<EscortInfo> {
 	
 	/**
 	 * 上传形象照:将已经上传了的图片的URL,赋值给该伴游的形象照字段;
+	 * 并同步将该自动生成，保存会员的头像图标URL（head）属性；
 	 * @param memberId
 	 * @param url
 	 */
-	void setHeadPhoto(EscortInfo escortInfo, String url)throws Exception;
+	void setHeadPhoto(EscortInfo escortInfo,MemberAccount member, String url)throws Exception;
 	 
 	/** 
 	 * 审批加入伴游俱乐部申请

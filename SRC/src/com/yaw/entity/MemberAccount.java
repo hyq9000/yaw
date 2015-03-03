@@ -37,8 +37,17 @@ public class MemberAccount implements Serializable {
 	private String maPopularizeId;
 	private byte maMfStatus=1;
 	private int maCompletedInfo;
+	private String maHeadIcon;
 	
-	
+	@Column(name="MA_HEAD_ICON")
+	public String getMaHeadIcon() {
+		return maHeadIcon;
+	}
+
+	public void setMaHeadIcon(String maHeadIcon) {
+		this.maHeadIcon = maHeadIcon;
+	}
+
 	@Column(name="MA_POPULARIZE_ID")
 	public String getMaPopularizeId() {
 		return maPopularizeId;

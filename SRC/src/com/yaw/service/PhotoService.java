@@ -31,9 +31,9 @@ public interface PhotoService extends EntityService<Photo> {
 	/** 头像规格高值*/
 	int DEMENSION_HEAD_HEIGHT=48;
 	/** 头像规格文件名后辍*/
-	String DEMENSION_HEAD_FILE="-HEAD";
+	String DEMENSION_HEAD_SUFFIX="-HEAD";
 	/** 列表规格文件名后辍*/
-	String DEMENSION_LIST_FILE="-LIST";
+	String DEMENSION_LIST_SUFFIX="-LIST";
 	
 	/**普通照*/
 	byte TYPE_NORMAL=0;
@@ -56,6 +56,10 @@ public interface PhotoService extends EntityService<Photo> {
 	byte STATUS_CERTIFICATED=1;
 	/**照片未认证*/
 	byte STATUS_UNCERTIFICATED=0;
+	/**
+	 * 当未设置头像时，则系统采用的默认头像图文件名
+	 */
+	String DEFAULT_HEAD_IMAGE="/resources/images/head.png";
 	/**
 	 * 分页查看会员的列表规格尺寸的相片集合
 	 * @param memberId 登陆ID

@@ -20,15 +20,23 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 		EscortInfoService {
 	
 	@Override
-	public void setHeadPhoto(EscortInfo escortInfo,  String url) throws Exception {		
+	public void setHeadPhoto(EscortInfo escortInfo,MemberAccount member,  String url) throws Exception {		
 		/*
 		 * 如果这是第一次设置形象照料,则修改资料完整度及完整详情 
 		 */
 		if(escortInfo.getEscortFacePic()==null){
-			this.updateCompleted(escortInfo);	
-			escortInfo.setEscortFacePic(url);
-			super.update(escortInfo);
-		}		
+			this.updateCompleted(escortInfo);		
+		}	
+		escortInfo.setEscortFacePic(url);
+		super.update(escortInfo);
+
+		/*
+		 * 保存头像URl
+		 */
+		String headUrl=BusinessServiceImpl.generateHeadUrl(url);
+		String sql="update YAW_MEMBER_ACCOUNT set MA_HEAD_ICON=? where MA_LOGIN_NAME=?";
+		this.executeUpdate(sql, headUrl,member.getMaLoginName());
+		
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.TouristInfo;
 import com.yaw.service.MemberAccountService;
+import com.yaw.service.PhotoService;
 
 /**
  * 类型描述:将系统中一些业务规则，如积分规则，完整度规则，读意度规则等业务规则抽象、提取出来, 封装到该类的方法中； 
@@ -63,7 +64,7 @@ public class BusinessServiceImpl {
 
 	
 	/**
-	 * 生成伴游会员基本信息详情的整型值,(在用户保存资料,上传相片时触发)
+	 * 生成伴游会员基本信息详情,(在用户保存资料,上传相片时触发)
 	 * @return 返回完成度的详情的整型值
 	 */
 	public static int generateCompletedDetail(MemberAccount member,EscortInfo escortInfo) {
@@ -108,7 +109,7 @@ public class BusinessServiceImpl {
 	
 	
 	/**
-	 * 生成伴游会员基本信息详情的整型值,(在用户保存资料,上传相片时触发)
+	 * 生成伴游会员基本信息详情的百分比值,(在用户保存资料,上传相片时触发)
 	 * @return 返回完成度的详情的整型值
 	 */
 	public static int generateCompletedPercent(MemberAccount member,EscortInfo escortInfo) {
@@ -158,7 +159,7 @@ public class BusinessServiceImpl {
 	
 	
 	/**
-	 * 生成游客会员基本信息完成度,(在用户保存资料,上传相片时触发)
+	 * 生成游客会员基本信息完成度百分比,(在用户保存资料,上传相片时触发)
 	 * @return 
 	 */
 	public static int generateCompletedPercent(MemberAccount member,TouristInfo touristInfo) {
@@ -195,7 +196,7 @@ public class BusinessServiceImpl {
 	}
 	
 	/**
-	 * 生成游客会员基本信息完成度,(在用户保存资料,上传相片时触发)
+	 * 生成游客会员基本信息完成度详情,(在用户保存资料,上传相片时触发)
 	 * @return 
 	 */
 	public static int generateCompletedDetail(MemberAccount member,TouristInfo touristInfo) {
@@ -259,7 +260,7 @@ public class BusinessServiceImpl {
 	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
 	 */
 	public static List removeMakeFriendOffEscortData(List escortInfoList){
-		//TODO 
+		//TODO  去除了"下架会员(交友状态为0)"的数据的对象集合
 		return escortInfoList;
 	}
 	
@@ -272,10 +273,27 @@ public class BusinessServiceImpl {
 	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
 	 */
 	public static List removeMakeFriendOffTouristData(List touristInfoList){
-		//TODO:
+		//TODO 去除了"下架会员(交友状态为0)"的数据的对象集合
 		return touristInfoList;
 	}
 	
+	
+	/**
+	 * 根据会员形象照的URL生成头像图标的URL：规则就是 "/xxxxx/xxxx/xxxxxx/adgabc.png"的字符串改成
+     * "/xxxxx/xxxx/xxxxxx/adgabc-HEAD.png"格式
+	 * @param imageUrl 形象照的URL；
+	 * @return 
+	 */
+	public static String generateHeadUrl(String imageUrl){
+		/*
+		 * 将"/xxxxx/xxxx/xxxxxx/adgabc.png"的字符串改成
+		 * "/xxxxx/xxxx/xxxxxx/adgabc-HEAD.png"格式
+		 */
+		int tmp=imageUrl.lastIndexOf(".");
+		String pre=imageUrl.substring(0, tmp);
+		String suf=imageUrl.substring(tmp);
+		return pre+PhotoService.DEMENSION_HEAD_SUFFIX+suf;
+	}
 	
 	
 	

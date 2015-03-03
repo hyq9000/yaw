@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.common.dbutil.Paging;
 import com.common.utils.EntityService;
+import com.yaw.common.BusinessServiceImpl;
+import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.TouristInfo;
 import com.yaw.entity.Tripplan;
@@ -21,4 +23,11 @@ public interface TouristInfoService extends EntityService<TouristInfo> {
 	 */
 	List<TouristInfo> queryTouristOrder(int n)throws Exception;
 	
+	/***
+	 * 为游客设置形象照；
+	 * @param escortInfo
+	 * @param url
+	 * @throws Exception
+	 */
+	public void setHeadPhoto(TouristInfo touristInfo, MemberAccount member, String url) throws Exception; 
 }

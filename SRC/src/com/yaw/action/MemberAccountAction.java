@@ -24,6 +24,7 @@ import com.yaw.service.EscortInfoService;
 import com.yaw.service.IncrementServiceService;
 import com.yaw.service.MemberAccountService;
 import com.yaw.service.OrderService;
+import com.yaw.service.PhotoService;
 import com.yaw.service.TouristInfoService;
 
 /**
@@ -503,6 +504,7 @@ public class MemberAccountAction extends Struts2Action {
 		String token=(String)session.getAttribute(key);
 		if(token!=null && token.equals(user.getMaEmail())){
 			this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
+			session.removeAttribute(key);
 			out.print(WebUtils.responseCode(1));
 		}else
 			//TODO 报错
@@ -510,6 +512,7 @@ public class MemberAccountAction extends Struts2Action {
 		return null;
 	}
 	
+
 	public void setOrderService(OrderService orderService) {
 		this.orderService = orderService;
 	}

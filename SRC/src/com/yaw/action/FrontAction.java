@@ -10,6 +10,7 @@ import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
+import com.yaw.common.BusinessServiceImpl;
 import com.yaw.common.WebUtils;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
@@ -563,9 +564,16 @@ public class FrontAction extends Struts2Action{
 		try {
 			List<TouristInfo> list=touristInfoService.queryTouristOrder(16);
 			List<Map> data=new ArrayList<Map>();
+			//根据每个会员的形象照URL设置成对应的头像照URL；
 			for(TouristInfo touristInfo : list){
-				//TODO:touristInfo.getTouristImage(),应该是要取该会员的头像照;
-				Map map=WebUtils.generateMapData(touristInfo.getTouristNickname(), touristInfo.getTouristImage());
+				String imageUrl=touristInfo.getTouristImage();
+				String headUrl="";
+				if(imageUrl==null || imageUrl.trim().equals(""))
+					headUrl=PhotoService.DEFAULT_HEAD_IMAGE;
+				else{
+					headUrl=BusinessServiceImpl.generateHeadUrl(imageUrl);
+				}
+				Map map=WebUtils.generateMapData(touristInfo.getTouristNickname(),headUrl);
 				data.add(map);				
 			}
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));

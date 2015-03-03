@@ -20,6 +20,7 @@ import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Photo;
 import com.yaw.entity.ReportSuggest;
+import com.yaw.entity.TouristInfo;
 import com.yaw.service.ApplyAuthenticationService;
 import com.yaw.service.EscortInfoService;
 import com.yaw.service.MemberAccountService;
@@ -28,6 +29,7 @@ import com.yaw.service.OrderService;
 import com.yaw.service.PhotoService;
 import com.yaw.service.ReportSuggestService;
 import com.yaw.service.TagRecordService;
+import com.yaw.service.TouristInfoService;
 
 /**
  * 类型描述:暴露的一些伴游,游客,管理员的公用的WebApi接口及实现
@@ -38,6 +40,7 @@ public class CommonAction extends Struts2Action {
 	MemberAccountService memberAccountService;
 	ReportSuggestService reportSuggestService;
 	PhotoService photoService;
+	TouristInfoService touristInfoService;
 	EscortInfoService escortInfoService;
 	TagRecordService tagRecordService;
 	OrderService orderService;
@@ -104,8 +107,10 @@ public class CommonAction extends Struts2Action {
 		 * 生成列表的图规格文件，按命名规则（同名加后辍）保存到硬盘
 		 */
 		ImageCompressor imageCompressor=new ImageCompressor(path+"/"+fileName+"."+imageContextType);		
-		imageCompressor.resizeFix(PhotoService.DEMENSION_LIST_WIDTH, PhotoService.DEMENSION_LIST_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_LIST_FILE+"."+imageContextType);
-		imageCompressor.resizeFix(PhotoService.DEMENSION_HEAD_WIDTH, PhotoService.DEMENSION_HEAD_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_HEAD_FILE+"."+imageContextType);
+		imageCompressor.resizeFix(PhotoService.DEMENSION_LIST_WIDTH, PhotoService.DEMENSION_LIST_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_LIST_SUFFIX+"."+imageContextType);
+		//如果图版是形象照，则同时生成一份头像尺寸的图片
+		if(imageType==PhotoService.TYPE_IMAGE)
+			imageCompressor.resizeFix(PhotoService.DEMENSION_HEAD_WIDTH, PhotoService.DEMENSION_HEAD_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_HEAD_SUFFIX+"."+imageContextType);
 		
 		/*
 		 * 写相片数据行,并设置会员相关值(信息完整度);
@@ -154,11 +159,18 @@ public class CommonAction extends Struts2Action {
 	 * @param imageTitle 相片描述
 	 * @return {code:1,data:{url:"url"}}
 	 */
-	public String setHeadPhoto(){		
+	public String setHeadPhoto(){	
+		
 		try {
-			EscortInfo escortInfo=(EscortInfo)session.getAttribute(MemberAccountAction.SESSION_KEY_BASIC_INFO);
-			String url=uploadPhoto_(escortInfo.getEscortMid());
-			escortInfoService.setHeadPhoto(escortInfo, url);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			String url=uploadPhoto_(user.getMaLoginName());
+			if(user.getMaType()==MemberAccountService.TYPE_ESCORT){
+				EscortInfo escortInfo=(EscortInfo)session.getAttribute(MemberAccountAction.SESSION_KEY_BASIC_INFO);			
+				escortInfoService.setHeadPhoto(escortInfo, user,url);
+			}else{
+				TouristInfo touristInfo=(TouristInfo)session.getAttribute(MemberAccountAction.SESSION_KEY_BASIC_INFO);	
+				touristInfoService.setHeadPhoto(touristInfo,user,url);
+			}
 			//响应请求
 			out.print(WebUtils.responseData(WebUtils.generateMapData("url", url)));
 		}catch (NumberFormatException  ne){
