@@ -42,7 +42,9 @@ public class TouristInfoServiceImpl extends DaoHibernateImpl<TouristInfo>
 		 */
 		String headUrl=BusinessServiceImpl.generateHeadUrl(url);
 		String sql="update YAW_MEMBER_ACCOUNT set MA_HEAD_ICON=? where MA_LOGIN_NAME=?";
-		this.executeUpdate(sql, headUrl,member.getMaLoginName());		
+		this.executeUpdate(sql, headUrl,member.getMaLoginName());	
+		//将生成的HEAD头像URL写到(同步）对象中去；
+		member.setMaHeadIcon(headUrl);
 	}
 	
 	/**
