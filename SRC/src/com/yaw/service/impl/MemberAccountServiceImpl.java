@@ -256,7 +256,30 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	}
 
 	@Override
-	public void setAuthentication(MemberAccount member, byte type) {
-		//TODO 设置用户的认证状态			
+	public void setAuthentication(MemberAccount member, byte type) throws  Exception{
+		byte authenticationStatus=member.getMaAuthenticated();
+		byte newAuthenticationStatus=0;
+		switch(type){
+			case MemberAccountService.AUTHENTICATE_EMAIL:
+				newAuthenticationStatus=(byte)(authenticationStatus|1);
+				break;
+			case MemberAccountService.AUTHENTICATE_GUIDE:
+				newAuthenticationStatus=(byte)(authenticationStatus|32);
+				break;
+			case MemberAccountService.AUTHENTICATE_HEALTH:
+				newAuthenticationStatus=(byte)(authenticationStatus|8);
+				break;
+			case MemberAccountService.AUTHENTICATE_IDENTITY:
+				newAuthenticationStatus=(byte)(authenticationStatus|16);
+				break;
+			case MemberAccountService.AUTHENTICATE_PHONE:
+				newAuthenticationStatus=(byte)(authenticationStatus|2);
+				break;
+			case MemberAccountService.AUTHENTICATE_VIDO:
+				newAuthenticationStatus=(byte)(authenticationStatus|4);
+				break;
+		}
+		member.setMaAuthenticated(newAuthenticationStatus);
+		this.update(member);	
 	}
 }

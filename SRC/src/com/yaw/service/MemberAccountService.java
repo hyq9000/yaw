@@ -187,5 +187,5 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	 * @param member 会员对象
 	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
 	 */
-	public void setAuthentication(MemberAccount member,byte type);
+	public void setAuthentication(MemberAccount member,byte type)throws  Exception;
 }

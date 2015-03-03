@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.common.freemark.FreeMarkUtil;
 import com.common.log.ExceptionLogger;
 import com.common.sendmail.SendMail;
+import com.common.tools.sms.ShortMessageService;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.yaw.common.ApplicationConfig;
@@ -28,8 +30,8 @@ import com.yaw.service.PhotoService;
 import com.yaw.service.TouristInfoService;
 
 /**
- * 暴露会员帐号相关的WEB api接口定义及实现
- * 类型描述:
+ *
+ * 类型描述: 暴露会员帐号相关的WEB api接口定义及实现
  * </br>创建时期: 2015年1月3日
  * @author hyq
  */
@@ -38,7 +40,7 @@ public class MemberAccountAction extends Struts2Action {
 	private MemberAccountService memberAccountService;
 	private IncrementServiceService incrementServiceService;
 	private ApplyAuthenticationService applyAuthenticationService;	
-
+	private ShortMessageService sms;
 	//重置密码之URL;
 	protected  final static String URl_RESET_PASSWORD="/backresetpwd.html",
 			//伴游后台管理主页
@@ -48,7 +50,8 @@ public class MemberAccountAction extends Struts2Action {
 			//存储会员找回密码时所提交的email址;
 			SESSION_KEY_LOOKFOR_PASSWORD_EMAIL="SESSION_KEY_LOOKFOR_PASSWORD_EMAIL",
 			//存储会员邮箱验证时所提交内容的key
-			SESSION_KEY_EMAIL_AUTHENTICATION="SESSION_KEY_EMAIL_AUTHENTICATION";
+			SESSION_KEY_EMAIL_AUTHENTICATION="SESSION_KEY_EMAIL_AUTHENTICATION",
+			SESSION_KEY_MOBILE_AUTHENTICATION="SESSION_KEY_EMAIL_AUTHENTICATION";
 	/**
 	 * 会话中存储会员基本信息对象的key;
 	 */
@@ -499,19 +502,73 @@ public class MemberAccountAction extends Struts2Action {
 	 * @return {code:1,-1,-2}
 	 */
 	public String handleEmailAuthentication(){
-		String key=request.getParameterNames().nextElement().toString();
-		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-		String token=(String)session.getAttribute(key);
-		if(token!=null && token.equals(user.getMaEmail())){
-			this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
-			session.removeAttribute(key);
-			out.print(WebUtils.responseCode(1));
-		}else
-			out.print(WebUtils.responseError("邮箱行为异常！", -21));
+		try {
+			String key=request.getParameterNames().nextElement().toString();
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			String token=(String)session.getAttribute(key);
+			if(token!=null && token.equals(user.getMaEmail())){
+				this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
+				session.removeAttribute(key);
+				out.print(WebUtils.responseCode(1));
+			}else
+				out.print(WebUtils.responseError("邮箱行为异常！", -21));
+		} catch (Exception e) {
+			ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException());
+		}
 		return null;
 	}
 	
+	/**
+	 * 提请手机认证:发指定验证码到指定手机
+	 * @param photo 手机号
+	 * @return {code :1,-1,-2}
+	 */
+	public String sendMobileAuthenticationCaptch(){
+		try {
+			String phone=request.getParameter("phone");
+			String code="";
+			for(int i=0;i<6;i++)
+				code+=Math.floor(Math.random()*10);
+			//将生成的手机验证码放到session;
+			session.setAttribute(SESSION_KEY_MOBILE_AUTHENTICATION,code);
+			sms.sendMessage(phone,code);
+			out.print(WebUtils.responseCode(1));
+		}  catch (Exception e) {
+			ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException());
+		}
+		return null;
+	}
 
+	/**
+	 * 处理用户输入收到的手机验证码,提交的认证请求;
+	 * @param captch 手机验证码
+	 * @return{code:1:认证成功,-1:服务器异常,-5:验证码不正确}
+	 * 
+	 */
+	public String handleMobileAuthentication(){
+		try {
+			String incaptch=request.getParameter("captch");
+			String captch=(String)session.getAttribute(SESSION_KEY_MOBILE_AUTHENTICATION);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			/*
+			 * 如果提交的验证码无误,则设置该用户的手机认证状态;
+			 */
+			if(captch!=null && captch.equals(incaptch)){
+				memberAccountService.setAuthentication(user, MemberAccountService.AUTHENTICATE_PHONE);
+				out.print(WebUtils.responseCode(1));
+			}else{
+				out.print(WebUtils.responseError("验证码不正确", -5));
+			}
+		} catch (Exception e) {
+			ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException());
+		}
+		return null;
+	}
+	
+	
 	public void setOrderService(OrderService orderService) {
 		this.orderService = orderService;
 	}

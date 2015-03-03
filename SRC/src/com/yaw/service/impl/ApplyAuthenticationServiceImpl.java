@@ -51,13 +51,7 @@ public class ApplyAuthenticationServiceImpl extends
 			String memberId=aa.getAuthMid();
 			byte type=aa.getAuthType();
 			MemberAccount member=memberAccountService.getById(memberId);
-			switch(type){
-				case 1: member.setMaAuthenticated((byte)(member.getMaAuthenticated()|4));break;
-				case 2: member.setMaAuthenticated((byte)(member.getMaAuthenticated()|16));break;
-				case 3: member.setMaAuthenticated((byte)(member.getMaAuthenticated()|32));break;
-				case 4: member.setMaAuthenticated((byte)(member.getMaAuthenticated()|8));break;
-			}
-			memberAccountService.update(member);
+			memberAccountService.setAuthentication(member, type);
 			if(type==ApplyAuthenticationService.TYPE_JOIN_CLUB){
 				EscortInfo escortInfo=escortInfoService.getById(memberId);
 				escortInfo.setEscortClubMember((byte)1);

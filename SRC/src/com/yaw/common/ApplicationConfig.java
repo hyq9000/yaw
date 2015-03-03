@@ -11,4 +11,5 @@ public class ApplicationConfig {
 	
 	//定义加密key
 	public  static final String SCRET_KEY="";
+	public static final String AUTHENTICATION_PHONE_TEXT="约啊网,验证码:";
 }
