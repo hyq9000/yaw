@@ -257,6 +257,6 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 
 	@Override
 	public void setAuthentication(MemberAccount member, byte type) {
-		// 设置用户的认证状态			
+		//TODO 设置用户的认证状态			
 	}
 }
