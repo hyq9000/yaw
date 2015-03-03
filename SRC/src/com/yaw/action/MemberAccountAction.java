@@ -130,7 +130,7 @@ public class MemberAccountAction extends Struts2Action {
 				 * 将会员email md5后,email本身为值,放到application中;当用户收到邮件后面点过来的时候,
 				 * 再以此验证用户;
 				 */
-				String md5Email=DigestUtils.md5Hex(email);
+				String md5Email=DigestUtils.md5Hex(email+ApplicationConfig.SCRET_KEY);
 				application.setAttribute(md5Email,email);
 				memberAccountService.sendEmailForLookforPassword(email);		
 			}

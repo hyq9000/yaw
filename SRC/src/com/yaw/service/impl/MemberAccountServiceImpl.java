@@ -11,6 +11,7 @@ import com.common.dbutil.Paging;
 import com.common.sendmail.SendMail;
 import com.yaw.business.ActionType;
 import com.yaw.business.Points;
+import com.yaw.common.ApplicationConfig;
 import com.yaw.common.BusinessException;
 import com.yaw.common.BusinessServiceImpl;
 import com.yaw.common.SystemServiceImpl;
@@ -40,7 +41,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	@Points(action=ActionType.POINTS_LOGIN,index=0)
 	@Override
 	public MemberAccount login(String loginName, String password,String loginIp) throws Exception{
-		String pwd2Md5= DigestUtils.md5Hex(password);
+		String pwd2Md5= DigestUtils.md5Hex(password+ApplicationConfig.SCRET_KEY);
 		List<MemberAccount> list=super.query("FROM MemberAccount WHERE maLoginName=? AND maPassword=? AND (maStatus=0 OR maStatus=2 OR maStatus=3)",
 				loginName,pwd2Md5);
 		MemberAccount user=list!=null && list.size()>0?list.get(0):null;
@@ -71,7 +72,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 
 	@Override
 	public void sendEmailForLookforPassword(String email) throws Exception {
-		String md5Email=DigestUtils.md5Hex(email);
+		String md5Email=DigestUtils.md5Hex(email+ApplicationConfig.SCRET_KEY);
 		/*
 		 * 将email md5后,附到链接的url后;以标识用户;
 		 */
@@ -81,8 +82,8 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	@Override
 	public void updatePassword(MemberAccount member,String oldPassword, String newPassword) throws Exception{
 		//对密码做MD5处理
-		String oldPwd2Md5= DigestUtils.md5Hex(oldPassword),
-				newPassword2Md5= DigestUtils.md5Hex(newPassword);
+		String oldPwd2Md5= DigestUtils.md5Hex(oldPassword+ApplicationConfig.SCRET_KEY),
+				newPassword2Md5= DigestUtils.md5Hex(newPassword+ApplicationConfig.SCRET_KEY);
 		//验证原密码无误,则修改成新密码
 		if(member.getMaPassword().equals(oldPwd2Md5)){
 			member.setMaPassword(newPassword2Md5);
@@ -93,7 +94,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 
 	@Override
 	public void resetPassword(String email, String newPassword) throws Exception{
-		String 	newPassword2Md5= DigestUtils.md5Hex(newPassword);
+		String 	newPassword2Md5= DigestUtils.md5Hex(newPassword+ApplicationConfig.SCRET_KEY);
 		int rs=super.executeUpdate("update yaw_member_account set ma_password=? where ma_email=? and (ma_status=0 OR ma_status=2 OR ma_status=3)",
 				newPassword2Md5,email);
 		if(rs<1){
@@ -130,7 +131,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 			byte memberType,String ip)throws Exception {
 		MemberAccount member=new MemberAccount();
 		member.setMaLoginName(loginName);
-		member.setMaPassword(DigestUtils.md5Hex(password));
+		member.setMaPassword(DigestUtils.md5Hex(password+ApplicationConfig.SCRET_KEY));
 		member.setMaType(memberType);
 		member.setMaLoginTime(new Date());
 		member.setMaOnline(ONLINE);

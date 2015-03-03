@@ -239,7 +239,7 @@ public class BusinessServiceImpl {
 	 */
 	public static String getPopularizeMemberId(MemberAccount member){
 		//会员登陆名及会员类型组合
-		String str=DigestUtils.md5Hex(member.getMaLoginName()+member.getMaType());
+		String str=DigestUtils.md5Hex(member.getMaLoginName()+member.getMaType()+ApplicationConfig.SCRET_KEY);
 		return str;
 	}
 	

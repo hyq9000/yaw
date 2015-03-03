@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.common.dbutil.DaoHibernateImpl;
+import com.yaw.common.ApplicationConfig;
 import com.yaw.entity.ManagerAccount;
 import com.yaw.service.ManagerAccountService;
 
@@ -22,7 +23,7 @@ public class ManagerAccountServiceImpl extends DaoHibernateImpl<ManagerAccount>
 	public ManagerAccount login(String loginName, String password,
 			String loginIp) throws Exception {
 		String ql="from ManagerAccount where mngLoginName=? and mngPassword=?";
-		List<ManagerAccount> list=this.query(ql, loginName,DigestUtils.md5Hex(password));
+		List<ManagerAccount> list=this.query(ql, loginName,DigestUtils.md5Hex(password+ApplicationConfig.SCRET_KEY));
 		ManagerAccount user= list!=null&& list.size()>0?list.get(0):null;
 		
 		if(user!=null){
