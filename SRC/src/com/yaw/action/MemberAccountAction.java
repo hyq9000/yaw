@@ -507,8 +507,7 @@ public class MemberAccountAction extends Struts2Action {
 			session.removeAttribute(key);
 			out.print(WebUtils.responseCode(1));
 		}else
-			//TODO 报错
-			out.print(WebUtils.responseError("邮箱异常！", -21));
+			out.print(WebUtils.responseError("邮箱行为异常！", -21));
 		return null;
 	}
 	

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.common.cache.CacheFlushBack;
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.log.ExceptionLogger;
 import com.yaw.entity.MemberFocus;
@@ -18,7 +19,7 @@ import com.yaw.service.MemberFocusService;
  * @author hyq
  */
 public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
-		implements MemberFocusService {
+		implements MemberFocusService,CacheFlushBack {
 
 	private Map<String, Integer> memberFocusCache;// 会员关注数缓存
 
@@ -80,14 +81,18 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 		return list!=null && list.size()>0?list.get(0):null;
 	}
 	
-	//TODO 到下半夜的时候将缓存数据刷到数据库中去
-	public void flushToDB(){
+	@Override
+	public int flushToDB(){
 		try {
+			int i=0;
 			for(Map.Entry<String,Integer> en:memberFocusCache.entrySet()){
 				this.executeUpdate("update yaw_member_account set maFocusCount=? where MA_LOGIN_NAME=?" , en.getValue(),en.getKey());
+				i++;
 			}
+			return i;
 		} catch (Exception e) {
 			ExceptionLogger.writeLog(e, this);
+			return 0;
 		}
 	}
 	
