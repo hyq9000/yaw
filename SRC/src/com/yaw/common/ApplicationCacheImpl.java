@@ -7,7 +7,7 @@ import com.common.cache.CacheFlushBack;
 import com.common.dbutil.Paging;
 
 /**
- * 系统业务缓存类
+ * 系统业务数据的缓存类
  * @author hyq
  *
  */
