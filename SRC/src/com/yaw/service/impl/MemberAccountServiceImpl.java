@@ -194,7 +194,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	}
 
 	@Override
-	@UnShelve(property="escortMid",type=EscortInfo.class)
+	@UnShelve(property="maLoginName",type=MemberAccount.class)
 	public List<MemberAccount> queryNewRegist(int topCount,byte memberType)
 			throws Exception {		
 			String ql="FROM MemberAccount WHERE maType=? ORDER BY maRegistTime DESC";
