@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.common.dbutil.Paging;
 import com.common.utils.EntityService;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
 import com.yaw.entity.MemberAccount;
 /**
@@ -188,4 +188,10 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
 	 */
 	public void setAuthentication(MemberAccount member,byte type)throws  Exception;
+	
+	/**
+	 * 查取所有交友状态为0的会员ID；
+	 * @return 没有则返回null;
+	 */
+	public List getAllMakeFriendOffMemeberId()throws  Exception;
 }

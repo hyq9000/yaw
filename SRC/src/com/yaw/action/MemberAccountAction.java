@@ -15,7 +15,7 @@ import com.common.tools.sms.ShortMessageService;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.yaw.common.ApplicationConfig;
-import com.yaw.common.BusinessException;
+import com.common.utils.BusinessException;
 import com.yaw.common.SystemServiceImpl;
 import com.common.web.WebUtils;
 import com.yaw.entity.ApplyAuthentication;

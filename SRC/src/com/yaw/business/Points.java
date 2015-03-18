@@ -18,7 +18,7 @@ public @interface Points {
 	 * 会员操作类型码:
 	 * @return ActionType类型的值
 	 */
-	ActionType action();
+	PointsActionType action();
 	/**
 	 * 指出方法参数列表中,为会员ID值参数的下标;默认为-1,意为取当前登陆用户的ID;
 	 * @return

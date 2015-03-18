@@ -8,8 +8,9 @@ import java.util.Map;
 
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
+import com.yaw.business.UnShelve;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.RTripplanEscort;
@@ -34,12 +35,13 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 	/**
 	 * 发布邀约计划,同时增加积分;
 	 */
-	@Points(action=ActionType.POINTS_PUBLISH_TRIPPLAN)
+	@Points(action=PointsActionType.POINTS_PUBLISH_TRIPPLAN)
 	public void add(Tripplan entity)  throws Exception{
 		super.add(entity);		
 	}
 
 	@Override
+	@UnShelve(property="TRIPPLAN_MID",type=Map.class)
 	public List<Map> queryTripplanList(Paging paging)  throws Exception {
 		String ql="SELECT TOURIST_NICKNAME,MA_GRADE,MA_HEAD_ICON,yaw_tripplan.* "
 				+ "FROM yaw_tripplan,yaw_member_account,yaw_tourist_info WHERE "
@@ -95,12 +97,14 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 	}
 
 	@Override
+	@UnShelve(property="tripplanMid",type=Tripplan.class)
 	public List<Tripplan> queryNewPublish() throws Exception {
 		String ql="FROM Tripplan ORDER BY tripplanPublishTime DESC";
 		return super.query(ql, new Paging(6,1));
 	}
 
 	@Override
+	@UnShelve(property="tripplanMid",type=Tripplan.class)	
 	public List<Tripplan> queryHomePage3Line() throws Exception {
 		String ql="FROM Tripplan ORDER BY tripplanOrderWeight DESC";
 		return super.query(ql, new Paging(3,1));

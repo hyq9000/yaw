@@ -32,7 +32,7 @@ import com.yaw.service.TagRecordService;
 import com.yaw.service.TouristInfoService;
 
 /**
- * 类型描述:暴露的一些伴游,游客,管理员的公用的WebApi接口及实现
+ * 类型描述:暴露的一些伴游,游客,管理员的公用后台管理的WebApi接口及实现
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */

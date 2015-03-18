@@ -4,7 +4,8 @@ import java.util.List;
 import com.common.dbutil.Dao;
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
-import com.yaw.common.BusinessException;
+import com.common.utils.BusinessException;
+import com.yaw.business.UnShelve;
 import com.yaw.common.BusinessServiceImpl;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
@@ -80,6 +81,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	}
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> simpleSearch(char sex, String city, boolean isOnline)
 			throws Exception {
 		String ql="FROM EscortInfo WHERE escortSex=? AND escortLiveAddr=? AND escortMid in("
@@ -89,6 +91,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	}
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> advanceSearch(String[] propertyNames, int[] opFlags,
 			Object[] values,Paging paging) throws Exception {
 		//为多个条件生成默认的逻辑与操作码放到数组中
@@ -117,6 +120,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public EscortInfo findHomePageHeadline() throws Exception {
 		String ql="FROM EscortInfo WHERE escoftMid in(select o.rimMid from RIncserviceMember as o where rimIncserviceId=?) ";
 		List<EscortInfo> list=super.query(ql, RIncserviceMemberService.SERVICE_HOMEPAGE_LINE);
@@ -124,6 +128,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	}
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> query8ByProperty(String propertyName,Object value ) throws Exception {		
 		if(propertyName!=null && !propertyName.trim().equals("") && value!=null){
 			String ql="FROM EscortInfo where "+propertyName+" =? ORDER BY escortOrderWeight desc limit 8";
@@ -133,6 +138,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	}
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> queryByProperty(String propertyName,Object value , Paging paging)
 			throws Exception {
 		if(propertyName!=null && !propertyName.trim().equals("") && value!=null){
@@ -143,6 +149,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	}
 	
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> query8() throws Exception {
 		String ql="FROM EscortInfo  ORDER BY escortOrderWeight desc";
 		return  super.query(ql,new Paging(8,1),null);

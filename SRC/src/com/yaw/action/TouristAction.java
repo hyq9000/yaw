@@ -39,7 +39,6 @@ public class TouristAction extends Struts2Action {
 	
 	public void setTripplanService(TripplanService tripplanService) {
 		this.tripplanService = tripplanService;
-	}
-	
+	}	
 	
 }

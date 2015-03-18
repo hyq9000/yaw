@@ -9,10 +9,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
 import com.common.sendmail.SendMail;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
+import com.yaw.business.UnShelve;
 import com.yaw.common.ApplicationConfig;
-import com.yaw.common.BusinessException;
+import com.common.utils.BusinessException;
 import com.yaw.common.BusinessServiceImpl;
 import com.yaw.common.SystemServiceImpl;
 import com.yaw.entity.EscortInfo;
@@ -38,7 +39,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	private OrderService orderService;
 	private IncrementServiceService incrementServiceService;
 	
-	@Points(action=ActionType.POINTS_LOGIN,index=0)
+	@Points(action=PointsActionType.POINTS_LOGIN,index=0)
 	@Override
 	public MemberAccount login(String loginName, String password,String loginIp) throws Exception{
 		String pwd2Md5= DigestUtils.md5Hex(password+ApplicationConfig.SCRET_KEY);
@@ -193,6 +194,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	}
 
 	@Override
+	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<MemberAccount> queryNewRegist(int topCount,byte memberType)
 			throws Exception {		
 			String ql="FROM MemberAccount WHERE maType=? ORDER BY maRegistTime DESC";
@@ -281,5 +283,11 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		}
 		member.setMaAuthenticated(newAuthenticationStatus);
 		this.update(member);	
+	}
+
+	@Override
+	public List getAllMakeFriendOffMemeberId() throws  Exception{
+		String sql="select MA_LOGIN_NAME from YAW_MEMBER_ACCOUNT where A_MF_STATUS=0";
+		return super.executeQuery(sql);
 	}
 }

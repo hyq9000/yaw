@@ -49,30 +49,30 @@ public class PointsAdvice implements MethodInterceptor {
 	 * 根据用户当前的操作，生成对应的积分数 
 	 * @return 应积分数
 	 */
-	private int generatePoints(ActionType actionType) {	
-		if(actionType==ActionType.POINTS_LOGIN)
+	private int generatePoints(PointsActionType actionType) {	
+		if(actionType==PointsActionType.POINTS_LOGIN)
 			return 2;
-		if(actionType==ActionType.POINTS_PHOTO)
+		if(actionType==PointsActionType.POINTS_PHOTO)
 			return 5;
-		if(actionType==ActionType.POINTS_REPLAY)
+		if(actionType==PointsActionType.POINTS_REPLAY)
 			return 2;
-		if(actionType==ActionType.POINTS_REPORT)
+		if(actionType==PointsActionType.POINTS_REPORT)
 			return 10;
-		if(actionType==ActionType.POINTS_SUGGEST)
+		if(actionType==PointsActionType.POINTS_SUGGEST)
 			return 5;
-		if(actionType==ActionType.POINTS_SUGGEST_REJECTED)
+		if(actionType==PointsActionType.POINTS_SUGGEST_REJECTED)
 			return 50;
-		if(actionType==ActionType.POINTS_BEFOCUS)
+		if(actionType==PointsActionType.POINTS_BEFOCUS)
 			return 1;
-		if(actionType==ActionType.POINTS_BEFOCUS_PHOTO)
+		if(actionType==PointsActionType.POINTS_BEFOCUS_PHOTO)
 			return 1;
-		if(actionType==ActionType.POINTS_MESSAGE)
+		if(actionType==PointsActionType.POINTS_MESSAGE)
 			return 2;
-		if(actionType==ActionType.POINTS_PUBLISH_TRIPPLAN)
+		if(actionType==PointsActionType.POINTS_PUBLISH_TRIPPLAN)
 			return 5;
-		if(actionType==ActionType.POINTS_TAG)
+		if(actionType==PointsActionType.POINTS_TAG)
 			return 2;
-		if(actionType==ActionType.POINTS_RECOMMEND)
+		if(actionType==PointsActionType.POINTS_RECOMMEND)
 			return 2;
 		return 0;
 	}

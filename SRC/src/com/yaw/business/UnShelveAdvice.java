@@ -1,0 +1,96 @@
+package com.yaw.business;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.beanutils.BeanUtils;
+import com.common.cache.ApplicationCache;
+import com.common.log.ExceptionLogger;
+import com.yaw.service.MemberAccountService;
+
+/**
+ * 类型描述：一个环绕通知，用以从已查出结果集合中，移除“交友状态”为0的会员的相关记录后，再返回；
+ * 实现思路：
+ * 	<li>将所有“交友状态”为0的会员id取出，缓存起来cache，
+ *  <li>cache中的会员ID与查询结果集的每个记录的会员ID彼配，
+ *  <li>从结果中移出彼配置了的相关记录；
+ *  <li>如果交友状态变更，则应刷新缓存；
+ * </br>时间：2015-3-18
+ * @author hyq
+ */
+public class UnShelveAdvice implements MethodInterceptor {
+	private ApplicationCache cache;
+	private MemberAccountService memberAccountService;
+	private List<String> makeFriedOffList;//交友状态为0的所有会员ID
+	/**缓存所有交友状态为0的会员ID集合的key*/
+	public final static  String KEY_MAKE_FRIEND_OFF="MAKE_FRIEND_OFF";
+	public void setCache(ApplicationCache cache) {
+		this.cache = cache;
+	}
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+
+	public  UnShelveAdvice(){
+		makeFriedOffList=(List)cache.get(KEY_MAKE_FRIEND_OFF);
+		if(cache.get(KEY_MAKE_FRIEND_OFF)==null){
+			try {
+				List list=memberAccountService.getAllMakeFriendOffMemeberId();
+				cache.put(KEY_MAKE_FRIEND_OFF, list,ApplicationCache.CACHE_TYPE_ADD );
+			} catch (Exception e) {
+				ExceptionLogger.writeLog(e, memberAccountService.getClass());
+			}
+		}			
+	}
+	
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {
+		Object result=invocation.proceed();
+		UnShelve an=invocation.getMethod().getAnnotation(UnShelve.class);
+		
+		if(result==null || an==null)
+			return result;
+		
+		Class clazz=an.type();
+		String propertyName=an.property();
+		/*
+		 * 如果查询结果是List，才进行操作，否则直接跳过
+		 */
+		if(result instanceof List){
+			List resultList=(List)result;
+			/*
+			 * 根据集合中的类型及属性名称，取出该记录中为“会员ID”的值,
+			 * 如果该“会员ID”的值在makeFriedOffList中有，则将
+			 * 该“会员ID”对应的记录从resultList中移除；
+			 */
+			Iterator it=resultList.iterator();
+			while(it.hasNext()){
+				Object tmp=it.next();
+				/*
+				 * 找到“会员ID”的值
+				 */
+				String memberId=null;
+				if(clazz.getName().equals("Map")){
+					Map map=(Map)tmp;
+					memberId=(String)map.get(propertyName);
+				}else{
+					memberId=BeanUtils.getProperty(tmp, propertyName);
+				}
+				/*
+				 * 存在于makeFriedOffList，则从结果集中（resultList） 移除
+				 */
+				if(memberId!=null && !memberId.equals("")){
+					if(makeFriedOffList.contains(memberId)){
+						it.remove();
+					}
+				}
+			}
+		}
+		//无论有无移隔操作，都返回结果；
+		return result;
+	}
+
+}

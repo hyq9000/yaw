@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
 import com.common.web.WebUtils;
 import com.yaw.entity.Message;
@@ -26,7 +26,7 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 		MessageService {
 
 	@Override
-	@Points(action=ActionType.POINTS_MESSAGE,index=0)
+	@Points(action=PointsActionType.POINTS_MESSAGE,index=0)
 	public void messageTo(String memberId, String toMemberId, String content)
 			throws Exception {
 		Message msg=new Message();

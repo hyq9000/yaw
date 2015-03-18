@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
 import com.yaw.entity.ReportSuggest;
 import com.yaw.service.ReportSuggestService;
@@ -20,7 +20,7 @@ public class ReportSuggestServiceImpl extends DaoHibernateImpl<ReportSuggest>
 		implements ReportSuggestService {
 	
 	@Override
-	@Points(action=ActionType.POINTS_REPORT,index=0) 
+	@Points(action=PointsActionType.POINTS_REPORT,index=0) 
 	public void report(String memberId, String reportedMemberId, String content,byte reportTypeCode)throws Exception{
 		ReportSuggest rs=new ReportSuggest();
 		rs.setRsContent(content);
@@ -32,7 +32,7 @@ public class ReportSuggestServiceImpl extends DaoHibernateImpl<ReportSuggest>
 		this.add(rs);
 	}
 	
-	@Points(action=ActionType.POINTS_SUGGEST,index=0)
+	@Points(action=PointsActionType.POINTS_SUGGEST,index=0)
 	@Override
 	public void suggest(String memberId, String content)throws Exception {
 		ReportSuggest rs=new ReportSuggest();

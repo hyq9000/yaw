@@ -287,6 +287,7 @@ public class FrontAction extends Struts2Action{
 	 * @param values 对应属性名的值集
 	 */
 	public String escortAdvanceSearch(){
+		//TODO escortAdvanceSearch
 		return null;
 	}
 	
@@ -619,7 +620,7 @@ public class FrontAction extends Struts2Action{
 	 * @param depart 出发地
 	 */
 	public String simpleSearchTripplan(){
-		
+		//TODO simpleSearchTripplan();
 		return null;
 	}
 	
@@ -631,6 +632,7 @@ public class FrontAction extends Struts2Action{
 	 * @param values 对应属性名的值集
 	 */
 	public String advanceSearchTripplan(){
+		//TODO :advanceSearchTripplan()
 		return null;
 	}
 	

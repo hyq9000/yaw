@@ -3,7 +3,7 @@ package com.yaw.service.impl;
 import java.util.Date;
 
 import com.common.dbutil.DaoHibernateImpl;
-import com.yaw.business.ActionType;
+import com.yaw.business.PointsActionType;
 import com.yaw.business.Points;
 import com.yaw.entity.TagRecord;
 import com.yaw.service.TagRecordService;
@@ -17,7 +17,7 @@ public class TagRecordServiceImpl extends DaoHibernateImpl<TagRecord> implements
 		TagRecordService {
 
 	@Override
-	@Points(action=ActionType.POINTS_TAG,index=0)
+	@Points(action=PointsActionType.POINTS_TAG,index=0)
 	public void tagsToMember(String memberId, String taggedMemberId,
 			String... tags) throws Exception{
 		/*

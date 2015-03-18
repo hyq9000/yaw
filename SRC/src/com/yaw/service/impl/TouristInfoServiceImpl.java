@@ -3,6 +3,7 @@ import java.util.List;
 
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
+import com.yaw.business.UnShelve;
 import com.yaw.common.BusinessServiceImpl;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
@@ -19,6 +20,7 @@ public class TouristInfoServiceImpl extends DaoHibernateImpl<TouristInfo>
 		implements TouristInfoService {
 
 	@Override
+	@UnShelve(property="touristMid",type=TouristInfo.class)
 	public List<TouristInfo> queryTouristOrder(int n) throws Exception {
 		String ql="from TouristInfo order by touristWeight desc";
 		return super.query(ql, new Paging(n, 1), null);		

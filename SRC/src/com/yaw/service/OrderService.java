@@ -8,6 +8,10 @@ import com.common.dbutil.Paging;
 import com.common.utils.EntityService;
 import com.yaw.entity.Order;
 
+/**
+ * 订单服务接口
+ * @author hyq
+ */
 public interface OrderService extends EntityService<Order> {
 	
 	/**支付平台*/
