@@ -91,7 +91,7 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 			}
 			return i;
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
+			long errorLogId=ExceptionLogger.writeLog(e, this);
 			return 0;
 		}
 	}

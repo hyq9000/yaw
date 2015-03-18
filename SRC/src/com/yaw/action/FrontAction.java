@@ -5,13 +5,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.common.web.WebUtils;
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.yaw.common.BusinessServiceImpl;
-import com.yaw.common.WebUtils;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.MemberFocus;
@@ -128,8 +127,8 @@ public class FrontAction extends Struts2Action{
 				
 				out.print(WebUtils.responseData(1, data));
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.println(WebUtils.responseInputCheckError("会员ID不正确!"));
@@ -221,8 +220,8 @@ public class FrontAction extends Struts2Action{
 				data.put("tripplan", tripplanList);
 				out.print(WebUtils.responseData(1, data));
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.println(WebUtils.responseInputCheckError("会员ID不正确!"));
@@ -250,8 +249,8 @@ public class FrontAction extends Struts2Action{
 			List<Photo> list=photoService.getPhotoList(memberId, new Paging(pageSize,pageNo));
 			out.print(WebUtils.responseData(list.size(),list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -274,8 +273,8 @@ public class FrontAction extends Struts2Action{
 			List data=escortInfoService.simpleSearch(csex, city, on);
 			out.print(WebUtils.responseData(data.size(), data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -304,8 +303,8 @@ public class FrontAction extends Struts2Action{
 			List data=escortInfoService.queryByProperty("escortLiveAddr", city, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(data.size(), data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -321,8 +320,8 @@ public class FrontAction extends Struts2Action{
 			List data=escortInfoService.query8ByProperty("escortLiveAddr", city);
 			out.print(WebUtils.responseData(data.size(), data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -344,8 +343,8 @@ public class FrontAction extends Struts2Action{
 			data.put("msg", escort.getEscortRecommend());
 			out.print(WebUtils.responseData(1, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -359,8 +358,8 @@ public class FrontAction extends Struts2Action{
 			List<EscortInfo> list=escortInfoService.query8();
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}	
 		return null;
 	}
@@ -373,8 +372,8 @@ public class FrontAction extends Struts2Action{
 			List<MemberAccount> list=memberService.queryNewRegist(8,MemberAccountService.TYPE_ESCORT);
 			out.print( WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print( WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print( WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -389,8 +388,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.query8ByProperty("escortSex", sex);
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}	
@@ -407,8 +406,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.queryByProperty("escortSex", sex, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -425,8 +424,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.query8ByProperty("escortImage", image);
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -445,8 +444,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.queryByProperty("escortImage", image, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -464,8 +463,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.query8ByProperty("escortFeel", feel);
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -484,8 +483,8 @@ public class FrontAction extends Struts2Action{
 			List list=escortInfoService.queryByProperty("escortFeel", feel, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}	
@@ -500,8 +499,8 @@ public class FrontAction extends Struts2Action{
 			List list=memberService.queryNewRegist(8,MemberAccountService.TYPE_TOURIST);
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -515,8 +514,8 @@ public class FrontAction extends Struts2Action{
 			List list=memberService.queryNewRegist(16,MemberAccountService.TYPE_TOURIST);
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -530,8 +529,8 @@ public class FrontAction extends Struts2Action{
 			List list= touristInfoService.queryTouristOrder(16);
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -549,8 +548,8 @@ public class FrontAction extends Struts2Action{
 			List list=tripplanService.getMemberTripplanList(memberId, new Paging(5,pn));
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -578,8 +577,8 @@ public class FrontAction extends Struts2Action{
 			}
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -604,8 +603,8 @@ public class FrontAction extends Struts2Action{
 			List<Map> list=tripplanService.queryTripplanList(new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0, list));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -658,8 +657,8 @@ public class FrontAction extends Struts2Action{
 			}
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -686,8 +685,8 @@ public class FrontAction extends Struts2Action{
 			}
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -729,8 +728,8 @@ public class FrontAction extends Struts2Action{
 			}
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -755,8 +754,8 @@ public class FrontAction extends Struts2Action{
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("相片号数据不正确!"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -781,8 +780,8 @@ public class FrontAction extends Struts2Action{
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("约请计划号数据不正确!"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}

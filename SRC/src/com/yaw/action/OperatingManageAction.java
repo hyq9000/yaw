@@ -6,7 +6,7 @@ import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
-import com.yaw.common.WebUtils;
+import com.common.web.WebUtils;
 import com.yaw.entity.ManagerAccount;
 import com.yaw.service.ApplyAuthenticationService;
 import com.yaw.service.ManagerAccountService;
@@ -56,7 +56,7 @@ public class OperatingManageAction extends Struts2Action {
 					out.print(WebUtils.responseError("用户名或密码输入不正确",0));
 				}
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
+				long errorLogId=ExceptionLogger.writeLog(e, this);
 				out.print(WebUtils.responseCode(1));
 			}
 		}
@@ -77,8 +77,8 @@ public class OperatingManageAction extends Struts2Action {
 			managerAccountService.logout(manager);
 			out.print(WebUtils.responseData(1, WebUtils.generateMapData("url", URL_BACK_LOGOUT)));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -100,8 +100,8 @@ public class OperatingManageAction extends Struts2Action {
 			orderService.upgradeVip(user.getMngLoginName(),mid, billId, gradeInt);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -129,8 +129,8 @@ public class OperatingManageAction extends Struts2Action {
 		}catch(NumberFormatException ne){
 			out.print(WebUtils.responseInputCheckError("充值数不是数字"));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -155,8 +155,8 @@ public class OperatingManageAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("认证申请号格式不正确"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -181,8 +181,8 @@ public class OperatingManageAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("认证申请号格式不正确"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -208,8 +208,8 @@ public class OperatingManageAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("分页数不正确"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -241,8 +241,8 @@ public class OperatingManageAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("分页数不正确"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}

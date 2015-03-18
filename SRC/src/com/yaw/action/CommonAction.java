@@ -13,8 +13,8 @@ import com.common.log.ExceptionLogger;
 import com.common.tools.ImageCompressor;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
+import com.common.web.WebUtils;
 import com.yaw.common.BusinessServiceImpl;
-import com.yaw.common.WebUtils;
 import com.yaw.entity.ApplyAuthentication;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
@@ -64,8 +64,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException  ne){
 			out.print(WebUtils.responseInputCheckError("认证类型码不正确!"));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}	
 		return null;
 	}
@@ -143,8 +143,8 @@ public class CommonAction extends Struts2Action {
 		}catch (NumberFormatException  ne){
 			out.print(WebUtils.responseError("相片类型码不正确!",-4));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}		
 		return null;
 	}
@@ -176,8 +176,8 @@ public class CommonAction extends Struts2Action {
 		}catch (NumberFormatException  ne){
 			out.print(WebUtils.responseError("相片类型码不正确!",-4));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}		
 		return null;
 	}
@@ -204,8 +204,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			WebUtils.responseError("举报类型不正确", -3);
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -224,8 +224,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			WebUtils.responseInputCheckError("举报类型不正确");
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -245,8 +245,8 @@ public class CommonAction extends Struts2Action {
 			tagRecordService.tagsToMember(user.getMaLoginName(), mid, tags);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -267,8 +267,8 @@ public class CommonAction extends Struts2Action {
 			orderService.comfirmPaied(orderId, yn);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -288,8 +288,8 @@ public class CommonAction extends Struts2Action {
 			messageService.messageTo(user.getMaLoginName(), toMid, content);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -322,8 +322,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			WebUtils.responseInputCheckError("页号(pn)不是一个数字");
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -344,8 +344,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("页号(pn)不是一个数字"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -366,8 +366,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			WebUtils.responseInputCheckError("页号(pn)不是一个数字");
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -387,8 +387,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseError("留言ID不正确", -3));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -404,8 +404,8 @@ public class CommonAction extends Struts2Action {
 			int rs=messageService.getNewMessageCount(mid);
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -420,8 +420,8 @@ public class CommonAction extends Struts2Action {
 			int rs=messageService.getNewReplayCount(mid);
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -437,8 +437,8 @@ public class CommonAction extends Struts2Action {
 			int rs=messageService.getunReplayCount(mid);
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}	
@@ -456,8 +456,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseError("留言ID不正确", -3));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -478,8 +478,8 @@ public class CommonAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseError("留言ID不正确", -3));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}

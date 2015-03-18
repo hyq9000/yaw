@@ -3,7 +3,7 @@ package com.yaw.action;
 import java.util.List;
 import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
-import com.yaw.common.WebUtils;
+import com.common.web.WebUtils;
 import com.yaw.service.TripplanService;
 
 /**
@@ -31,8 +31,8 @@ public class TouristAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("页号格式不正确!"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}

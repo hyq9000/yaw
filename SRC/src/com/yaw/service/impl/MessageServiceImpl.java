@@ -11,7 +11,7 @@ import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
 import com.yaw.business.ActionType;
 import com.yaw.business.Points;
-import com.yaw.common.WebUtils;
+import com.common.web.WebUtils;
 import com.yaw.entity.Message;
 import com.yaw.service.MemberAccountService;
 import com.yaw.service.MessageService;

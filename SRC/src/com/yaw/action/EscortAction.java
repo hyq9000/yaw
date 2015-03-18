@@ -3,7 +3,7 @@ package com.yaw.action;
 import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
-import com.yaw.common.WebUtils;
+import com.common.web.WebUtils;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.service.ApplyAuthenticationService;
@@ -41,8 +41,8 @@ public class EscortAction extends Struts2Action {
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("约请计划ID格式不正确!"));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -64,8 +64,8 @@ public class EscortAction extends Struts2Action {
 			escortInfoService.update(escortInfo);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {		
-			ExceptionLogger.writeLog(e, this);
-			return 	WebUtils.responseServerException();
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -135,8 +135,8 @@ public class EscortAction extends Struts2Action {
 			applyAuthenticationService.submitAuthentication(user.getMaLoginName(),ApplyAuthenticationService.TYPE_VIDO);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}

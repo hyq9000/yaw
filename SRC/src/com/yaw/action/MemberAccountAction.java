@@ -17,7 +17,7 @@ import com.common.web.WebContextUtil;
 import com.yaw.common.ApplicationConfig;
 import com.yaw.common.BusinessException;
 import com.yaw.common.SystemServiceImpl;
-import com.yaw.common.WebUtils;
+import com.common.web.WebUtils;
 import com.yaw.entity.ApplyAuthentication;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Order;
@@ -71,8 +71,8 @@ public class MemberAccountAction extends Struts2Action {
 				boolean rs= memberAccountService.checkMemberName(mn);
 				out.print(WebUtils.responseCode(rs?1:0));
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.print(WebUtils.responseCode(-3));
@@ -97,8 +97,8 @@ public class MemberAccountAction extends Struts2Action {
 			try {
 				memberAccountService.resetPassword(email, pwd);				
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}
 		return null;
@@ -138,8 +138,8 @@ public class MemberAccountAction extends Struts2Action {
 				memberAccountService.sendEmailForLookforPassword(email);		
 			}
 		}catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -157,8 +157,8 @@ public class MemberAccountAction extends Struts2Action {
 				boolean rs= memberAccountService.checkEmai(email);
 				out.print(WebUtils.responseCode(rs?1:0));
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.print(WebUtils.responseCode(-3));
@@ -214,8 +214,8 @@ public class MemberAccountAction extends Struts2Action {
 					out.print(WebUtils.responseData(1, data));
 				}
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}				
 		}				
 		return null;
@@ -241,8 +241,8 @@ public class MemberAccountAction extends Struts2Action {
 			data.put("url", "/index.html");
 			out.write(WebUtils.responseData(1, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -266,8 +266,8 @@ public class MemberAccountAction extends Struts2Action {
 					request.getRequestDispatcher(URl_RESET_PASSWORD).forward(request, response);
 				}
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.print(WebUtils.responseError("email不正确!", -3));
@@ -295,8 +295,8 @@ public class MemberAccountAction extends Struts2Action {
 				ExceptionLogger.writeLog(be, this);
 				out.print(WebUtils.responseError(be.getMessage(), -3));
 			}catch (Exception e) {
-				ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseServerException());
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
 			}
 		}else{
 			out.print(WebUtils.responseError("新密码或老密码为空!", -4));
@@ -314,10 +314,10 @@ public class MemberAccountAction extends Struts2Action {
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		try {
 			memberAccountService.pauseMakeFriend(user);
-			out.print(WebUtils.responseServerException());
+			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -348,8 +348,8 @@ public class MemberAccountAction extends Struts2Action {
 			Map data=WebUtils.generateMapData("url",memberTypeValue==0?URL_BACK_TOURIST_MAIN:URL_BACK_ESCORT_MAIN);
 			out.print(WebUtils.responseData(1, data));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -370,8 +370,8 @@ public class MemberAccountAction extends Struts2Action {
 			memberAccountService.yueaCoinConsume(user.getMaLoginIp(), intServiceId, intCoinCount);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -403,8 +403,8 @@ public class MemberAccountAction extends Struts2Action {
 			orderService.submitOrder(order);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -436,8 +436,8 @@ public class MemberAccountAction extends Struts2Action {
 			orderService.submitOrder(order);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -455,8 +455,8 @@ public class MemberAccountAction extends Struts2Action {
 			applyAuthenticationService.submitAuthentication(user.getMaLoginName(),byteAuthType);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -490,8 +490,8 @@ public class MemberAccountAction extends Struts2Action {
 			SendMail.sendMail("约啊网邮箱认证", emailBody,email);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -513,8 +513,8 @@ public class MemberAccountAction extends Struts2Action {
 			}else
 				out.print(WebUtils.responseError("邮箱行为异常！", -21));
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -535,8 +535,8 @@ public class MemberAccountAction extends Struts2Action {
 			sms.sendMessage(phone,code);
 			out.print(WebUtils.responseCode(1));
 		}  catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
@@ -562,8 +562,8 @@ public class MemberAccountAction extends Struts2Action {
 				out.print(WebUtils.responseError("验证码不正确", -5));
 			}
 		} catch (Exception e) {
-			ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException());
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
 		}
 		return null;
 	}
