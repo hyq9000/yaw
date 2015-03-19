@@ -84,14 +84,14 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 
 	@Override
 	public List<Tripplan> simpleSearch(char wantSex, String destinaion,
-			String depart) throws Exception {
+			String depart,Paging paging) throws Exception {
 		// TODO 简单约请计划查询
 		return null;
 	}
 
 	@Override
 	public List<Tripplan> advanceSearch(String[] propertyName, int[] opflags,
-			Object[] values) throws Exception {
+			Object[] values,Paging paging) throws Exception {
 		// TODO 高级约请计划查询
 		return null;
 	}

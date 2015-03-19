@@ -43,7 +43,7 @@ public interface TripplanService extends EntityService<Tripplan> {
 	 * @param destination 旅游目的地
 	 * @param depart 出发地
 	 */
-	List<Tripplan> simpleSearch(char wantSex,String destinaion,String depart) throws Exception;
+	List<Tripplan> simpleSearch(char wantSex,String destinaion,String depart,Paging paging) throws Exception;
 	
 	/**
 	 * 高级查询邀约计划
@@ -52,7 +52,7 @@ public interface TripplanService extends EntityService<Tripplan> {
 	 * @param opflags 条件比较操作符符
 	 * @param values 对应属性名的值集
 	 */
-	List<Tripplan> advanceSearch(String[] propertyName,int[] opflags,Object[] values) throws Exception;
+	List<Tripplan> advanceSearch(String[] propertyName,int[] opflags,Object[] values,Paging paging) throws Exception;
 	
 	/**
 	 * 查取最新发布的6条约请计划.按时间倒序排

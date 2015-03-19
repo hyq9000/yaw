@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.common.web.WebUtils;
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
@@ -620,7 +621,18 @@ public class FrontAction extends Struts2Action{
 	 * @param depart 出发地
 	 */
 	public String simpleSearchTripplan(){
-		//TODO simpleSearchTripplan();
+		try {
+			String sex=request.getParameter("wantSex");			
+			String destination=request.getParameter("destination");
+			String depart=request.getParameter("deport");
+			String pn=request.getParameter("pn");
+			int pageNo=Integer.parseInt(pn);
+			List list=tripplanService.simpleSearch(sex.charAt(0), destination, depart,new Paging(10,pageNo));
+			out.print(WebUtils.responseData(list==null?0:list.size(),list));
+		} catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
 		return null;
 	}
 	
@@ -632,8 +644,26 @@ public class FrontAction extends Struts2Action{
 	 * @param values 对应属性名的值集
 	 */
 	public String advanceSearchTripplan(){
-		//TODO :advanceSearchTripplan()
+		try {
+			String[] propertyNames=request.getParameterValues("propertyName");
+			String[] flags=request.getParameterValues("opflag");
+			String[] values=request.getParameterValues("value");
+			String pn=request.getParameter("pn");
+			int pageNo=Integer.parseInt(pn);
+			int[] opflags=new int[flags.length];
+			for(int i=0;i<flags.length;i++)
+				opflags[i]=WebUtils.getCodeByString(flags[i]);
+			List list=tripplanService.advanceSearch(propertyNames, opflags, values, new Paging(10,pageNo));
+			out.print(WebUtils.responseData(list==null?0:list.size(),list));
+		} catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
 		return null;
+	
 	}
 	
 	/**
