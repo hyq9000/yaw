@@ -260,7 +260,6 @@ public class BusinessServiceImpl {
 	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
 	 */
 	public static List removeMakeFriendOffEscortData(List escortInfoList){
-		//TODO  去除了"下架会员(交友状态为0)"的数据的对象集合
 		return escortInfoList;
 	}
 	
@@ -273,7 +272,6 @@ public class BusinessServiceImpl {
 	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
 	 */
 	public static List removeMakeFriendOffTouristData(List touristInfoList){
-		//TODO 去除了"下架会员(交友状态为0)"的数据的对象集合
 		return touristInfoList;
 	}
 	
