@@ -834,8 +834,7 @@ public class FrontAction extends Struts2Action{
 				qzV=escortInfo.getEscortImage();//形象
 		int ageV=escortInfo.getEscortBirthday().getYear(),	//生日年
 			heightV=escortInfo.getEscortHeight(),//身高
-			weightV=escortInfo.getEscortWeight();	//体重
-		
+			weightV=escortInfo.getEscortWeight();	//体重		
 		return "";
 	}
 	

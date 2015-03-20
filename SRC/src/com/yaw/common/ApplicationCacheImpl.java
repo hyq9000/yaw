@@ -1,6 +1,7 @@
 package com.yaw.common;
 
 import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.common.cache.ApplicationCache;
 import com.common.cache.CacheFlushBack;
@@ -12,7 +13,8 @@ import com.common.dbutil.Paging;
  *
  */
 public class ApplicationCacheImpl implements ApplicationCache{
-
+	private ConcurrentHashMap<String,Object> cache=new ConcurrentHashMap<String, Object>();
+	
 	@Override
 	public Object get(Serializable key) {
 		// TODO Auto-generated method stub
@@ -21,8 +23,7 @@ public class ApplicationCacheImpl implements ApplicationCache{
 
 	@Override
 	public Object get(Serializable key, Paging paging) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Exception();
 	}
 
 	@Override
@@ -62,9 +63,8 @@ public class ApplicationCacheImpl implements ApplicationCache{
 	}
 
 	@Override
-	public void putPagingCache(Serializable key, Integer totalCount) {
-		// TODO Auto-generated method stub
-
+	public void putPagingCache(Serializable key, Integer totalCount){
+		
 	}
 
 }
