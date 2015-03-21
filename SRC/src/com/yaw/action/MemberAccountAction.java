@@ -3,6 +3,7 @@ package com.yaw.action;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -14,7 +15,9 @@ import com.common.sendmail.SendMail;
 import com.common.tools.sms.ShortMessageService;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
+import com.yaw.common.ApplicationCacheMapImpl;
 import com.yaw.common.ApplicationConfig;
+import com.yaw.common.BusinessConstants;
 import com.common.utils.BusinessException;
 import com.yaw.common.SystemServiceImpl;
 import com.common.web.WebUtils;
@@ -133,7 +136,7 @@ public class MemberAccountAction extends Struts2Action {
 				 * 将会员email md5后,email本身为值,放到application中;当用户收到邮件后面点过来的时候,
 				 * 再以此验证用户;
 				 */
-				String md5Email=DigestUtils.md5Hex(email+ApplicationConfig.SCRET_KEY);
+				String md5Email=DigestUtils.md5Hex(email+ApplicationConfig.getInstance().getScretKey());
 				application.setAttribute(md5Email,email);
 				memberAccountService.sendEmailForLookforPassword(email);		
 			}
@@ -314,6 +317,11 @@ public class MemberAccountAction extends Struts2Action {
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		try {
 			memberAccountService.pauseMakeFriend(user);
+			
+			//更新业务缓存对应的数据
+			List midList=(List)ApplicationCacheMapImpl.getIntance().get(BusinessConstants.KEY_MAKE_FRIEND_OFF);
+			midList.add(user.getMaLoginName());
+			
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -475,7 +483,7 @@ public class MemberAccountAction extends Struts2Action {
 		/*
 		 * 将用户注册邮箱加密后作为key，邮箱明文作为值，存储到session中去，
 		 */
-		String codeKey=DigestUtils.md5Hex(userEmail+ApplicationConfig.SCRET_KEY);
+		String codeKey=DigestUtils.md5Hex(userEmail+ApplicationConfig.getInstance().getScretKey());
 		session.setAttribute(codeKey, userEmail);
 		
 		/*

@@ -94,16 +94,16 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public List<EscortInfo> advanceSearch(String[] propertyNames, int[] opFlags,
 			Object[] values,Paging paging) throws Exception {
-		//为多个条件生成默认的逻辑与操作码放到数组中
-		int [] conditionFlag=new int[propertyNames.length-1];
-		for(int i=0;i<conditionFlag.length;conditionFlag[i++]=Dao.CONDITION_AND);
-		
-		if(propertyNames==null || propertyNames.length==0 || values==null ||values.length==0 
-				|| conditionFlag==null || conditionFlag.length==0
+		//为多个条件生成默认的逻辑与操作码放到数组中		
+		if(propertyNames==null || propertyNames.length==0 
+				|| values==null ||values.length==0 
 				|| opFlags==null || opFlags.length==0){			
 			throw new Exception("条件、参数、值个数不能为空!");
 		}else{
-			if(propertyNames.length!=values.length || propertyNames.length!=opFlags.length ||propertyNames.length!=conditionFlag.length+1){
+			int [] conditionFlag=new int[propertyNames.length-1];
+			for(int i=0;i<conditionFlag.length;conditionFlag[i++]=Dao.CONDITION_AND);
+			
+			if(propertyNames.length!=values.length || propertyNames.length!=opFlags.length){
 				throw new Exception("查询条件名、条件值、操作符个数不彼配!");
 			}else{
 				String hql="FROM EscortInfo WHERE ";

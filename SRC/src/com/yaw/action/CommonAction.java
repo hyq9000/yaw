@@ -80,7 +80,7 @@ public class CommonAction extends Struts2Action {
 	 * @param title 相片描述
 	 * @return 返回该图存数据库后的URL
 	 */
-	private   String uploadPhoto_(String memberId) throws Exception{	
+	private   String _uploadPhoto(String memberId) throws Exception{	
 		/*
 		 * 取得相关参数值
 		 */
@@ -137,7 +137,7 @@ public class CommonAction extends Struts2Action {
 	public String uploadPhoto(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			String url=uploadPhoto_(user.getMaLoginName());
+			String url=_uploadPhoto(user.getMaLoginName());
 			//响应请求
 			out.print(WebUtils.responseData(WebUtils.generateMapData("url", url)));
 		}catch (NumberFormatException  ne){
@@ -163,7 +163,7 @@ public class CommonAction extends Struts2Action {
 		
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			String url=uploadPhoto_(user.getMaLoginName());
+			String url=_uploadPhoto(user.getMaLoginName());
 			if(user.getMaType()==MemberAccountService.TYPE_ESCORT){
 				EscortInfo escortInfo=(EscortInfo)session.getAttribute(MemberAccountAction.SESSION_KEY_BASIC_INFO);			
 				escortInfoService.setHeadPhoto(escortInfo, user,url);

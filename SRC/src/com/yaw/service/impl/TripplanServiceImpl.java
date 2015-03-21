@@ -2,10 +2,12 @@ package com.yaw.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.common.dbutil.Dao;
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
 import com.yaw.business.PointsActionType;
@@ -83,17 +85,43 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 	}
 
 	@Override
+	@UnShelve(property="tripplanMid",type=Tripplan.class)
 	public List<Tripplan> simpleSearch(char wantSex, String destinaion,
 			String depart,Paging paging) throws Exception {
-		// TODO 简单约请计划查询
+		String ql="from Tripplan where tripplanWantSex=? AND tripplanDepartTime<=? and tripplanDestination=? order by tripplanOrderWeight DESC";
+		super.query(ql, paging,wantSex,depart,destinaion);
 		return null;
 	}
 
 	@Override
+	@UnShelve(property="tripplanMid",type=Tripplan.class)
 	public List<Tripplan> advanceSearch(String[] propertyName, int[] opflags,
 			Object[] values,Paging paging) throws Exception {
-		// TODO 高级约请计划查询
-		return null;
+		
+		
+		if(propertyName==null || propertyName.length==0 
+				|| values==null ||values.length==0 
+				|| opflags==null || opflags.length==0){				
+			throw new Exception("条件、参数、值个数不能为空!");
+		}else{
+			//为多个条件生成默认的逻辑与操作码放到数组中
+			int [] conditionFlag=new int[propertyName.length-1];
+			for(int i=0;i<conditionFlag.length;i++)
+				conditionFlag[i]=Dao.CONDITION_AND;
+			
+			if(propertyName.length!=values.length || propertyName.length!=opflags.length){
+				throw new Exception("查询条件名、条件值、操作符个数不彼配!");
+			}else{
+				String hql="FROM EscortInfo WHERE ";
+				String where="";
+				where+=propertyName[0]+" = ? ";
+				for(int i=0;i<opflags.length;i++){
+					where+="AND "+propertyName[i+1]+"= ? ";
+				}
+				hql+=where+" ORDER BY tripplanOrderWeight DESC";		
+				return super.query(hql, paging,values);
+			}
+		}
 	}
 
 	@Override

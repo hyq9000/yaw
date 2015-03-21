@@ -23,7 +23,7 @@ public class ManagerAccountServiceImpl extends DaoHibernateImpl<ManagerAccount>
 	public ManagerAccount login(String loginName, String password,
 			String loginIp) throws Exception {
 		String ql="from ManagerAccount where mngLoginName=? and mngPassword=?";
-		List<ManagerAccount> list=this.query(ql, loginName,DigestUtils.md5Hex(password+ApplicationConfig.SCRET_KEY));
+		List<ManagerAccount> list=this.query(ql, loginName,DigestUtils.md5Hex(password+ApplicationConfig.getInstance().getScretKey()));
 		ManagerAccount user= list!=null&& list.size()>0?list.get(0):null;
 		
 		if(user!=null){

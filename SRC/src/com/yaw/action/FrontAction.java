@@ -217,7 +217,7 @@ public class FrontAction extends Struts2Action{
 				data.put("memberId", befocusMember.getMaLoginName());
 				
 				List<Tripplan> tripplanList=tripplanService.getMemberTripplanList(mid, new Paging(5,1));
-				//TODO:简化约请计划前端显示的数据
+				//TODO:简化约请计划前端显示的数据;
 				data.put("tripplan", tripplanList);
 				out.print(WebUtils.responseData(1, data));
 			} catch (Exception e) {
@@ -288,7 +288,24 @@ public class FrontAction extends Struts2Action{
 	 * @param values 对应属性名的值集
 	 */
 	public String escortAdvanceSearch(){
-		//TODO escortAdvanceSearch
+		try {
+			String[] propertyNames=request.getParameterValues("propertyName");
+			String[] flags=request.getParameterValues("opflag");
+			String[] values=request.getParameterValues("value");
+			String pn=request.getParameter("pn");
+			int pageNo=Integer.parseInt(pn);
+			int[] opflags=new int[flags.length];
+			for(int i=0;i<flags.length;i++)
+				opflags[i]=WebUtils.getCodeByString(flags[i]);
+			List list= escortInfoService.advanceSearch(propertyNames, opflags, values, new Paging(10,pageNo));
+			out.print(WebUtils.responseData(list==null?0:list.size(),list));
+		} catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
 		return null;
 	}
 	

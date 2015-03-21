@@ -3,11 +3,15 @@ package com.yaw.business;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.beanutils.BeanUtils;
-import com.common.cache.ApplicationCache;
+
+import com.common.cache.ICache;
 import com.common.log.ExceptionLogger;
+import com.yaw.common.ApplicationCacheMapImpl;
+import com.yaw.common.BusinessConstants;
 import com.yaw.service.MemberAccountService;
 
 /**
@@ -21,25 +25,23 @@ import com.yaw.service.MemberAccountService;
  * @author hyq
  */
 public class UnShelveAdvice implements MethodInterceptor {
-	private ApplicationCache cache;
+	private ICache cache=ApplicationCacheMapImpl.getIntance();
 	private MemberAccountService memberAccountService;
 	private List<String> makeFriedOffList;//交友状态为0的所有会员ID
-	/**缓存所有交友状态为0的会员ID集合的key*/
-	public final static  String KEY_MAKE_FRIEND_OFF="MAKE_FRIEND_OFF";
-	public void setCache(ApplicationCache cache) {
-		this.cache = cache;
-	}
+	
+	
+	
 	public void setMemberAccountService(MemberAccountService memberAccountService) {
 		this.memberAccountService = memberAccountService;
 	}
 
-
 	public  UnShelveAdvice(){
-		makeFriedOffList=(List)cache.get(KEY_MAKE_FRIEND_OFF);
-		if(cache.get(KEY_MAKE_FRIEND_OFF)==null){
+		makeFriedOffList=(List)cache.get(BusinessConstants.KEY_MAKE_FRIEND_OFF);
+		if(cache.get(BusinessConstants.KEY_MAKE_FRIEND_OFF)==null){
 			try {
+				//将所有下架会员ID加入到缓存
 				List list=memberAccountService.getAllMakeFriendOffMemeberId();
-				cache.put(KEY_MAKE_FRIEND_OFF, list,ApplicationCache.CACHE_TYPE_ADD );
+				cache.put(BusinessConstants.KEY_MAKE_FRIEND_OFF, list);
 			} catch (Exception e) {
 				ExceptionLogger.writeLog(e, memberAccountService.getClass());
 			}

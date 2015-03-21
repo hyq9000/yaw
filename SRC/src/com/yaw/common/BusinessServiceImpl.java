@@ -239,7 +239,7 @@ public class BusinessServiceImpl {
 	 */
 	public static String getPopularizeMemberId(MemberAccount member){
 		//会员登陆名及会员类型组合
-		String str=DigestUtils.md5Hex(member.getMaLoginName()+member.getMaType()+ApplicationConfig.SCRET_KEY);
+		String str=DigestUtils.md5Hex(member.getMaLoginName()+member.getMaType()+ApplicationConfig.getInstance().getScretKey());
 		return str;
 	}
 	
@@ -250,32 +250,7 @@ public class BusinessServiceImpl {
 		return 10;
 	}
 	
-	/**
-	 * 该操作应设计成"通知",再"织入"到原来业务处;
-	 * 将给定的会员或伴游基本资料对象集合中的所有"交友状态为0"的对象从集合中移除;
-	 * 设计原意:<br/>
-	 * <li>该方法的存在一方面是考虑将业务从管理逻辑中抽象出来,
-	 * <li>另一方面考虑到解决对因"交友状态"字段不在会员基本信息数据表中而导致的的JION操作过多的性能问题;
-	 * @param infoList 待处理的会员基本信息对象集合
-	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
-	 */
-	public static List removeMakeFriendOffEscortData(List escortInfoList){
-		return escortInfoList;
-	}
-	
-	/**
-	 * 该操作应设计成"通知",再"织入"到原来业务处;
-	 * 将给定的会员或游客基本资料对象集合中的所有"交友状态为0"的对象从集合中移除;设计原意:<br/>
-	 * <li>该方法的存在一方面是考虑将业务从管理逻辑中抽象出来,
-	 * <li>另一方面考虑到解决对因"交友状态"字段不在会员基本信息数据表中而导致的的JION操作过多的性能问题;
-	 * @param infoList 待处理的会员基本信息对象集合
-	 * @return 去除了"下架会员(交友状态为0)"的数据的对象集合
-	 */
-	public static List removeMakeFriendOffTouristData(List touristInfoList){
-		return touristInfoList;
-	}
-	
-	
+		
 	/**
 	 * 根据会员形象照的URL生成头像图标的URL：规则就是 "/xxxxx/xxxx/xxxxxx/adgabc.png"的字符串改成
      * "/xxxxx/xxxx/xxxxxx/adgabc-HEAD.png"格式
