@@ -4,11 +4,13 @@
 	"http://struts.apache.org/dtds/struts-2.1.7.dtd">
 <struts>
 	<constant name="struts.devMode" value="true"></constant>
-	<package name="yaw" extends="struts-default" namespace="/action" >
-	
-		<action name="fa" class="com.yaw.action.FrontAction"></action>
+	<package name="yaw" extends="struts-default" namespace="/act" >	
+		<action name="front" class="com.yaw.action.FrontAction"></action>
 		<action name="common" class="com.yaw.action.CommonAction"></action>
 		<action name="member" class="com.yaw.action.MemberAccountAction"></action>
-		<action name="captchasss" class="com.common.web.CaptchaAction"/>
+		<action name="captcha" class="com.common.web.CaptchaAction"/>
+		<action name="mng" class="com.yaw.action.OperatingManageAction"></action>
+		<action name="tourist" class="com.yaw.action.TouristAction"></action>
+		<action name="escort" class="com.yaw.action.EscortAction"></action>
 	</package>
 </struts>

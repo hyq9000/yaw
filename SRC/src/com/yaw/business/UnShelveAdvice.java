@@ -43,7 +43,7 @@ public class UnShelveAdvice implements MethodInterceptor {
 				List list=memberAccountService.getAllMakeFriendOffMemeberId();
 				cache.put(BusinessConstants.KEY_MAKE_FRIEND_OFF, list);
 			} catch (Exception e) {
-				ExceptionLogger.writeLog(e, memberAccountService.getClass());
+				ExceptionLogger.writeLog(e,UnShelveAdvice.class);
 			}
 		}			
 	}

@@ -49,7 +49,6 @@ public class Message implements Serializable {
 	}
 
 
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="MSG_CONTENT")
 	public String getMsgContent() {
 		return this.msgContent;
