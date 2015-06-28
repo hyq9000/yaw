@@ -32,7 +32,7 @@ import com.yaw.service.TagRecordService;
 import com.yaw.service.TouristInfoService;
 
 /**
- * 类型描述:暴露的一些伴游,游客,管理员的公用后台管理的WebApi接口及实现
+ * 类型描述:提供一些伴游,游客,管理员的公用后台管理的WebApi接口及实现
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */
@@ -108,7 +108,7 @@ public class CommonAction extends Struts2Action {
 		 */
 		ImageCompressor imageCompressor=new ImageCompressor(path+"/"+fileName+"."+imageContextType);		
 		imageCompressor.resizeFix(PhotoService.DEMENSION_LIST_WIDTH, PhotoService.DEMENSION_LIST_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_LIST_SUFFIX+"."+imageContextType);
-		//如果图版是形象照，则同时生成一份头像尺寸的图片
+		//如果图片是形象照，则同时生成一份头像尺寸的图片
 		if(imageType==PhotoService.TYPE_IMAGE)
 			imageCompressor.resizeFix(PhotoService.DEMENSION_HEAD_WIDTH, PhotoService.DEMENSION_HEAD_HEIGHT, path+"/"+fileName+PhotoService.DEMENSION_HEAD_SUFFIX+"."+imageContextType);
 		
@@ -484,8 +484,7 @@ public class CommonAction extends Struts2Action {
 		return null;
 	}
 
-	
-	
+		
 
 	public void setMemberAccountService(MemberAccountService memberAccountService) {
 		this.memberAccountService = memberAccountService;

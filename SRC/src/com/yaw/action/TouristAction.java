@@ -7,7 +7,7 @@ import com.common.web.WebUtils;
 import com.yaw.service.TripplanService;
 
 /**
- * 类型描述:暴露给游客会员后台管理逻辑的接口定义及实现;
+ * 类型描述:提供游客会员后台管理逻辑的接口定义及实现;
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */

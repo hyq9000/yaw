@@ -34,7 +34,7 @@ import com.yaw.service.TouristInfoService;
 
 /**
  *
- * 类型描述: 暴露会员帐号相关的WEB api接口定义及实现
+ * 类型描述: 提供与会员帐号相关的WEB api接口定义及实现
  * </br>创建时期: 2015年1月3日
  * @author hyq
  */

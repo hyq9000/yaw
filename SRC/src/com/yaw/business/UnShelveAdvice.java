@@ -37,7 +37,7 @@ public class UnShelveAdvice implements MethodInterceptor {
 
 	public  UnShelveAdvice(){
 		makeFriedOffList=(List)cache.get(BusinessConstants.KEY_MAKE_FRIEND_OFF);
-		if(cache.get(BusinessConstants.KEY_MAKE_FRIEND_OFF)==null){
+		if(makeFriedOffList==null){
 			try {
 				//将所有下架会员ID加入到缓存
 				List list=memberAccountService.getAllMakeFriendOffMemeberId();

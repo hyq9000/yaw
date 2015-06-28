@@ -13,7 +13,7 @@ import com.yaw.service.RTripplanEscortService;
 
 /**
  * 
- * 类型描述: 暴露给伴游会员的后台管理逻辑的相关WEB接口的定义及实现;
+ * 类型描述: 提供伴游会员的后台管理逻辑的相关WEB接口的定义及实现;
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */

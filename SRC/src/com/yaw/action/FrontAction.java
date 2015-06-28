@@ -26,7 +26,7 @@ import com.yaw.service.TouristInfoService;
 import com.yaw.service.TripplanService;
 
 /** 
- * 类型描述:暴露出的未登陆前端业务功能的接口及实现
+ * 类型描述:提供未登陆前端业务功能的接口及实现
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */

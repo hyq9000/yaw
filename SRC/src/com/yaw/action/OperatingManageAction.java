@@ -14,8 +14,7 @@ import com.yaw.service.MemberAccountService;
 import com.yaw.service.OrderService;
 
 /**
- * 
- * 类型描述:暴露给运营支撑后台相关管理模块的web接口定义及实现
+ * 类型描述:提供运营支撑后台管理模块的相关web接口定义及实现
  * </br>创建时期: 2014年12月26日
  * @author hyq
  */
