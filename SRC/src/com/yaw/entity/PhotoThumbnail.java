@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the yaw_photo_thumbnail database table.
- * 
+ * @Deprecated 此类已经作废，用其他才替代方案 2015-6-28 17:35
  */
 @Entity
 @Table(name="yaw_photo_thumbnail")
