@@ -2,24 +2,18 @@ package com.yaw.action;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
 import com.common.tools.ImageCompressor;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.common.web.WebUtils;
-import com.yaw.common.BusinessServiceImpl;
-import com.yaw.entity.ApplyAuthentication;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Photo;
-import com.yaw.entity.ReportSuggest;
 import com.yaw.entity.TouristInfo;
 import com.yaw.service.ApplyAuthenticationService;
 import com.yaw.service.EscortInfoService;

@@ -51,7 +51,7 @@ public class ApplyAuthenticationServiceImpl extends
 			String memberId=aa.getAuthMid();
 			byte type=aa.getAuthType();
 			MemberAccount member=memberAccountService.getById(memberId);
-			memberAccountService.setAuthentication(member, type);
+			memberAccountService.saveAuthentication(member, type);
 			if(type==ApplyAuthenticationService.TYPE_JOIN_CLUB){
 				EscortInfo escortInfo=escortInfoService.getById(memberId);
 				escortInfo.setEscortClubMember((byte)1);
@@ -76,10 +76,21 @@ public class ApplyAuthenticationServiceImpl extends
 	@Override
 	public void submitAuthentication(String memberId,byte authenticationType)throws Exception {
 		ApplyAuthentication applyAuthentication=new ApplyAuthentication();
-		applyAuthentication.setAuthAuditTime(new Date());
+		applyAuthentication.setAuthDate(new Date());
 		applyAuthentication.setAuthMid(memberId);
 		applyAuthentication.setAuthType(authenticationType);	
 		this.add(applyAuthentication);
 	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setEscortInfoService(EscortInfoService escortInfoService) {
+		this.escortInfoService = escortInfoService;
+	}
+
+	
+	
 
 }

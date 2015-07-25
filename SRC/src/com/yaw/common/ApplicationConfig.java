@@ -39,5 +39,9 @@ public class ApplicationConfig {
 		return pro.getProperty("scret.key");
 	}
 	
+	public String getProperty(String propertyName){
+		return pro.getProperty(propertyName);
+	}
+	
 	public static final String AUTHENTICATION_PHONE_TEXTssss="啊网,验证码:";
 }

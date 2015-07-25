@@ -38,7 +38,7 @@ public class ManagerAccountServiceImpl extends DaoHibernateImpl<ManagerAccount>
 	@Override
 	public void logout(ManagerAccount member) throws Exception {
 		long cur=new Date().getTime();
-		member.setMngLoginLength((int)(cur-member.getMngLoginTime().getTime()/1000));
+		member.setMngLoginLength((int)((cur-member.getMngLoginTime().getTime())/1000));
 		member.setMngOnline(OFFLINE);
 		this.update(member);
 	}

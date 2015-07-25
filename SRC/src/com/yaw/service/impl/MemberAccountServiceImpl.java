@@ -35,7 +35,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		implements MemberAccountService {	
 	private  final static String LOOKFOR_PASSWORD="/action/memberAccount!resetPassword.action";
 	private EscortInfoService escortInfoService;
-	private 	TouristInfoService touristInfoService;
+	private TouristInfoService touristInfoService;
 	private OrderService orderService;
 	private IncrementServiceService incrementServiceService;
 	
@@ -178,6 +178,8 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 			order.setOrderIncserviceName(incrementServiceService.getServiceName(serviceId));
 			order.setOrderStatus(OrderService.STATUS_PAY_YES);
 			order.setOrderSubmitTime(new Date());
+			order.setOrderPayTime(new Date());
+			order.setOrderPayOrg("约啊网");
 			order.setOrderTotalMoney(incrementServiceService.getServicePrice(serviceId)*coinCount);
 			//提交订单
 			orderService.add(order);
@@ -229,9 +231,10 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	public List<Map> statisticsQueryMember(Paging paging,String fieldName, String opFlag,Object... value)
 			throws Exception {
 		String tmp="";
-		if(value!=null && value.length>1){
+		
+		if(value!=null && value.length>1 && value[0]!=null && value[1]!=null){
 			tmp=" and "+fieldName+opFlag+"? and ?";
-		}else if(value!=null && value.length==1){
+		}else if(value!=null && value.length>0 && value[0]!=null){
 			tmp=" and "+fieldName+opFlag+"?";
 		}
 			
@@ -240,11 +243,16 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 				+ "MA_STATUS AS mstatus,MA_GRADE AS grade, MA_AUTHENTICATED auth,MA_TYPE AS mtype,MA_REGIST_TIME registTime "
 				+ "FROM YAW_MEMBER_ACCOUNT,yaw_escort_info WHERE ESCORT_MID=MA_LOGIN_NAME"+tmp
 				+ " union "
-				+ "SELECT TOURIST_NICKNAMES AS nickName,TOURIST_NAME AS NAME, YEAR(CURDATE())- YEAR(TOURIST_BIRTHDAY) AS age,"
+				+ "SELECT TOURIST_NICKNAME AS nickName,TOURIST_NAME AS NAME, YEAR(CURDATE())- YEAR(TOURIST_BIRTHDAY) AS age,"
 				+ "TOURIST_SEX AS sex,MA_LOGIN_TIME AS loginTime,MA_IP_ADDR AS ip,MA_ONLINE AS online,"
 				+ "MA_STATUS AS mstatus,MA_GRADE AS grade, MA_AUTHENTICATED auth,MA_TYPE AS mtype,MA_REGIST_TIME registTime "
 				+ "FROM YAW_MEMBER_ACCOUNT,YAW_TOURIST_INFO WHERE TOURIST_MID=MA_LOGIN_NAME"+tmp;
-		return this.executeQuery(sql,paging,value);
+		if(value!=null && value.length>1 && value[0]!=null && value[1]!=null)
+			return this.executeQuery(sql,paging,value[0],value[1],value[0],value[1]);
+		else if(value!=null && value.length>0 && value[0]!=null)
+			return this.executeQuery(sql,paging,value[0],value[0]);
+		else
+			return null;
 	}
 	
 	@Override
@@ -258,7 +266,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	}
 
 	@Override
-	public void setAuthentication(MemberAccount member, byte type) throws  Exception{
+	public void saveAuthentication(MemberAccount member, byte type) throws  Exception{
 		byte authenticationStatus=member.getMaAuthenticated();
 		byte newAuthenticationStatus=0;
 		switch(type){
@@ -279,6 +287,12 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 				break;
 			case MemberAccountService.AUTHENTICATE_VIDO:
 				newAuthenticationStatus=(byte)(authenticationStatus|4);
+				break;
+			case MemberAccountService.AUTHENTICATE_QQ:
+				newAuthenticationStatus=(byte)(authenticationStatus|64);
+				break;
+			case MemberAccountService.AUTHENTICATE_WEIXIN:
+				newAuthenticationStatus=(byte)(authenticationStatus|128);
 				break;
 		}
 		member.setMaAuthenticated(newAuthenticationStatus);

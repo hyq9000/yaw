@@ -1,3 +1,4 @@
+package com.yaw.action;
 
 
 import java.io.IOException;
@@ -10,9 +11,7 @@ import com.common.web.HttpUtils;
 
 import junit.framework.TestCase;
 
-public class FrontActionTest extends TestCase {
-
-	
+public class FrontActionTest extends TestCase {	
 	
 	public void testGetEscortInfoDetail() {
 		String url="http://localhost:8080/yaw/act/front!getEscortInfoDetail?mid=1";

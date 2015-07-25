@@ -1,5 +1,6 @@
 package com.yaw.service.impl;
 import java.util.List;
+import java.util.Map;
 
 import com.common.dbutil.Dao;
 import com.common.dbutil.DaoHibernateImpl;
@@ -59,14 +60,23 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 		String sql="select * from YAW_MEMBER_ACCOUNT where MA_LOGIN_NAME=?";
 		List<MemberAccount> list=this.executeQuery(sql, escortInfo.getEscortMid());
 		if(list!=null && list.size()>0){
-			MemberAccount member=list.get(0);
+			/*
+			 * 因MemberAccountService与EscortInfoService存在相互引用，帮在这里手工封装对象
+			 */
+			MemberAccount member=new MemberAccount();
+			Map tmp=(Map)list.get(0);
+			member.setMaEmail((String)tmp.get("MA_EMAIL"));
+			member.setMaCompletedInfo((Integer)tmp.get("MA_COMPLETED_INFO"));
+			member.setMaCompletedPercent((Byte)tmp.get("MA_COMPLETED_PERCENT"));
 			/*
 			 * 资料完善度更新
 			 */		
 			int percent=BusinessServiceImpl.generateCompletedPercent(member, escortInfo);
 			int info=BusinessServiceImpl.generateCompletedDetail(member, escortInfo);	
-			sql="update YAW_MEMBER_ACCOUNT set MA_COMPLETED_PERCENT=?,MA_COMPLETED_INFO=? where MA_LOGIN_NAME=?";
-			this.executeUpdate(sql, percent,info,escortInfo.getEscortMid());
+			if(percent!=member.getMaCompletedPercent() || info!=member.getMaCompletedInfo()){
+				sql="update YAW_MEMBER_ACCOUNT set MA_COMPLETED_PERCENT=?,MA_COMPLETED_INFO=? where MA_LOGIN_NAME=?";
+				this.executeUpdate(sql, percent,info,escortInfo.getEscortMid());
+			}
 		}
 		
 	}

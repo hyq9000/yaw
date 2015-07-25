@@ -42,11 +42,17 @@
 	</bean>
 	<bean id="orderService" class="com.yaw.service.impl.OrderServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
+		<property name="servicerPhones" value="13378017839,14509098900"/>
 	</bean>
 	<bean id="incrementServiceService" class="com.yaw.service.impl.IncrementServiceServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
 	</bean>
 	<bean id="applyAuthenticationService" class="com.yaw.service.impl.ApplyAuthenticationServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+		<property name="memberAccountService" ref="memberAccountService"></property>
+		<property name="escortInfoService" ref="escortInfoService"></property>
+	</bean>	
+	<bean id="managerAccountService" class="com.yaw.service.impl.ManagerAccountServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
 	</bean>	
 	

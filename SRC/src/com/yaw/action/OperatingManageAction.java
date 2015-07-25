@@ -7,6 +7,7 @@ import com.common.log.ExceptionLogger;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.common.web.WebUtils;
+import com.yaw.common.ApplicationConfig;
 import com.yaw.entity.ManagerAccount;
 import com.yaw.service.ApplyAuthenticationService;
 import com.yaw.service.ManagerAccountService;
@@ -30,7 +31,7 @@ public class OperatingManageAction extends Struts2Action {
 	/**
 	 * 登陆验证;如果验证成功,则返回完整帐号对象,完成以下工作
 	 * 同时要计算活跃积分数;
-	 * @param loginName
+	 * @param ln
 	 * @param pwd
 	 * @return {
 	 * 	code:1,-1,
@@ -38,11 +39,12 @@ public class OperatingManageAction extends Struts2Action {
 	 * }
 	 */
 	public String login(){
-		String loginName=request.getParameter("loginName");
+		String loginName=request.getParameter("name");
 		String password=request.getParameter("pwd");
 		String captcha=request.getParameter("captcha");
-		String sessionCaptcha=(String)session.getAttribute("captcha");
-		if(!captcha.equalsIgnoreCase(sessionCaptcha)){
+		String sessionCaptcha=(String)(null);//session.getAttribute("captcha");
+		if("pro".equalsIgnoreCase(ApplicationConfig.getInstance().getProperty("app.mod")) 
+				&&!captcha.equalsIgnoreCase(sessionCaptcha)){
 			out.print(WebUtils.responseError("验证码不正确", -3));
 		}else{
 			String ip=request.getRemoteAddr();
@@ -56,12 +58,14 @@ public class OperatingManageAction extends Struts2Action {
 				}
 			} catch (Exception e) {
 				long errorLogId=ExceptionLogger.writeLog(e, this);
-				out.print(WebUtils.responseCode(1));
+				out.print(WebUtils.responseServerException(-1));
 			}
 		}
 		return null;
 	}
 	
+	
+
 	/**
 	 * 注销
 	 * @return {
@@ -72,8 +76,10 @@ public class OperatingManageAction extends Struts2Action {
 	public String logout(){
 		try {
 			ManagerAccount manager=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			session.invalidate();		
-			managerAccountService.logout(manager);
+			if(manager!=null){
+				session.invalidate();		
+				managerAccountService.logout(manager);
+			}
 			out.print(WebUtils.responseData(1, WebUtils.generateMapData("url", URL_BACK_LOGOUT)));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -136,9 +142,8 @@ public class OperatingManageAction extends Struts2Action {
 	
 	/**
 	 * 认证审核受理,把认证状态更改一下;
-	 * @param mid
 	 * @param applyId 认证申请ID
-	 * @Param ispass 是否通过
+	 * @Param ispass 是否通过 0，未通，1：通过
 	 * @param reason 未通过原因
 	 */
 	public String authentication(){
@@ -162,7 +167,6 @@ public class OperatingManageAction extends Struts2Action {
 	
 	/**
 	 * 审批加入伴游俱乐部申请
-	 * @param mid
 	 * @param applyId 认证申请ID
 	 * @Param ispass 是否通过
 	 * @param reason 未通过原因
@@ -192,18 +196,21 @@ public class OperatingManageAction extends Struts2Action {
 	 * @return 格式如原型所述
 	 */
 	public String queryWaitforHandleUnpaiedOrderList(){
-		return this.queryWaitforHandleOrderList(OrderService.STATUS_PAY_NO);
+		String pn=request.getParameter("pn");
+		int pageNo=Integer.parseInt(pn);
+		return this.queryWaitforHandleOrderList(OrderService.STATUS_PAY_NO,pageNo);
 	}
 
 	/**
+	 * 查出等待处理的订单列表
+	 * @param pn 页数
+	 * @param status 订单状态
 	 * @return
 	 */
-	private String queryWaitforHandleOrderList(byte stutas) {
-		try {
-			String pn=request.getParameter("pn");
-			int pageNo=Integer.parseInt(pn);
-			List data=orderService.queryWaitforHandleOrderList(stutas, new Paging(15, pageNo));
-			return WebUtils.responseData(data!=null?data.size():0, data);
+	private String queryWaitforHandleOrderList(byte status,int pageNo) {
+		try {			
+			List data=orderService.queryWaitforHandleOrderList(status, new Paging(15, pageNo));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("分页数不正确"));
 		} catch (Exception e) {
@@ -219,12 +226,18 @@ public class OperatingManageAction extends Struts2Action {
 	 * @param paging
 	 * @return 格式如原型所述
 	 */
-	public String queryWaitforHandlePaiedOrderList(){		
-		return this.queryWaitforHandleOrderList(OrderService.STATUS_PAY_YES);
+	public String queryWaitforHandlePaiedOrderList(){
+		String pn=request.getParameter("pn");
+		int pageNo=Integer.parseInt(pn);
+		return this.queryWaitforHandleOrderList(OrderService.STATUS_PAY_YES,pageNo);
 	}
 	
 	/**
 	 * 后台支撑->会员统计查询管理
+	 * @param pn 分页号
+	 * @param fn 查询条件之字段名称
+	 * @param op 操作符 =,>,<,<>,between,like
+	 * @param val1,val2 查询条件字段对应的值，如操作为between ，则为两个值 
 	 * @return 返回同原型结构的json数据组对象
 	 */
 	public String statisticsQueryMemeber(){
@@ -236,7 +249,7 @@ public class OperatingManageAction extends Struts2Action {
 			String value2=request.getParameter("val2");
 			int pageNo=Integer.parseInt(pn);
 			List data=memberAccountService.statisticsQueryMember(new Paging(15, pageNo),fieldName,opFlag,value1,value2);
-			return WebUtils.responseData(data!=null?data.size():0, data);
+			out.print( WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("分页数不正确"));
 		} catch (Exception e) {
@@ -246,4 +259,20 @@ public class OperatingManageAction extends Struts2Action {
 		return null;
 	}
 	
+	public void setManagerAccountService(ManagerAccountService managerAccountService) {
+		this.managerAccountService = managerAccountService;
+	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setOrderService(OrderService orderService) {
+		this.orderService = orderService;
+	}
+
+	public void setApplyAuthenticationService(
+			ApplyAuthenticationService applyAuthenticationService) {
+		this.applyAuthenticationService = applyAuthenticationService;
+	}
 }

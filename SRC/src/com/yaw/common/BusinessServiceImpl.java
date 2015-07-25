@@ -153,7 +153,6 @@ public class BusinessServiceImpl {
 		 completedPercent+=escortInfo.getEscortTripAddr()!=null?3:0;
 		 completedPercent+=escortInfo.getEscortLanguage()!=null?1:0;
 		 completedPercent+=escortInfo.getEscortName()!=null?1:0;
-		 member.setMaCompletedPercent((byte)completedPercent);
 		return completedPercent;
 	}
 	

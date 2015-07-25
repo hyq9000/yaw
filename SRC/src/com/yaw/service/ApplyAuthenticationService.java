@@ -13,19 +13,19 @@ import com.yaw.entity.ApplyAuthentication;
  */
 public interface ApplyAuthenticationService extends EntityService<ApplyAuthentication> {
 	/**：视频认证*/
-	byte TYPE_VIDO= 1;
+	byte TYPE_VIDO= 3;
 	/**身份认证*/
-	byte TYPE_IDDENTIFY=2;
+	byte TYPE_IDDENTIFY=5;
 	/**导游认证*/
-	byte TYPE_GUIDE=3;
+	byte TYPE_GUIDE=6;
 	/**健康认证*/
 	byte TYPE_HEALTH=4;
 	/**加入伴游俱乐部申请*/
-	byte TYPE_JOIN_CLUB=5;		
+	byte TYPE_JOIN_CLUB=9;		
 	/**QQ认证*/
-	byte TYPE_QQ=6;
+	byte TYPE_QQ=7;
 	/**微信认证*/
-	byte TYPE_WEIXIN=7;	
+	byte TYPE_WEIXIN=8;	
 	/**
 	 * 视频认证受理,分页查取待处理的视频认证;
 	 * 用户点了视频验证,就会生成一个认证申请记录,客服线下完成	QQ认证后,则可打开本方法的结果,在线上作一下受理操作,改变用户的认证状态;

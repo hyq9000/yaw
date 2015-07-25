@@ -1,5 +1,6 @@
 package com.yaw.action;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -98,7 +99,8 @@ public class MemberAccountAction extends Struts2Action {
 			out.print(WebUtils.responseCode(0));
 		else{
 			try {
-				memberAccountService.resetPassword(email, pwd);				
+				memberAccountService.resetPassword(email, pwd);
+				out.print(WebUtils.responseCode(1));
 			} catch (Exception e) {
 				long errorLogId=ExceptionLogger.writeLog(e, this);
 				out.print(WebUtils.responseServerException(errorLogId));
@@ -177,7 +179,7 @@ public class MemberAccountAction extends Struts2Action {
 	 * 登陆验证;如果验证成功,则返回完整帐号对象,完成以下工作
 	 * 同时要计算活跃积分数;
 	 * @param loginName
-	 * @param password
+	 * @param pwd
 	 * @param captcha 验证码
 	 * @return json 对象
 	 * {
@@ -187,14 +189,14 @@ public class MemberAccountAction extends Struts2Action {
 	 */
 	public String login(){
 		String loginName=request.getParameter("loginName");
-		String password=request.getParameter("password");
+		String password=request.getParameter("pwd");
 		String captcha=request.getParameter("captcha");
 		String ip=request.getRemoteAddr();
 		String sessionCaptcha=(String)session.getAttribute("captcha");
-		if(captcha==null || captcha.trim().equals("") 
-				|| !captcha.equalsIgnoreCase(sessionCaptcha)){
-			out.print(WebUtils.responseError( "验证码填写不正确!",-4));
 		
+		if("pro".equalsIgnoreCase(ApplicationConfig.getInstance().getProperty("app.mod")) &&
+				(captcha==null || captcha.trim().equals("") || !captcha.equalsIgnoreCase(sessionCaptcha))){
+			out.print(WebUtils.responseError( "验证码填写不正确!",-4));		
 		}else if(loginName==null || password==null 
 					|| loginName.trim().equals("")|| password.trim().equals(""))
 				out.print(WebUtils.responseError( "用户名或密码不能为空!",-3));
@@ -215,6 +217,8 @@ public class MemberAccountAction extends Struts2Action {
 					session.setAttribute(SESSION_KEY_BASIC_INFO, baseInfo);
 					
 					out.print(WebUtils.responseData(1, data));
+				}else{
+					out.print(WebUtils.responseError( "用户名或密码不正确!",0));
 				}
 			} catch (Exception e) {
 				long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -234,12 +238,12 @@ public class MemberAccountAction extends Struts2Action {
 	 * }
 	 */
 	public String logout(){
-		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-		session.invalidate();
+		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);		
 		try {
-			memberAccountService.logout(user);
-
-			
+			if(user!=null){
+				memberAccountService.logout(user);
+				session.invalidate();
+			}
 			Map data=new HashMap();
 			data.put("url", "/index.html");
 			out.write(WebUtils.responseData(1, data));
@@ -290,7 +294,7 @@ public class MemberAccountAction extends Struts2Action {
 		String newPassword=request.getParameter("new");
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		if(oldPassword!=null && newPassword!=null 
-				&& !oldPassword.trim().equals("") && newPassword.trim().equals("")){
+				&& !oldPassword.trim().equals("") && !newPassword.trim().equals("")){
 			try {
 				memberAccountService.updatePassword(user, oldPassword, newPassword);
 				out.print(WebUtils.responseCode(1));
@@ -320,6 +324,10 @@ public class MemberAccountAction extends Struts2Action {
 			
 			//更新业务缓存对应的数据
 			List midList=(List)ApplicationCacheMapImpl.getIntance().get(BusinessConstants.KEY_MAKE_FRIEND_OFF);
+			if(midList==null){
+				midList=new ArrayList();
+				ApplicationCacheMapImpl.getIntance().put(BusinessConstants.KEY_MAKE_FRIEND_OFF,midList);
+			}
 			midList.add(user.getMaLoginName());
 			
 			out.print(WebUtils.responseCode(1));
@@ -375,7 +383,7 @@ public class MemberAccountAction extends Struts2Action {
 		int intCoinCount=Integer.parseInt(coinCount);
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		try {
-			memberAccountService.yueaCoinConsume(user.getMaLoginIp(), intServiceId, intCoinCount);
+			memberAccountService.yueaCoinConsume(user.getMaLoginName(), intServiceId, intCoinCount);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);

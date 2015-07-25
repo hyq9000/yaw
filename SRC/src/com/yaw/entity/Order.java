@@ -1,7 +1,9 @@
 package com.yaw.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.Date;
 
 
@@ -69,7 +71,6 @@ public class Order implements Serializable {
 
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="ORDER_NO")
 	public String getOrderNo() {
 		return this.orderNo;

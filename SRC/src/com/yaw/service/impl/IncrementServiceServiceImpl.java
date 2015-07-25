@@ -3,7 +3,9 @@ package com.yaw.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.common.dbutil.DaoHibernateImpl;
+import com.yaw.common.BusinessException;
 import com.yaw.entity.IncrementService;
 import com.yaw.service.IncrementServiceService;
 
@@ -18,10 +20,12 @@ public class IncrementServiceServiceImpl extends
 	static Map<Integer,IncrementService> cache;//缓存全部增值服务对象
 	private void _init() throws Exception{
 		if(cache==null){
-			List<IncrementService> list=super.executeQuery("from IncrementService");
+			List<IncrementService> list=super.getAll();
 			cache=new HashMap<Integer, IncrementService>();
-			for(IncrementService is : list){
-				cache.put(is.getIncserviceId(), is);
+			if(list!=null){
+				for(IncrementService is : list){
+					cache.put(is.getIncserviceId(), is);
+				}
 			}
 		}
 	}
@@ -30,21 +34,30 @@ public class IncrementServiceServiceImpl extends
 	public String getServiceName(int serviceId) throws Exception {
 		this._init();
 		IncrementService is=cache.get(serviceId);
-		return is==null?null:is.getIncserviceName();
+		if(is!=null)
+			return is.getIncserviceName();
+		else
+			throw new BusinessException("指定的增值服务项不存在!");
 	}
 
 	@Override
 	public int getServicePrice(int serviceId) throws Exception {
 		this._init();
 		IncrementService is=cache.get(serviceId);
-		return is==null?null:is.getIncservicePrice();
+		if( is!=null)
+			return is.getIncservicePrice();
+		else
+			throw new BusinessException("指定的增值服务项不存在!");
 	}
 
 	@Override
 	public int getServiceDayLength(int serviceId) throws Exception {
 		this._init();
 		IncrementService is=cache.get(serviceId);
-		return is==null?null:is.getIncserviceSuitDay();
+		if( is!=null)
+			return is.getIncserviceSuitDay();
+		else
+			throw new BusinessException("指定的增值服务项不存在!");
 	}
 
 	@Override

@@ -132,7 +132,7 @@ public class EscortAction extends Struts2Action {
 	public String applyEscortClub(){
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);				
 		try {
-			applyAuthenticationService.submitAuthentication(user.getMaLoginName(),ApplyAuthenticationService.TYPE_VIDO);
+			applyAuthenticationService.submitAuthentication(user.getMaLoginName(),ApplyAuthenticationService.TYPE_JOIN_CLUB);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);

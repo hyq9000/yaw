@@ -3,10 +3,12 @@ package com.yaw.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
 import com.common.utils.ShortMessageService;
 import com.common.utils.BusinessException;
+import com.yaw.common.ApplicationConfig;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Order;
 import com.yaw.service.MemberAccountService;
@@ -37,7 +39,8 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		if(phones!=null && phones.length>0){
 			randomIndex=(int)(Math.random()*phones.length);	
 			//发短信通知
-			sms.sendMessage(phones[randomIndex], "充值通知:xxx");
+			if("pro".equalsIgnoreCase(ApplicationConfig.getInstance().getProperty("app.mod")))
+				sms.sendMessage(phones[randomIndex], "充值通知:xxx");
 		}else
 			throw new BusinessException("客服手机未配置,无法发送短信!",-10);		
 	}
@@ -87,13 +90,13 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 				+ "ORDER_PAY_MODE as payModel, ORDER_TOTAL_MONEY as money  from YAW_MEMBER_ACCOUNT,"
 				+ "YAW_ORDER,YAW_ESCORT_INFO where ORDER_MID=MA_LOGIN_NAME and ESCORT_MID=ORDER_MID"
 				+ " and ORDER_STATUS=? and MA_TYPE="+MemberAccountService.TYPE_ESCORT
-				+ " union"
-				+ "select ORDER_INCSERVICE_NAME as serviceName,TOURIST_PHONE as phone,"
+				+ " union "
+				+ " select ORDER_INCSERVICE_NAME as serviceName,TOURIST_PHONE as phone,"
 				 +" TOURIST_QQ as qq,ORDER_SUBMIT_TIME as date,MA_GRADE as grade,MA_TYPE as type,"
 				+ "ORDER_PAY_MODE as payModel, ORDER_TOTAL_MONEY as money  from YAW_MEMBER_ACCOUNT,"
 				+ "YAW_ORDER,YAW_TOURIST_INFO where ORDER_MID=MA_LOGIN_NAME and TOURIST_MID=ORDER_MID"
 				+ " and ORDER_STATUS=? and MA_TYPE="+MemberAccountService.TYPE_TOURIST;
 				
-		return this.executeQuery(sql, paging, status);
+		return this.executeQuery(sql, paging, status,status);
 	}
 }

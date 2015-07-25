@@ -70,7 +70,7 @@ public interface OrderService extends EntityService<Order> {
 	
 	/**
 	 * 分页查取待处理的未付(已付)订单
-	 * @Param status 订单状态码 STATUS_PAY开头的常量值
+	 * @Param status 订单状态码 STATUS_PAY开头的常量值 
 	 * @param paging 分页对象
 	 * @return
 	 */

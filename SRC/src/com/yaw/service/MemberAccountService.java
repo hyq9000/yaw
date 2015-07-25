@@ -37,17 +37,21 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	byte MAKFRIEND_OFF=0;
 	
 	/**认证类型码:视频*/
-	byte AUTHENTICATE_VIDO=4;
+	byte AUTHENTICATE_VIDO=3;
 	/**认证类型码:邮箱*/
-	byte AUTHENTICATE_EMAIL=0;
+	byte AUTHENTICATE_EMAIL=1;
 	/**认证类型码:手机*/
 	byte AUTHENTICATE_PHONE=2;
-	/**认证类型码:身份*/
-	byte AUTHENTICATE_IDENTITY=16;
+	/**认证类型码:身份证*/
+	byte AUTHENTICATE_IDENTITY=5;
 	/**认证类型码:导游*/
-	byte AUTHENTICATE_GUIDE=32;
+	byte AUTHENTICATE_GUIDE=6;
 	/**认证类型码:健康*/
-	byte AUTHENTICATE_HEALTH=8;
+	byte AUTHENTICATE_HEALTH=4;
+	/**认证类型码:QQ*/
+	byte AUTHENTICATE_QQ=7;
+	/**认证类型码:WEIWIN*/
+	byte AUTHENTICATE_WEIXIN=8;
 	
 	/*
 	 * 10:游客蓝钻
@@ -167,6 +171,7 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	/**
 	 * 统计查询管理员:支撑后台的对会员用户的管理操作;
 	 * @param fieldName 要查询的表字段名
+	 * @param opFlag sql操作符
 	 * @param value 对应字段的值,如果是区间,则有两个值
 	 * @return
 	 * @throws Exception
@@ -183,11 +188,11 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	public List<MemberAccount> getMemberListByIds(String ... memberIds)throws  Exception;
 	
 	/**
-	 * 设置指定会员的认证类型；
+	 * 保存指定会员的认证类型；
 	 * @param member 会员对象
 	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
 	 */
-	public void setAuthentication(MemberAccount member,byte type)throws  Exception;
+	public void saveAuthentication(MemberAccount member,byte type)throws  Exception;
 	
 	/**
 	 * 查取所有交友状态为0的会员ID；
