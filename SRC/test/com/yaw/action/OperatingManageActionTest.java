@@ -67,7 +67,7 @@ public class OperatingManageActionTest {
 		parameter.put("reason", "ok");
 		parameter.put("ispass", "true");
 		parameter.put("applyId", "5");
-		toUrl("auditApplyEscortClub", parameter,"68439034A3AF0126928C39B3B2F16425");
+		toUrl("auditApplyEscortClub", parameter,"149A3BF87E09C0A3CF544EBBABBD4A94");
 	}
 
 	@Test

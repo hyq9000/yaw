@@ -51,12 +51,7 @@ public class ApplyAuthenticationServiceImpl extends
 			String memberId=aa.getAuthMid();
 			byte type=aa.getAuthType();
 			MemberAccount member=memberAccountService.getById(memberId);
-			memberAccountService.saveAuthentication(member, type);
-			if(type==ApplyAuthenticationService.TYPE_JOIN_CLUB){
-				EscortInfo escortInfo=escortInfoService.getById(memberId);
-				escortInfo.setEscortClubMember((byte)1);
-				escortInfoService.update(escortInfo);
-			}
+			memberAccountService.saveAuthentication(member, type);			
 		}
 		
 		/*1：视频认证

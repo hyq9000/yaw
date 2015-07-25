@@ -523,7 +523,7 @@ public class MemberAccountAction extends Struts2Action {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String token=(String)session.getAttribute(key);
 			if(token!=null && token.equals(user.getMaEmail())){
-				this.memberAccountService.setAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
+				this.memberAccountService.saveAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
 				session.removeAttribute(key);
 				out.print(WebUtils.responseCode(1));
 			}else
@@ -572,7 +572,7 @@ public class MemberAccountAction extends Struts2Action {
 			 * 如果提交的验证码无误,则设置该用户的手机认证状态;
 			 */
 			if(captch!=null && captch.equals(incaptch)){
-				memberAccountService.setAuthentication(user, MemberAccountService.AUTHENTICATE_PHONE);
+				memberAccountService.saveAuthentication(user, MemberAccountService.AUTHENTICATE_PHONE);
 				out.print(WebUtils.responseCode(1));
 			}else{
 				out.print(WebUtils.responseError("验证码不正确", -5));

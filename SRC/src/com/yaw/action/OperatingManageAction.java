@@ -8,8 +8,11 @@ import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.common.web.WebUtils;
 import com.yaw.common.ApplicationConfig;
+import com.yaw.entity.ApplyAuthentication;
+import com.yaw.entity.EscortInfo;
 import com.yaw.entity.ManagerAccount;
 import com.yaw.service.ApplyAuthenticationService;
+import com.yaw.service.EscortInfoService;
 import com.yaw.service.ManagerAccountService;
 import com.yaw.service.MemberAccountService;
 import com.yaw.service.OrderService;
@@ -24,6 +27,7 @@ public class OperatingManageAction extends Struts2Action {
 	MemberAccountService memberAccountService;
 	OrderService orderService;
 	ApplyAuthenticationService applyAuthenticationService;
+	EscortInfoService escortInfoService; 
 	//管理员管理后台主页
 	private final static String URL_BACK_MAIN="/back/main.html";
 	//管理员登陆页
@@ -179,7 +183,17 @@ public class OperatingManageAction extends Struts2Action {
 			boolean ispass=Boolean.parseBoolean(ispassStr);
 			String aid=request.getParameter("applyId");
 			int applyId=Integer.parseInt(aid);
+			
 			applyAuthenticationService.handleAuthentication(user.getMngLoginName(), applyId,ispass,reason);
+			/*
+			 * 完善资料
+			 */
+			ApplyAuthentication aa=applyAuthenticationService.getById(applyId);
+			if(aa.getAuthType()==ApplyAuthenticationService.TYPE_JOIN_CLUB){
+				EscortInfo escortInfo=escortInfoService.getById(aa.getAuthMid());
+				escortInfo.setEscortClubMember((byte)1);
+				escortInfoService.update(escortInfo);
+			}
 			out.print(WebUtils.responseCode(1));
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("认证申请号格式不正确"));
@@ -274,5 +288,11 @@ public class OperatingManageAction extends Struts2Action {
 	public void setApplyAuthenticationService(
 			ApplyAuthenticationService applyAuthenticationService) {
 		this.applyAuthenticationService = applyAuthenticationService;
+	}
+
+
+
+	public void setEscortInfoService(EscortInfoService escortInfoService) {
+		this.escortInfoService = escortInfoService;
 	}
 }
