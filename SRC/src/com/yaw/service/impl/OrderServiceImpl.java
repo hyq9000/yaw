@@ -17,19 +17,12 @@ import com.yaw.service.OrderService;
 public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		OrderService {
 	MemberAccountService memberAccountService;
-	OrderService orderService;
 	//短信服务
 	ShortMessageService sms;
 	//客服电话,用逗号隔开的多个号码;由spring注入
 	String servicePhones;
 	
-	public void setServicerPhones(String servicePhones) {
-		this.servicePhones = servicePhones;
-	}
 
-	public void setSms(ShortMessageService sms) {
-		this.sms = sms;
-	}
 
 	@Override
 	public void submitOrder(Order order) throws Exception {
@@ -54,33 +47,36 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 	
 	@Override
 	public void upgradeVip(String managerId,String memberId, String billId, byte vipGrade)
-			throws Exception {
-		MemberAccount member=memberAccountService.getById(memberId);
-		member.setMaGrade(vipGrade);
-		memberAccountService.update(member);
+			throws Exception {	
 		
-		Order order=orderService.getById(billId);
+		Order order=this.getById(billId);
 		order.setOrderStatus(OrderService.STATUS_HANDLED);
 		order.setOrderHandleTime(new Date());
-		orderService.update(order);		
+		this.update(order);		
+		
+		MemberAccount member=memberAccountService.getById(memberId);
+		//会员级别就是增值服务项中的ID值；
+		member.setMaGrade(order.getOrderIncserviceId());
+		memberAccountService.update(member);
 	}
 	
 	@Override
-	public void rechargeMoney(String managerId,String memberId, String billId, int count)
-			throws Exception {
+	public void rechargeMoney(String managerId,String memberId, String billId)
+			throws Exception {		
+		/*
+		 * 修改订单状态,及受理时间
+		 */
+		Order order=this.getById(billId);
+		order.setOrderStatus(OrderService.STATUS_HANDLED);
+		order.setOrderHandleTime(new Date());
+		this.update(order);		
+		
 		/*
 		 * 修改会员的约啊币余额
 		 */
 		MemberAccount member=memberAccountService.getById(memberId);
-		member.setMaYaCoin(member.getMaYaCoin()+count);
+		member.setMaYaCoin(member.getMaYaCoin()+order.getOrderCount());
 		memberAccountService.update(member);
-		/*
-		 * 修改订单状态,及受理时间
-		 */
-		Order order=orderService.getById(billId);
-		order.setOrderStatus(OrderService.STATUS_HANDLED);
-		order.setOrderHandleTime(new Date());
-		orderService.update(order);			
 	}
 
 	@Override
@@ -98,5 +94,22 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 				+ " and ORDER_STATUS=? and MA_TYPE="+MemberAccountService.TYPE_TOURIST;
 				
 		return this.executeQuery(sql, paging, status,status);
+	}
+	
+	
+	public void setServicerPhones(String servicePhones) {
+		this.servicePhones = servicePhones;
+	}
+
+	public void setSms(ShortMessageService sms) {
+		this.sms = sms;
+	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setServicePhones(String servicePhones) {
+		this.servicePhones = servicePhones;
 	}
 }

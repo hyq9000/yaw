@@ -28,6 +28,7 @@ public class Order implements Serializable {
 	private Date orderPayTime;
 	private Date orderHandleTime;
 	private int orderTotalMoney;
+	private int orderPrice;
 	private int orderMngId;
 
 	public Order(){
@@ -43,6 +44,15 @@ public class Order implements Serializable {
 		this.orderMngId = orderMngId;
 	}
 
+	
+	@Column(name="ORDER_PRICE")
+	public int getOrderPrice() {
+		return orderPrice;
+	}
+
+	public void setOrderPrice(int orderPrice) {
+		this.orderPrice = orderPrice;
+	}
 
 	@Column(name="ORDER_HANDLE_TIME")
 	public Date getOrderHandleTime() {

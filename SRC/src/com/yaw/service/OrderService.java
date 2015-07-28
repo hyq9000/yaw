@@ -65,7 +65,7 @@ public interface OrderService extends EntityService<Order> {
 	 * @param billId 订单号
 	 * @param count 充值数(元)
 	 */
-	void rechargeMoney(String managerId, String memberId,String billId,int count) throws Exception;
+	void rechargeMoney(String managerId, String memberId,String billId) throws Exception;
 	
 	
 	/**

@@ -117,23 +117,19 @@ public class OperatingManageAction extends Struts2Action {
 	
 	
 	/**
-	 * 给会员充值,一元人民币换成一个"约啊币";该请求由后台管理员,对充值付款确认后,通过后台管理程序来完成;
+	 * 给会员手工充值,一元人民币换成一个"约啊币";该请求由后台管理员,对充值的付款确认后,通过后台管理程序来完成;
 	 * @param mid 会员id
 	 * @param money 元
 	 * @param billId 订单id;
 	 * @return json对象
-	 * {code:1充值成功,-1服务器异常,-3,老密码输入不正确,-14:输入验证不正确}
+	 * {code:1充值成功,-1服务器异常,-14:输入验证不正确}
 	 */
 	public String rechargeMoney(){
 		String mid=request.getParameter("mid");
-		String grade=request.getParameter("grade");	
 		String billId=request.getParameter("billId");
-		String money=request.getParameter("money");	
 		ManagerAccount user=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-		try {
-			int moneyInt=Integer.parseInt(money);
-			byte gradeInt=Byte.parseByte(grade);			
-			orderService.rechargeMoney(user.getMngLoginName(),mid, billId, gradeInt);
+		try {		
+			orderService.rechargeMoney(user.getMngLoginName(),mid, billId);
 			out.print(WebUtils.responseCode(1));
 		}catch(NumberFormatException ne){
 			out.print(WebUtils.responseInputCheckError("充值数不是数字"));

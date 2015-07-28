@@ -43,12 +43,19 @@ public class OperatingManageActionTest {
 
 	@Test
 	public void testUpgradeVip() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("mid", "admin");
+		parameter.put("grade", "2");
+		parameter.put("billId", "20150724102650270");
+		toUrl("upgradeVip", parameter,"99AC9D35B5DFFCDFBC03F52AB3546212");
 	}
 
 	@Test
 	public void testRechargeMoney() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("mid", "mng");
+		parameter.put("billId", "20150724025040572");
+		toUrl("rechargeMoney", parameter,"2F60C3654D4715373E1588BB407B8F24");
 	}
 
 	@Test
@@ -62,7 +69,6 @@ public class OperatingManageActionTest {
 	
 	@Test
 	public void testAuditApplyEscortClub() {
-		//TODO
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("reason", "ok");
 		parameter.put("ispass", "true");

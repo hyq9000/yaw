@@ -427,7 +427,7 @@ public class MemberAccountAction extends Struts2Action {
 	
 	/**
 	 * 提交"会员充值"订单,一元人民币换成一个"约啊币";由会员提请求充值请求,生成下单、付款记录,通知后台处理;
-	 * @param money 元
+	 * @param money 充值金额元
 	 * @return json对象
 	 * {code:1充值成功,-1服务器异常,-3,老密码输入不正确,-14:输入验证不正确}
 	 */
@@ -440,6 +440,7 @@ public class MemberAccountAction extends Struts2Action {
 			//生成一个消费认购订单
 			Order order=new Order();
 			order.setOrderCount(intMoney/incrementServiceService.getServicePrice(serviceId));
+			order.setOrderPrice(incrementServiceService.getServicePrice(serviceId));
 			order.setOrderMid(user.getMaLoginName());
 			order.setOrderNo(SystemServiceImpl.generateOrderNo());
 			order.setOrderPayMode(OrderService.PAYMODE_PAY_NO);
