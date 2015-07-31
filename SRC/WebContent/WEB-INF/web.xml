@@ -17,7 +17,28 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
+	
+	<filter>
+			<filter-name>UserAccessFilter</filter-name>
+			<filter-class>com.common.filters.UserAccessFilter</filter-class>
+			<init-param>
+				<param-name>loginUri</param-name>
+				<!--将登陆页URI配置到此 -->
+				<param-value>/login.html</param-value>
+			</init-param>
+			<init-param>
+				<param-name>ignoredRequest</param-name>
+				<!--请求action的某些方法不需要用户登录验证，将这些方法名配置到此 -->
+				<param-value>regist,login</param-value>
+			</init-param>
+		</filter>
+	<filter-mapping>
+		<filter-name>UserAccessFilter</filter-name>
+		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
+		<url-pattern>/back/*</url-pattern>
+		<url-pattern>/mng/*</url-pattern>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
 
 	<filter>
 		<filter-name>struts2</filter-name>
@@ -45,24 +66,5 @@
 		<url-pattern>*</url-pattern>
 	</filter-mapping>
 
-	<filter>
-		<filter-name>UserAccessFilter</filter-name>
-		<filter-class>com.common.filters.UserAccessFilter</filter-class>
-		<init-param>
-			<param-name>loginUri</param-name>
-			<!--将登陆页URI配置到此 -->
-			<param-value>/login.html</param-value>
-		</init-param>
-		<init-param>
-			<param-name>ignoredRequest</param-name>
-			<!--请求action的某些方法不需要用户登录验证，将这些方法名配置到此 -->
-			<param-value>regist,login</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>UserAccessFilter</filter-name>
-		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
-		<url-pattern>/back/*</url-pattern>
-		<url-pattern>/mng/*</url-pattern>
-	</filter-mapping>
+	
 </web-app>

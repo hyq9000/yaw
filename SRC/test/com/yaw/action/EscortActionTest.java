@@ -24,6 +24,19 @@ public class EscortActionTest {
 			e.printStackTrace();
 		}
 	}
+	
+	private static void postToUrl(String fun,Map<String,String> parameters,String sessionId){
+		sessionId=sessionId!=null&& !sessionId.equals("")?";jsessionid="+sessionId:"";
+		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/escort!"+fun+".action"+sessionId,parameters);
+		try {
+			String rs=EntityUtils.toString(response.getEntity());
+			System.out.println(response);
+			System.out.println(rs);
+			assertEquals("{\"code\":1}",rs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	@Test
 	public void testRecommendTo() {
 		fail("Not yet implemented");
@@ -46,7 +59,13 @@ public class EscortActionTest {
 
 	@Test
 	public void testCompleteContactData() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("escortInfo.escortMid", "admin");
+		parameter.put("escortInfo.escortPhone", "13378017838");
+		parameter.put("email", "13378917838@189.com");		
+		//parameter.put("escortInfo.escortWechat", "12145878");
+		parameter.put("escortInfo.escortQq", "21617198");
+		postToUrl("completeContactData", parameter,"432F8D455CEF04A67D90A11BA442E484");
 	}
 
 	@Test

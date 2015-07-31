@@ -20,7 +20,7 @@ import com.yaw.service.RTripplanEscortService;
 public class EscortAction extends Struts2Action {
 	private EscortInfo escortInfo;
 	private EscortInfoService escortInfoService;
-	private MemberAccountService memberService;
+	private MemberAccountService memberAccountService;
 	private ApplyAuthenticationService applyAuthenticationService;
 	private RTripplanEscortService rTripplanEscortService;
 
@@ -61,6 +61,7 @@ public class EscortAction extends Struts2Action {
 	 */
 	public String completeBaseData(){	
 		try {
+			ExceptionLogger.writeLog(ExceptionLogger.DEBUG,request.getParameterMap().toString(),null,this.getClass());			
 			escortInfoService.update(escortInfo);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {		
@@ -119,10 +120,19 @@ public class EscortAction extends Struts2Action {
 	 * }
 	 */
 	public String completeContactData(){
+		String email=request.getParameter("email");
+		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);		
+		if(email!=null && !email.trim().equals("")){
+			user.setMaEmail(email);
+			try {
+				memberAccountService.update(user);
+			} catch (Exception e) {
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
+			}
+		}
 		return this.completeBaseData();
 	}
-	
-	
 	
 	
 	/**
@@ -156,8 +166,10 @@ public class EscortAction extends Struts2Action {
 		this.escortInfoService = escortInfoService;
 	}
 
-	public void setMemberService(MemberAccountService memberService) {
-		this.memberService = memberService;
+	
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
 	}
 
 	public void setApplyAuthenticationService(
