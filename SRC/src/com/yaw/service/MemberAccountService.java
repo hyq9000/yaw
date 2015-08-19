@@ -53,6 +53,8 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	/**认证类型码:WEIWIN*/
 	byte AUTHENTICATE_WEIXIN=8;
 	
+	
+	
 	/*
 	 * 10:游客蓝钻
 	   11：伴游蓝钻
@@ -192,7 +194,7 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	 * @param member 会员对象
 	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
 	 */
-	public void saveAuthentication(MemberAccount member,byte type)throws  Exception;
+	//public void saveAuthentication(MemberAccount member,byte type)throws  Exception;
 	
 	/**
 	 * 查取所有交友状态为0的会员ID；

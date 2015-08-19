@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.catalina.tribes.MembershipService;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.common.freemark.FreeMarkUtil;
@@ -19,6 +20,7 @@ import com.common.web.WebContextUtil;
 import com.yaw.common.ApplicationCacheMapImpl;
 import com.yaw.common.ApplicationConfig;
 import com.yaw.common.BusinessConstants;
+import com.yaw.common.BusinessServiceImpl;
 import com.common.utils.BusinessException;
 import com.yaw.common.SystemServiceImpl;
 import com.common.web.WebUtils;
@@ -34,7 +36,7 @@ import com.yaw.service.PhotoService;
 import com.yaw.service.TouristInfoService;
 
 /**
- *
+ * TODO:还是准备些用户操作日志，来作为后期的决策数据源
  * 类型描述: 提供与会员帐号相关的WEB api接口定义及实现
  * </br>创建时期: 2015年1月3日
  * @author hyq
@@ -461,7 +463,16 @@ public class MemberAccountAction extends Struts2Action {
 	
 	/**
 	 * 由会员提交各类人工认证申请,并生成申请认证记录,通知后台管理员处理;
-	 * @param authType  认证类型码;描述如下:1：视频认证2：身份认证3：导游认证4：健康认证5：加入伴游俱乐部申请,6,QQ认证,7,微信认证
+	 * @param authType  认证类型码;描述如下: 
+	 *  1:邮箱验证   
+	 *  2:手机验证 
+	 *  3:视频认证：        
+	 *  4:健康认证：
+	 *  5:身份验证：
+	 *  6:导游认证
+	 *  7:qq认证
+	 *  8:微信认证
+	 *  9:俱乐部认证：
 	 * @return  {code:1充值成功,-1服务器异常,-3,老密码输入不正确,-14:输入验证不正确}
 	 */
 	public String applyAuthentication(){
@@ -524,7 +535,14 @@ public class MemberAccountAction extends Struts2Action {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String token=(String)session.getAttribute(key);
 			if(token!=null && token.equals(user.getMaEmail())){
-				this.memberAccountService.saveAuthentication(user, memberAccountService.AUTHENTICATE_EMAIL);
+				//更新认证码
+				byte authenticationCode=BusinessServiceImpl.generateAuthenticationCode(user, MemberAccountService.AUTHENTICATE_EMAIL);				
+				user.setMaAuthenticated(authenticationCode);
+				//EMAIL认证后，增加诚意指数
+				user.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_EMAIL, user));
+				
+				memberAccountService.update(user);
+				
 				session.removeAttribute(key);
 				out.print(WebUtils.responseCode(1));
 			}else
@@ -573,7 +591,13 @@ public class MemberAccountAction extends Struts2Action {
 			 * 如果提交的验证码无误,则设置该用户的手机认证状态;
 			 */
 			if(captch!=null && captch.equals(incaptch)){
-				memberAccountService.saveAuthentication(user, MemberAccountService.AUTHENTICATE_PHONE);
+				//更新认证码
+				byte authenticationCode=BusinessServiceImpl.generateAuthenticationCode(user, MemberAccountService.AUTHENTICATE_PHONE);				
+				user.setMaAuthenticated(authenticationCode);
+				//手机认证后，增加诚意指数
+				user.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_PHONE, user));
+				
+				memberAccountService.update(user);
 				out.print(WebUtils.responseCode(1));
 			}else{
 				out.print(WebUtils.responseError("验证码不正确", -5));

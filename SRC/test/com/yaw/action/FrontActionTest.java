@@ -2,6 +2,8 @@ package com.yaw.action;
 
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -14,21 +16,15 @@ import junit.framework.TestCase;
 public class FrontActionTest extends TestCase {	
 	
 	public void testGetEscortInfoDetail() {
-		String url="http://localhost:8080/yaw/act/front!getEscortInfoDetail?mid=1";
-		HttpResponse response=HttpUtils.get(url);
-		if(response.getStatusLine().getStatusCode()==200){
-			try {
-				String content=EntityUtils.toString(response.getEntity());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("mid", "mng");
+		Common.postToUrl("getEscortInfoDetail", parameter,null,"front");
 	}
 
 	public void testGetTouristInfoDetail() {
-		
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("mid", "爱吹NB的兔子");
+		Common.postToUrl("getTouristInfoDetail", parameter,null,"front");
 	}
 
 	public void testGetPhotoList() {

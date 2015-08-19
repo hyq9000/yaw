@@ -73,7 +73,7 @@ public class MemberAccountActionTest {
 	@Test
 	public void testLogin() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("loginName", "mng");
+		parameter.put("loginName", "mng");//小朋友
 		parameter.put("pwd", "123456");
 		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!login.action",parameter);
 		try {
@@ -89,7 +89,7 @@ public class MemberAccountActionTest {
 
 	@Test
 	public void testLogout() {
-		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!logout.action;jsessionid=B3D28A6140064943F76F7AA4E060F937",null);
+		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!logout.action;jsessionid=C04B2734A402F5F1139F5273EDFDF285",null);
 		try {
 			String rs=EntityUtils.toString(response.getEntity());
 			System.out.println(response);
@@ -131,10 +131,10 @@ public class MemberAccountActionTest {
 	@Test
 	public void testRegist() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("ln", "mng");
-		parameter.put("sex", "女");
+		parameter.put("ln", "爱人与人");
+		parameter.put("sex", "男");
 		parameter.put("pwd", "123456");
-		parameter.put("mt", "1");
+		parameter.put("mt", "0");
 		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!regist.action",parameter);
 		try {
 			String rs=EntityUtils.toString(response.getEntity());

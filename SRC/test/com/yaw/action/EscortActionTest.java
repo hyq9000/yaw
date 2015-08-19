@@ -39,33 +39,62 @@ public class EscortActionTest {
 	}
 	@Test
 	public void testRecommendTo() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("tid", "1");
+		parameter.put("recommend", "我是一只小小鸟，想要飞呀飞飞，却怎么也飞不高");
+		postToUrl("recommendTo", parameter,"54A4318D6A243AD722D9756AE5A2DF8D");
 	}
 
 	@Test
 	public void testCompleteBaseData() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("escortInfo.escortMid", "mng");
+		parameter.put("escortInfo.escortJob", "2");
+		parameter.put("escortInfo.escortLanguage", "中文,英文");		
+		parameter.put("escortInfo.escortNickName", "测试帐号");
+		parameter.put("escortInfo.escortName", "张小丰");
+		parameter.put("escortInfo.escortLove", "足球,音乐,运动");
+		parameter.put("escortInfo.escortLiveAddr", "武汉");
+		parameter.put("escortInfo.escortBirthday", "1994-12-28");
+		parameter.put("escortInfo.escortDriveYear", "2");
+		postToUrl("completeBodyData", parameter,"4CBE61CD5189DED0F2508DF08364D0A2");
 	}
 
 	@Test
 	public void testCompleteBodyData() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("escortInfo.escortMid", "mng");
+		parameter.put("escortInfo.escortHeight", "170");
+		parameter.put("escortInfo.escortWeight", "60");		
+		parameter.put("escortInfo.escortBody", "2");
+		parameter.put("escortInfo.escortImage", "2");
+		parameter.put("escortInfo.escortFeel", "2");
+		postToUrl("completeBodyData", parameter,"4CBE61CD5189DED0F2508DF08364D0A2");	
 	}
 
 	@Test
 	public void testComplteEscortData() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("escortInfo.escortMid", "mng");
+		parameter.put("escortInfo.escortType", "1");
+		parameter.put("escortInfo.escortTryto", "长沙,武汉");		
+		parameter.put("escortInfo.escortPrice", "3000");
+		parameter.put("escortInfo.escortTripAddr", "长沙,武汉");
+		parameter.put("escortInfo.escortExp", "1");
+		parameter.put("escortInfo.escortAttractive", "有点美");
+		parameter.put("escortInfo.escortRecommend", "自我推荐的赎回");
+		postToUrl("complteEscortData", parameter,"4CBE61CD5189DED0F2508DF08364D0A2");
 	}
 
 	@Test
 	public void testCompleteContactData() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("escortInfo.escortMid", "admin");
-		parameter.put("escortInfo.escortPhone", "13378017838");
+		parameter.put("escortInfo.escortMid", "mng");
+		parameter.put("escortInfo.escortPhone", "13378017836");
 		parameter.put("email", "13378917838@189.com");		
-		//parameter.put("escortInfo.escortWechat", "12145878");
+		parameter.put("escortInfo.escortWechat", "12145878");
 		parameter.put("escortInfo.escortQq", "21617198");
-		postToUrl("completeContactData", parameter,"432F8D455CEF04A67D90A11BA442E484");
+		postToUrl("completeContactData", parameter,"4CBE61CD5189DED0F2508DF08364D0A2");
 	}
 
 	@Test

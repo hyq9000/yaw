@@ -56,6 +56,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 				user.setMaLoginIp(loginIp);
 				user.setMaIpAddr(null);
 			}
+			this.update(user);
 			return user;
 		}else
 			return null;
@@ -146,12 +147,14 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		//生成基本信息表数据
 		if(memberType==TYPE_ESCORT){
 			EscortInfo escortInfo=new EscortInfo();
+			escortInfo.setEscortNickName(loginName);//呢称原始值为登陆名
 			escortInfo.setEscortMid(loginName);
 			escortInfo.setEscortSex(sex+"");
 			escortInfo.setEscortOrderWeight(0);
 			escortInfoService.add(escortInfo);
 		}else{
 			TouristInfo touristInfo=new TouristInfo();
+			touristInfo.setTouristNickname(loginName);//呢称原始值为登陆名
 			touristInfo.setTouristMid(loginName);
 			touristInfo.setTouristSex(sex+"");
 			touristInfo.setTouristOrderWeight(0);
@@ -259,13 +262,13 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	public List<MemberAccount> getMemberListByIds(String... memberIds)
 			throws Exception {
 		String ids="";
-		for(int i=0;i<memberIds.length;ids+="?"+",");
+		for(int i=0;i<memberIds.length;i++,ids+="?"+",");
 		ids=ids.substring(0,ids.length()-1);
 		String ql="from MemberAccount where maLoginName in("+ids+") order by maLoginName ";
 		return this.query(ql, memberIds);
 	}
 
-	@Override
+	/*@Override
 	public void saveAuthentication(MemberAccount member, byte type) throws  Exception{
 		byte authenticationStatus=member.getMaAuthenticated();
 		byte newAuthenticationStatus=0;
@@ -297,7 +300,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		}
 		member.setMaAuthenticated(newAuthenticationStatus);
 		this.update(member);	
-	}
+	}*/
 
 	@Override
 	public List getAllMakeFriendOffMemeberId() throws  Exception{

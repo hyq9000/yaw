@@ -38,7 +38,7 @@ public interface ApplyAuthenticationService extends EntityService<ApplyAuthentic
 	/**
 	 * 提交认证申请;产生一条认证申请记录;
 	 * @param memberId
-	 * @param authenticationType
+	 * @param authenticationType  ApplyAuthenticationService.TYPE_开头的常量值
 	 */
 	void submitAuthentication(String memberId,byte authenticationType) throws Exception;
 	

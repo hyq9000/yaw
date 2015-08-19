@@ -1,6 +1,7 @@
 package com.yaw.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,14 +22,29 @@ import com.yaw.service.MemberFocusService;
 public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 		implements MemberFocusService,CacheFlushBack {
 
-	private Map<String, Integer> memberFocusCache;// 会员关注数缓存
+	/**
+	 * 类型描述： 缓存用户关注数的数据结构	 * 
+	 * </br>时间：2015年8月19日
+	 * @author hyq
+	 */
+	class FucusValue{
+		public int newValue; //未与数据库同步的新值
+		public int oldValue; //已与数据库同步的值
+		public FucusValue(int newValue,int oldValue){
+			this.newValue=newValue;
+			this.oldValue=oldValue;
+		}
+	}
+	
+	private static Map<String, FucusValue> memberFocusCache;// 会员关注数缓存
 
 	/**初始化缓存*/
 	private void _init() throws Exception{
 		if(memberFocusCache==null){
-			List<Map<String,Integer>> list=this.executeQuery("select MA_LOGIN_NAME,maFocusCount from yaw_member_account");		
+			memberFocusCache=new HashMap<String, FucusValue>();
+			List<Map<String,Integer>> list=this.executeQuery("select MA_LOGIN_NAME,MA_FOCUS_COUNT from yaw_member_account");		
 			for(Map<String,Integer> map : list){
-				memberFocusCache.put(map.keySet().iterator().next(), map.values().iterator().next());
+				memberFocusCache.put(map.keySet().iterator().next(), new FucusValue(map.values().iterator().next(),map.values().iterator().next()));
 			}
 		}
 	}
@@ -39,16 +55,19 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 	 */
 	private void _inc(String memberId) throws Exception{
 		_init();
-		Integer num=memberFocusCache.get(memberId);
-		if(num==null)
-			memberFocusCache.put(memberId, 1);
-		memberFocusCache.put(memberId, num+1);
+		FucusValue num=memberFocusCache.get(memberId);
+		if(num==null){
+			num=new FucusValue(1,1);
+			memberFocusCache.put(memberId, num);
+		}
+		num.newValue++;
+		memberFocusCache.put(memberId, num);
 	}
 
 	@Override
 	public int getMemberFocusCount(String memberId) throws Exception {
 		this._init();
-		return memberFocusCache.get(memberId);
+		return memberFocusCache.get(memberId).newValue;
 	}
 	
 	@Override
@@ -75,7 +94,7 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 
 	private MemberFocus getMemberFocusByBefoucusMemberId(String befoucusMemberId,String focusMemberId,byte focusType)  throws Exception{
 		String tmp=focusMemberId==null?"focusMid is null":"focusMid=?";
-		String ql="from MemberFocus where focusBefocusMid=? and FOCUS_TYPE=? and "+tmp;		
+		String ql="from MemberFocus where focusBefocusMid=? and focusType=? and "+tmp;		
 		List<MemberFocus> list=focusMemberId==null?super.query(ql, befoucusMemberId,focusType)
 				:super.query(ql, befoucusMemberId,focusType,focusMemberId);
 		return list!=null && list.size()>0?list.get(0):null;
@@ -83,11 +102,18 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 	
 	@Override
 	public int flushToDB(){
+		//TODO:待优化，批量执行大量修改的SQL语句 
 		try {
 			int i=0;
-			for(Map.Entry<String,Integer> en:memberFocusCache.entrySet()){
-				this.executeUpdate("update yaw_member_account set maFocusCount=? where MA_LOGIN_NAME=?" , en.getValue(),en.getKey());
-				i++;
+			if(memberFocusCache!=null && memberFocusCache.size()>0){
+				for(Map.Entry<String,FucusValue> en:memberFocusCache.entrySet()){				
+					this.executeUpdate("update yaw_member_account set MA_FOCUS_COUNT=? where MA_LOGIN_NAME=?" , en.getValue().newValue,en.getKey());
+					/*
+					 * 更新后，设置同步了的值
+					 */
+					 ensdfdfdf.getValue().oldValue=en.getValue().newValue;
+					i++;
+				}
 			}
 			return i;
 		} catch (Exception e) {

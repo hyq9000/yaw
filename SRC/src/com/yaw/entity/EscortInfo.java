@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.common.log.ExceptionLogger;
+
 
 /**
  * The persistent class for the yaw_escort_info database table.
@@ -45,6 +47,7 @@ public class EscortInfo implements Serializable {
 	private int escortOrderWeight;
 
 	public EscortInfo() {
+		ExceptionLogger.writeLog(ExceptionLogger.DEBUG, "create:"+this.hashCode(), null, this.getClass());
 	}
 	
 	@Column(name="ESCORT_ORDER_WEIGHT")

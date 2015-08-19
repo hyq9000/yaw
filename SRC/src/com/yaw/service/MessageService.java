@@ -82,7 +82,7 @@ public interface MessageService extends EntityService<Message> {
 	 * @param memberId 会员ID
 	 * @return
 	 */
-	int getunReplayCount(String memberId)throws Exception;	
+	int getUnReplayCount(String memberId)throws Exception;	
 	
 	/**
 	 * 不理睬该留言
@@ -91,7 +91,7 @@ public interface MessageService extends EntityService<Message> {
 	void ignore(int messageId)throws Exception;
 	
 	/**
-	 * 重新发起留言,改变当前留言状态及时间
+	 * 当留言被不于以回复时，重新发起留言,改变当前留言状态，内容及时间
 	 * @param messageId 留 言ID
 	 * @param content 再留言新内容
 	 */

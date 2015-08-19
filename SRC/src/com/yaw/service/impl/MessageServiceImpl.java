@@ -33,6 +33,7 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 		msg.setMsgContent(content);
 		msg.setMsgIsSystem((byte)0);
 		msg.setMsgMid(memberId);
+		msg.setMsgTime(new Date());
 		msg.setMsgStatus(MessageService.STATUS_NO_REPLY);
 		msg.setMsgReplayMid(toMemberId);
 		this.add(msg);		
@@ -48,7 +49,10 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 			throws Exception {
 		String ql="from Message where msgReplayMid=? and msgStatus=0  order by msgTime desc";
 		List<Message> msgList= this.query(ql, paging,memberId);
-		return getMessage(memberType, msgList,false);
+		if(msgList!=null && msgList.size()>0)
+			return getMessage(memberType, msgList,false);
+		else
+			return null;
 	}
 
 	/**
@@ -61,48 +65,53 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 	 */
 	private List<Map> getMessage(byte memberType, List<Message> msgList,boolean isReplay)
 			throws Exception {
-		String ql;
+		String sql="";
 		//将多个会员号串成一个字符串,用","隔开;
 		String mids="'";
 		if(isReplay){
-			for(int i=0;i<msgList.size();mids+=msgList.get(i++).getMsgMid()+"','");	
+			for(int i=0;i<msgList.size()-1;mids+=msgList.get(i++).getMsgReplayMid()+"','");
 		}else{
-			for(int i=0;i<msgList.size();mids+=msgList.get(i++).getMsgReplayMid()+"','");	
+			for(int i=0;i<msgList.size()-1;mids+=msgList.get(i++).getMsgMid()+"','");		
 		}
-		mids.substring(0,mids.length()-2);
+		mids=mids.substring(0,mids.length()-2);
 		
 		/*
 		 * 查取留言会员的帐号相关信息
 		 */
-		ql="select MA_AUTHENTICATED,MA_GRADE,MA_ONLINE,MA_HEAD_ICON from YAW_MEMBER_ACCOUNT in ("+mids+")";
-		List<Map> memberList=this.executeQuery(ql);
+		sql="select MA_AUTHENTICATED,MA_GRADE,MA_ONLINE,MA_HEAD_ICON from YAW_MEMBER_ACCOUNT  WHERE MA_LOGIN_NAME in ("+mids+")";
+		List<Map> memberList=this.executeQuery(sql);
 		/*
 		 * 查取留言会员的基本相关信息;如果我是伴游,则查游客的基本信息,我是游客,则查伴游的基本信息;
 		 */
 		if(memberType==MemberAccountService.TYPE_TOURIST)
-			ql="select ESCORT_NICK_NAME as c1,ESCORT_SEX as c2,ESCORT_LIVE_ADDR as c3,ESCORT_BIRTHDAY as c4 where ESCORT_MID in ("+mids+")";
+			sql="select ESCORT_NICK_NAME as nickName,ESCORT_SEX as sex,ESCORT_LIVE_ADDR as addr,ESCORT_BIRTHDAY as birthday FROM yaw_escort_info where ESCORT_MID in ("+mids+")";	
 		else
-			ql="select TOURIST_NICKNAME as c1,TOURIST_SEX as c2,TOURIST_LIVE_ADDR as c3,TOURIST_BIRTHDAY as c4 where TOURIST_MID in ("+mids+")";		
-		List<Map> basicInfoList=this.executeQuery(ql);
+			sql="select TOURIST_NICKNAME as nickName,TOURIST_SEX as sex,TOURIST_LIVE_ADDR as addr,TOURIST_BIRTHDAY as birthday FROM  yaw_tourist_info where TOURIST_MID in ("+mids+")";	
+		List<Map> basicInfoList=this.executeQuery(sql);
 		
 		/*
 		 * 将多个查询结果按行组织成所需求格式的结构;最终将所有行放List中去
 		 */
 		List data=new ArrayList();
-		for(int i=0;i<msgList.size();i++){
+		for(int i=0;i<msgList.size()-1;i++){
 			Message msg=msgList.get(i);
-			Map msgMap=WebUtils.generateMapData(new String[]{"content,time,status,replyTime,replyContent"},
-					new Object[]{msg.getMsgContent(),msg.getMsgTime(),msg.getMsgStatus()});
-			Map memberMap=WebUtils.generateMapData(new String[]{"MA_AUTHENTICATED","MA_GRADE",
-					"MA_ONLINE","MA_HEAD_ICON","c1","c2","c3","c4"},
-					new Object[]{memberList.get(i).get("MA_AUTHENTICATED"),
+			Map msgMap=WebUtils.generateMapData(new String[]{"content","time","status","replyTime","replyContent"},
+					new Object[]{msg.getMsgContent(),
+					msg.getMsgTime(),
+					msg.getMsgStatus(),
+					msg.getMsgReplyTime(),
+					msg.getMsgReplyContent()});
+			Map memberMap=WebUtils.generateMapData(new String[]{"authenticated","grade",
+					"isOnline","headIcon","nickName","sex","addr","birthday"},
+					new Object[]{
+						memberList.get(i).get("MA_AUTHENTICATED"),
 						memberList.get(i).get("MA_GRADE"),
 						memberList.get(i).get("MA_ONLINE"),
 						memberList.get(i).get("MA_HEAD_ICON"),
-						basicInfoList.get(i).get("c1"), 
-						basicInfoList.get(i).get("c2"),
-						basicInfoList.get(i).get("c13"), 
-						basicInfoList.get(i).get("c4")});	
+						basicInfoList.get(i).get("nickName"), 
+						basicInfoList.get(i).get("sex"),
+						basicInfoList.get(i).get("addr"), 
+						basicInfoList.get(i).get("birthday")});	
 			/*
 			 * 将所有查询结果组织成所需求格式的map结构,并放到List中去 
 			 */
@@ -119,7 +128,10 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 			throws Exception {
 		String ql="from Message where msgMid=? and msgStatus=1 order by msg_Reply_Time desc";
 		List<Message> msgList= this.query(ql, paging,memberId);
-		return getMessage(memberType, msgList,true);
+		if(msgList!=null && msgList.size()>0)
+			return getMessage(memberType, msgList,true);
+		else 
+			return null;
 	}
 
 	@Override
@@ -127,10 +139,14 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 			throws Exception {
 		String ql="from Message where msgMid=? and msgStatus=0 order by msg_Reply_Time desc";
 		List<Message> msgList= this.query(ql, paging,memberId);
-		return getMessage(memberType, msgList,true);
+		if(msgList!=null && msgList.size()>0)
+			return getMessage(memberType, msgList,true);
+		else
+			return null;			
 	}
 
 	@Override
+	@Points(action=PointsActionType.POINTS_REPLAY,index=0)
 	public void replay(int messageId, String content) throws Exception {
 		Message msg=super.getById(messageId);
 		msg.setMsgReplyContent(content);
@@ -141,23 +157,35 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 
 	@Override
 	public int getNewMessageCount(String memberId) throws Exception {
-		String sql="select count(*) from yaw_message where  MSG_MID=? and MSG_STATUS=1";
-		List list=this.executeQuery(sql);
-		return list!=null && list.size()>0 ? ((Number)list.get(0)).intValue():0;
+		String sql="select count(*) as c from yaw_message where  MSG_REPLAY_MID=? and MSG_STATUS=0";
+		List list=this.executeQuery(sql,memberId);
+		if(list!=null && list.size()>0){
+			Object c= ((Map)list.get(0)).get("c");
+			return ((Number)c).intValue();
+		}else
+			return 0;
 	}
 
 	@Override
 	public int getNewReplayCount(String memberId) throws Exception {
-		String sql="select count(*) from yaw_message where  msg_Mid=? and msg_Status=1 ";
-		List list=this.executeQuery(sql);
-		return list!=null && list.size()>0 ? ((Number)list.get(0)).intValue():0;
+		String sql="select count(*) as c from yaw_message where  msg_Mid=? and msg_Status=1 ";
+		List list=this.executeQuery(sql,memberId);
+		if(list!=null && list.size()>0){
+			Object c= ((Map)list.get(0)).get("c");
+			return ((Number)c).intValue();
+		}else
+			return 0;
 	}
 
 	@Override
-	public int getunReplayCount(String memberId) throws Exception {
-		String sql="select count(*) from yaw_message where  msg_Mid=? and msg_Status=0";
-		List list=this.executeQuery(sql);
-		return list!=null && list.size()>0 ? ((Number)list.get(0)).intValue():0;
+	public int getUnReplayCount(String memberId) throws Exception {
+		String sql="select count(*) as c from yaw_message where  msg_Mid=? and msg_Status=0";
+		List list=this.executeQuery(sql,memberId);
+		if(list!=null && list.size()>0){
+			Object c= ((Map)list.get(0)).get("c");
+			return ((Number)c).intValue();
+		}else
+			return 0;
 	}
 
 	@Override
@@ -171,8 +199,9 @@ public class MessageServiceImpl extends DaoHibernateImpl<Message> implements
 	@Override
 	public void reMessaged(int messageId,String content) throws Exception {
 		Message msg=super.getById(messageId);
-		msg.setMsgReplyContent(content);
-		msg.setMsgReplyTime(new Date());
+		msg.setMsgContent(content);
+		msg.setMsgTime(new Date());
+		msg.setMsgStatus(MessageService.STATUS_NO_REPLY);
 		super.update(msg);
 	}
 

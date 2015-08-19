@@ -39,10 +39,16 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 	}
 
 	@Override
-	public void comfirmPaied(String orderId, boolean isOk) throws Exception {
+	public void comfirmPaied(String memberId,String orderId, boolean isOk,byte payMode,String payOrg) throws Exception {
 		Order order=this.getById(orderId);
-		order.setOrderStatus(STATUS_PAY_YES);
-		this.update(order);
+		if(order.getOrderMid().equals(memberId)){
+			order.setOrderStatus(STATUS_PAY_YES);
+			order.setOrderPayMode(payMode);
+			order.setOrderPayOrg(payOrg);
+			order.setOrderPayTime(new Date());
+			this.update(order);
+		}else
+			throw new BusinessException("用户身份数据非法!");
 	}
 	
 	@Override

@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
+
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
 import com.common.tools.ImageCompressor;
+import com.common.utils.BusinessException;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.common.web.WebUtils;
@@ -47,14 +49,16 @@ public class CommonAction extends Struts2Action {
 	
 	/**
 	 * 提交视频/身份/健康/导游等认证申请,并及时通知后台处理;
-	 * @param atype :认证类型
+	 * @param atype 认证类型 ApplyAuthenticationService.TYPE_开头的常量值
+	 * @return {code:1,-1}
 	 */
-	String submitAuthentication(){
+	public String submitAuthentication(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String atype=request.getParameter("atype");
 			byte authenticationType=Byte.parseByte(atype);
 			applyAuthenticationService.submitAuthentication(user.getMaLoginName(), authenticationType);
+			out.print(WebUtils.responseCode(1));
 		} catch (NumberFormatException  ne){
 			out.print(WebUtils.responseInputCheckError("认证类型码不正确!"));
 		}catch (Exception e) {
@@ -194,9 +198,9 @@ public class CommonAction extends Struts2Action {
 			byte reportType=Byte.parseByte(rt);
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			reportSuggestService.report(user.getMaLoginName(), rmid, content,reportType);			
-			WebUtils.responseCode(1);
+			out.print(WebUtils.responseCode(1));
 		} catch (NumberFormatException e) {
-			WebUtils.responseError("举报类型不正确", -3);
+			out.print(WebUtils.responseError("举报类型不正确", -3));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -212,12 +216,9 @@ public class CommonAction extends Struts2Action {
 		String content=request.getParameter("content");
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			reportSuggestService.suggest(user.getMaLoginName(), content);
-			
-			WebUtils.responseCode(1);
-		} catch (NumberFormatException e) {
-			WebUtils.responseInputCheckError("举报类型不正确");
-		} catch (Exception e) {
+			reportSuggestService.suggest(user.getMaLoginName(), content);			
+			out.print(WebUtils.responseCode(1));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -250,17 +251,27 @@ public class CommonAction extends Struts2Action {
 	/**
 	 * 确认已经完成付款
 	 * @param oid 订单流水号
-	 * @param isOk 是否已经完成付款
+	 * @param isOk 是否已经完成付款 0:未完成，1：已完成
+	 * @param pm 支付方式 可以的值为 0:约啊币，1:支付平台,2柜台汇款,3 网银转帐
+	 * @param po 支付机构名称
 	 * @return {code:1}
 	 */
 	public String comfirmPaied() {
 		try {
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String orderId=request.getParameter("oid");
 			String isOk =request.getParameter("isOk");
-			boolean yn=Boolean.parseBoolean(isOk);
-			orderService.comfirmPaied(orderId, yn);
+			String payMode=request.getParameter("pm");
+			String payOrg=request.getParameter("po");
+			boolean yn=Boolean.parseBoolean(isOk);	
+			byte pm=Byte.parseByte(payMode);
+			orderService.comfirmPaied(user.getMaLoginName(),orderId, yn,pm,payOrg);
 			out.print(WebUtils.responseCode(1));
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			WebUtils.responseInputCheckError("支付方式不正确!");
+		}catch (BusinessException e) {
+			out.print(WebUtils.responseError(e.getMessage(),-13));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -277,8 +288,7 @@ public class CommonAction extends Struts2Action {
 		try {
 			String toMid=request.getParameter("toMid");
 			String content=request.getParameter("content");
-			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);			
 			messageService.messageTo(user.getMaLoginName(), toMid, content);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
@@ -289,7 +299,7 @@ public class CommonAction extends Struts2Action {
 	}
 	
 	/**
-	 * 分页查取得所有新留言,按时间倒序排序
+	 * 分页查取得所有给我的新留言,按时间倒序排序
 	 * @param mid 会员ID
 	 * @param pn 分页数
 	 * @return {code:n,data:[
@@ -307,11 +317,10 @@ public class CommonAction extends Struts2Action {
 	 */
 	public String allNewMessage(){
 		try {
-			String mid=request.getParameter("mid");
 			String pn=request.getParameter("pn");
 			int pageNo=Integer.parseInt(pn);
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			List<Map> list=messageService.allNewMessage(user.getMaType(),mid, new Paging(6,pageNo));
+			List<Map> list=messageService.allNewMessage(user.getMaType(),user.getMaLoginName(), new Paging(6,pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0, list));
 		} catch (NumberFormatException e) {
 			WebUtils.responseInputCheckError("页号(pn)不是一个数字");
@@ -329,11 +338,10 @@ public class CommonAction extends Struts2Action {
 	 */
 	public String allNewReplyMessage(){
 		try {
-			String mid=request.getParameter("mid");
 			String pn=request.getParameter("pn");
 			int pageNo=Integer.parseInt(pn);
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
-			List<Map> list=messageService.allNewReplyMessage(user.getMaType(),mid, new Paging(6,pageNo));
+			List<Map> list=messageService.allNewReplyMessage(user.getMaType(),user.getMaLoginName(), new Paging(6,pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0, list));
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("页号(pn)不是一个数字"));
@@ -368,7 +376,7 @@ public class CommonAction extends Struts2Action {
 	/**
 	 * 留言回复
 	 * @param msgid 留言ID
-	 * @param content 留言内容
+	 * @param content 回复内容
 	 * @return {code:1|-3}
 	 */
 	public String replay(){
@@ -394,8 +402,8 @@ public class CommonAction extends Struts2Action {
 	 */
 	public String getNewMessageCount(){
 		try {
-			String mid=request.getParameter("mid");
-			int rs=messageService.getNewMessageCount(mid);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			int rs=messageService.getNewMessageCount(user.getMaLoginName());
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -410,8 +418,8 @@ public class CommonAction extends Struts2Action {
 	 */
 	public String getNewReplayCount(){
 		try {
-			String mid=request.getParameter("mid");
-			int rs=messageService.getNewReplayCount(mid);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			int rs=messageService.getNewReplayCount(user.getMaLoginName());
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -425,10 +433,10 @@ public class CommonAction extends Struts2Action {
 	 * @param memberId 会员ID
 	 * @return
 	 */
-	public String getunReplayCount(){
+	public String getUnReplayCount(){
 		try {
-			String mid=request.getParameter("mid");
-			int rs=messageService.getunReplayCount(mid);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			int rs=messageService.getUnReplayCount(user.getMaLoginName());
 			out.print(WebUtils.responseCode(rs));
 		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -457,7 +465,8 @@ public class CommonAction extends Struts2Action {
 	}
 	
 	/**
-	 * 重新发起留言,改变当前留言状态及时间
+	 * 重新发起留言,改变当前留言状态，内容及时间，相当于刷新留言的时间;
+	 * TODO:问题是什么时候可以重发留言，还不清楚；
 	 * @param msgid 留 言ID
 	 * @param content 再留言新内容
 	 */
@@ -521,6 +530,15 @@ public class CommonAction extends Struts2Action {
 
 	public void setImageContextType(String imageContextType) {
 		this.imageContextType = imageContextType;
+	}
+
+	public void setTouristInfoService(TouristInfoService touristInfoService) {
+		this.touristInfoService = touristInfoService;
+	}
+
+	public void setApplyAuthenticationService(
+			ApplyAuthenticationService applyAuthenticationService) {
+		this.applyAuthenticationService = applyAuthenticationService;
 	}
 	
 }

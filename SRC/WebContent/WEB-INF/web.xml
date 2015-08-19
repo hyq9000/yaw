@@ -17,6 +17,10 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	<!-- 应用上下文监听器，暂实现了一个定时刷关注值到数据库的任务 -->
+	<listener>
+		<listener-class>com.yaw.listener.ApplicationListener</listener-class>
+	</listener>
 	
 	<filter>
 			<filter-name>UserAccessFilter</filter-name>
@@ -37,7 +41,11 @@
 		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
 		<url-pattern>/back/*</url-pattern>
 		<url-pattern>/mng/*</url-pattern>
-		<url-pattern>*.action</url-pattern>
+		<url-pattern>/act/common.action</url-pattern>
+		<url-pattern>/act/member.action</url-pattern>
+		<url-pattern>/act/mng.action</url-pattern>
+		<url-pattern>/act/tourist.action</url-pattern>
+		<url-pattern>/act/escort.action</url-pattern>
 	</filter-mapping>
 
 	<filter>

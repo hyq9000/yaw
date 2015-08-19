@@ -32,7 +32,7 @@ import com.yaw.service.TripplanService;
  */
 public class FrontAction extends Struts2Action{	
 	private EscortInfoService escortInfoService; 
-	private MemberAccountService memberService;
+	private MemberAccountService memberAccountService;
 	private MemberFocusService focusService;
 	private TouristInfoService touristInfoService;
 	private TripplanService tripplanService;
@@ -101,7 +101,7 @@ public class FrontAction extends Struts2Action{
 			try {
 				MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(request.getSession());
 				String userId=user==null?null:user.getMaLoginName();
-				MemberAccount befocusMember=memberService.getById(mid);				
+				MemberAccount befocusMember=memberAccountService.getById(mid);				
 				if(befocusMember==null)
 					return null;
 
@@ -111,14 +111,14 @@ public class FrontAction extends Struts2Action{
 				/*
 				 * 不是自己看自己详情情况下,会员关注度加1 
 				 */
-				if(!mid.equals(user.getMaLoginName())){
+				if(user==null || !mid.equals(user.getMaLoginName())){
 					//生成关注流水
 					focusService.gernateFocusRecord(userId, befocusMember.getMaLoginName(), MemberFocusService.FOCUS_TYPE_MEMBER);
 				}
 				Map memberMap=new HashMap();
 				WebUtils.objectPutToMap(memberMap, befocusMember,"maAuthenticated","maFocusCount","maGrade",
 						"maIpAddr", "maLoginIp","maPoints","maSincerity","maOnline","maStatus",
-						"maTags","maEmail","maMfStatus=1","maCompletedInfo");
+						"maTags","maEmail","maMfStatus","maCompletedInfo");
 				Map escortMap=new HashMap();
 				WebUtils.objectPutToMapEx(escortMap, escortInfo,"escortOrderWeight","escortClubMember","escortMid");
 				Map data=new HashMap();
@@ -190,7 +190,7 @@ public class FrontAction extends Struts2Action{
 			try {
 				MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(request.getSession());
 				String userId=user==null?null:user.getMaLoginName();
-				MemberAccount befocusMember=memberService.getById(mid);	
+				MemberAccount befocusMember=memberAccountService.getById(mid);	
 				if(befocusMember==null)
 					return null;
 
@@ -200,7 +200,7 @@ public class FrontAction extends Struts2Action{
 				/*
 				 * 不是自己看自己详情情况下,会员关注度加1 
 				 */
-				if(!mid.equals(user.getMaLoginName())){
+				if(user==null  || !mid.equals(user.getMaLoginName())){
 					//生成关注流水
 					focusService.gernateFocusRecord(userId, befocusMember.getMaLoginName(), MemberFocusService.FOCUS_TYPE_MEMBER);
 				}
@@ -388,7 +388,7 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String escortQuery8NewRegist(){
 		try {
-			List<MemberAccount> list=memberService.queryNewRegist(8,MemberAccountService.TYPE_ESCORT);
+			List<MemberAccount> list=memberAccountService.queryNewRegist(8,MemberAccountService.TYPE_ESCORT);
 			out.print( WebUtils.responseData(list!=null ?list.size():0, list));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -515,7 +515,7 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String query8NewRegist(){
 		try {
-			List list=memberService.queryNewRegist(8,MemberAccountService.TYPE_TOURIST);
+			List list=memberAccountService.queryNewRegist(8,MemberAccountService.TYPE_TOURIST);
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -530,7 +530,7 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String query16NewRegist(){
 		try {
-			List list=memberService.queryNewRegist(16,MemberAccountService.TYPE_TOURIST);
+			List list=memberAccountService.queryNewRegist(16,MemberAccountService.TYPE_TOURIST);
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -860,9 +860,7 @@ public class FrontAction extends Struts2Action{
 		this.escortInfoService = escortInfoService;
 	}
 
-	public void setMemberService(MemberAccountService memberService) {
-		this.memberService = memberService;
-	}
+
 
 	public void setFocusService(MemberFocusService focusService) {
 		this.focusService = focusService;
@@ -874,6 +872,15 @@ public class FrontAction extends Struts2Action{
 
 	public void setTripplanService(TripplanService tripplanService) {
 		this.tripplanService = tripplanService;
+	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setPhotoService(PhotoService photoService) {
+		this.photoService = photoService;
 	}	
+	
 	
 }

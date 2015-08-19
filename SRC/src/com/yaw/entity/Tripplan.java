@@ -29,7 +29,7 @@ public class Tripplan implements Serializable {
 	private byte tripplanWantAge;
 	private byte tripplanWantPersons;
 	private String tripplanWantSex;
-	private int tripplanFocusCount;
+	private int tripplanBefocusCount;
 
 	public Tripplan() {
 	}
@@ -57,14 +57,14 @@ public class Tripplan implements Serializable {
 		this.tripplanId = tripplanId;
 	}
 
-	@Column(name="TRIPPLAN_FOCUS_COUNT")
+	@Column(name="TRIPPLAN_BEFOCUS_COUNT")
 	public int getTripplanFocusCount() {
-		return tripplanFocusCount;
+		return tripplanBefocusCount;
 	}
 
 
-	public void setTripplanFocusCount(int tripplanFocusCount) {
-		this.tripplanFocusCount = tripplanFocusCount;
+	public void setTripplanFocusCount(int tripplanBefocusCount) {
+		this.tripplanBefocusCount = tripplanBefocusCount;
 	}
 
 

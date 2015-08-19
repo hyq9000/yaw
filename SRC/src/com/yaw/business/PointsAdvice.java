@@ -22,6 +22,7 @@ public class PointsAdvice implements MethodInterceptor {
 		this.memberAccountService = memberAccountService;
 	}
 
+	//TODO:这个算积分的通知每次都会执行两次；
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {		
 		System.out.println("11111111111111111111111111");

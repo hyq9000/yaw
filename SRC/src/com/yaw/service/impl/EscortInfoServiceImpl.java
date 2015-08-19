@@ -65,7 +65,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 			 */
 			MemberAccount member=new MemberAccount();
 			Map tmp=(Map)list.get(0);
-			member.setMaEmail((String)tmp.get("MA_EMAIL"));
+			member.setMaEmail((String)tmp.get("MA_EMAIL"));	
 			member.setMaCompletedInfo((Integer)tmp.get("MA_COMPLETED_INFO"));
 			member.setMaCompletedPercent((Byte)tmp.get("MA_COMPLETED_PERCENT"));
 			/*
@@ -73,6 +73,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 			 */		
 			int percent=BusinessServiceImpl.generateCompletedPercent(member, escortInfo);
 			int info=BusinessServiceImpl.generateCompletedDetail(member, escortInfo);	
+			
 			if(percent!=member.getMaCompletedPercent() || info!=member.getMaCompletedInfo()){
 				sql="update YAW_MEMBER_ACCOUNT set MA_COMPLETED_PERCENT=?,MA_COMPLETED_INFO=? where MA_LOGIN_NAME=?";
 				this.executeUpdate(sql, percent,info,escortInfo.getEscortMid());
@@ -169,7 +170,7 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	public List<EscortInfo> getEscortInfoListByIds(String... memberIds)
 			throws Exception {
 		String ids="";
-		for(int i=0;i<memberIds.length;ids+="?"+",");
+		for(int i=0;i<memberIds.length;i++,ids+="?"+",");
 		ids=ids.substring(0,ids.length()-1);
 		String ql="from EscortInfo where escortMid in("+ids+") order by escortMid";
 		return this.query(ql, memberIds);

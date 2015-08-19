@@ -27,8 +27,7 @@ public class MemberAccount implements Serializable {
 	private String maPassword;
 	private int maPoints;
 	private Date maRegistTime;
-	private String maServiceId;
-	private byte maSincerity;
+	private int maSincerity;
 	private byte maOnline;
 	private byte maStatus;
 	private String maTags;
@@ -238,22 +237,12 @@ public class MemberAccount implements Serializable {
 	}
 
 
-	@Column(name="MA_SERVICE_ID")
-	public String getMaServiceId() {
-		return this.maServiceId;
-	}
-
-	public void setMaServiceId(String maServiceId) {
-		this.maServiceId = maServiceId;
-	}
-
-
 	@Column(name="MA_SINCERITY")
-	public byte getMaSincerity() {
+	public int getMaSincerity() {
 		return this.maSincerity;
 	}
 
-	public void setMaSincerity(byte maSincerity) {
+	public void setMaSincerity(int maSincerity) {
 		this.maSincerity = maSincerity;
 	}
 

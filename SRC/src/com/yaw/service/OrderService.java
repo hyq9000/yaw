@@ -51,8 +51,10 @@ public interface OrderService extends EntityService<Order> {
 	 * 确认已经完成付款
 	 * @param orderId 订单流水号
 	 * @param isOk 是否已经完成付款
+	 * @param payMode 支付方式 OrderService.PAYMODE_开头的常量值
+	 * @param payOrg 支付机构名称
 	 */
-	void comfirmPaied(String orderId,boolean isOk) throws Exception;
+	void comfirmPaied(String memberId,String orderId,boolean isOk,byte payMode,String payOrg) throws Exception;
 	
 	/**
 	 * 管理员受理会员升级订单,更新Vip会员等级;
@@ -70,7 +72,7 @@ public interface OrderService extends EntityService<Order> {
 	
 	/**
 	 * 分页查取待处理的未付(已付)订单
-	 * @Param status 订单状态码 STATUS_PAY开头的常量值 
+	 * @Param status 订单状态码 OrderService.STATUS_PAY开头的常量值 
 	 * @param paging 分页对象
 	 * @return
 	 */

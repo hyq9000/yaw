@@ -39,6 +39,9 @@
 	</bean>
 	<bean id="tripplanService" class="com.yaw.service.impl.TripplanServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
+		<property name="memberAccountService" ref="memberAccountService"></property>
+		<property name="escortInfoService" ref="escortInfoService"></property>
+		<property name="rTripplanEscortService" ref="rTripplanEscortService"></property>
 	</bean>
 	<bean id="orderService" class="com.yaw.service.impl.OrderServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
@@ -57,6 +60,16 @@
 	<bean id="managerAccountService" class="com.yaw.service.impl.ManagerAccountServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
 	</bean>	
+	
+	<bean id="rTripplanEscortService" class="com.yaw.service.impl.RTripplanEscortServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+	</bean>
+	<bean id="tagRecordService" class="com.yaw.service.impl.TagRecordServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+	</bean>
+	<bean id="messageService" class="com.yaw.service.impl.MessageServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+	</bean>
 	
 </beans>
 

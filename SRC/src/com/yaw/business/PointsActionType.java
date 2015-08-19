@@ -9,7 +9,7 @@ package com.yaw.business;
 public enum PointsActionType {
 	POINTS_LOGIN , //积分-如登陆(2)
 	POINTS_PHOTO,//上传相片(5)
-	POINTS_REPLAY,//回复(2)
+	POINTS_REPLAY,//回复留言(2)
 	POINTS_REPORT,//举报有效(10)
 	POINTS_SUGGEST,// 建议（5)
 	POINTS_SUGGEST_REJECTED,//建议采纳（50）

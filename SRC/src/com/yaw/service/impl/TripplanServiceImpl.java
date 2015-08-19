@@ -53,7 +53,7 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 	}
 
 	@Override
-	public List<Map<MemberAccount, EscortInfo>> getAllRecommend(int tripplanId)	throws Exception {
+	public List<Map<String, Object>> getAllRecommend(int tripplanId)	throws Exception {
 		List<RTripplanEscort> rlist=rTripplanEscortService.getTheRelationOfTripplan(tripplanId);
 		if(rlist!=null){	
 			/*
@@ -73,10 +73,14 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 			/*
 			 * 将会员及伴游封装成List<Map<MemberAccount, EscortInfo>>对象
 			 */
-			List<Map<MemberAccount, EscortInfo>> rs=new ArrayList<Map<MemberAccount,EscortInfo>>();
+			List<Map<String, Object>> rs=new ArrayList<Map<String, Object>>();
 			for(int i=0;i<memberList.size();i++){
 				Map tmp=new HashMap();
-				tmp.put(memberList.get(i), escortList.get(i));
+				/*屏蔽一些数据*/
+				memberList.get(i).setMaPassword("");
+				
+				tmp.put("member",memberList.get(i));
+				tmp.put("escort", escortList.get(i));
 				rs.add(tmp);
 			}
 			return rs;
@@ -144,4 +148,19 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 		String ql="FROM Tripplan WHERE tripplanMid=? ORDER BY tripplanPublishTime DESC";
 		return super.query(ql, page,memberId);
 	}
+
+	public void setrTripplanEscortService(
+			RTripplanEscortService rTripplanEscortService) {
+		this.rTripplanEscortService = rTripplanEscortService;
+	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setEscortInfoService(EscortInfoService escortInfoService) {
+		this.escortInfoService = escortInfoService;
+	}
+	
+	
 }

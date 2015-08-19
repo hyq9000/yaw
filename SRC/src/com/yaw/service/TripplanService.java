@@ -33,9 +33,12 @@ public interface TripplanService extends EntityService<Tripplan> {
 	 * 取得该邀约计划的所有伴游对象及对应的会员帐号对象,并将关系表"邀约计划伴游关注表(YAW_R_TRIPPLAN_ESCORT)"的
 	 * 自荐信值设置"伴游对象.自荐信"字段,该对象是一次性使用,不能被执久化;
 	 * @param tripplanId  邀约计划ID
-	 * @return 所有关联到该邀约计划的伴游的map(会员对象为KEY,以伴游对象为值)集合
+	 * @return 所有关联到该邀约计划的伴游的map集合map结构：{
+	 * 	member:MemberAccount对象
+	 *  escort:EscortInfo对象
+	 * }
 	 */
-	List<Map<MemberAccount,EscortInfo>> getAllRecommend(int tripplanId) throws Exception;
+	List<Map<String, Object>> getAllRecommend(int tripplanId) throws Exception;
 	
 	/**
 	 * 简单查询邀约计划资料

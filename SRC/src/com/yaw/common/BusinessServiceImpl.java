@@ -17,8 +17,8 @@ import com.yaw.service.PhotoService;
  */
 public class BusinessServiceImpl {	
 	
-	/**积分动作类型*/
-	public  final static int POINTS_LOGIN = 0, //积分-如登陆(2)
+	/*积分动作类型
+	public  final static int POINTS_LOGINs = 0, //积分-如登陆(2)
 			POINTS_PHOTO = 1,//上传相片(5)
 			POINTS_REPLAY=2,//回复(2)
 			POINTS_REPORT=3,//举报有效(10)
@@ -28,6 +28,8 @@ public class BusinessServiceImpl {
 			POINTS_BEFOCUS_PHOTO=7,//照片被关注（1)
 			POINTS_MESSAGE=8,//留言(2)
 			POINTS_PUBLISH_TRIPPLAN=9;//发布邀约计划(5)
+	*/
+	
 	
 	/**
 	 * 会员的推广链接URL的前辍值;
@@ -62,6 +64,103 @@ public class BusinessServiceImpl {
 		return (int)(gradeValue*0.5+sincerity*0.5+poits*0.2+completePercent*0.1+(isOnline?5:0));
 	}
 
+	/**
+	 * 方法功能描述：根据用户的认证，更新用户的诚意指数值
+	 * @param typeCode MemberAccountService.AUTHENTICATE_开头的值
+	 * @param member 会员帐户对象
+	 * @param basicInfo 可以是EscortInfo或TouristInfo对象
+	 * @return 返回认证所对应的诚意指数
+	 */
+	public static int getSincerity(byte typeCode,MemberAccount member){
+		/*
+		 *  2手机验证：+50            
+		 *  1邮箱验证：+30            
+		 *  3视频认证：+100           
+		 *  5身份验证：+100          
+		 *  4健康认证：+100
+		 *  6导游认证：+100
+		 *  7qq认证：+50,
+		 *  8微信认证：+50,
+		 *  9俱乐部认证：+200
+		 *  实现思路：如果未级验证过，则总分数减去对应的值；
+		 */
+		int tmp=780;
+		boolean isAuthenticated=isAuthenticated(member, typeCode);
+		switch(typeCode){
+			case 1:
+				if(!isAuthenticated)
+					tmp-=30;
+				break;
+			case 2:
+			case 7:
+			case 8:
+				if(isAuthenticated)
+					tmp-=50;
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				if(isAuthenticated)
+					tmp-=100;
+				break;
+			case 9:
+				if(isAuthenticated)
+					tmp-=200;
+				break;
+		}
+		return tmp;
+	}
+	
+	/**
+	 * 生成并返回指定会员所对应的认证码；
+	 * @param member 会员对象
+	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
+	 */
+	public static byte  generateAuthenticationCode(MemberAccount member, byte type) throws  Exception{
+		byte authenticationStatus=member.getMaAuthenticated();
+		byte newAuthenticationStatus=0;
+		switch(type){
+			case MemberAccountService.AUTHENTICATE_EMAIL:
+				newAuthenticationStatus=(byte)(authenticationStatus|1);
+				break;
+			case MemberAccountService.AUTHENTICATE_GUIDE:
+				newAuthenticationStatus=(byte)(authenticationStatus|32);
+				break;
+			case MemberAccountService.AUTHENTICATE_HEALTH:
+				newAuthenticationStatus=(byte)(authenticationStatus|8);
+				break;
+			case MemberAccountService.AUTHENTICATE_IDENTITY:
+				newAuthenticationStatus=(byte)(authenticationStatus|16);
+				break;
+			case MemberAccountService.AUTHENTICATE_PHONE:
+				newAuthenticationStatus=(byte)(authenticationStatus|2);
+				break;
+			case MemberAccountService.AUTHENTICATE_VIDO:
+				newAuthenticationStatus=(byte)(authenticationStatus|4);
+				break;
+			case MemberAccountService.AUTHENTICATE_QQ:
+				newAuthenticationStatus=(byte)(authenticationStatus|64);
+				break;
+			case MemberAccountService.AUTHENTICATE_WEIXIN:
+				newAuthenticationStatus=(byte)(authenticationStatus|128);
+				break;
+			default:return authenticationStatus;
+		}
+		return 	newAuthenticationStatus;
+	}
+	
+	/**
+	 * 返回该用户是否已经作了某项认证，
+	 * @param member 会员对象
+	 * @param type 认证类型码:MemberAccountService.AUTHENTICATE_开头的常量
+	 * @return 已认证 true，未认证false
+	 */
+	public static boolean  isAuthenticated(MemberAccount member, byte type){
+		byte authenticationStatus=member.getMaAuthenticated();		
+		byte result= (byte)(authenticationStatus&type);
+		return result==type;
+	}
 	
 	/**
 	 * 生成伴游会员基本信息详情,(在用户保存资料,上传相片时触发)

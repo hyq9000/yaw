@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.common.dbutil.DaoHibernateImpl;
 import com.common.dbutil.Paging;
+import com.yaw.common.BusinessServiceImpl;
 import com.yaw.entity.ApplyAuthentication;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
@@ -51,21 +52,14 @@ public class ApplyAuthenticationServiceImpl extends
 			String memberId=aa.getAuthMid();
 			byte type=aa.getAuthType();
 			MemberAccount member=memberAccountService.getById(memberId);
-			memberAccountService.saveAuthentication(member, type);			
+			
+			//更新认证码
+			byte authenticationCode=BusinessServiceImpl.generateAuthenticationCode(member,aa.getAuthType());				
+			member.setMaAuthenticated(authenticationCode);
+			//手机认证后，增加诚意指数
+			member.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_PHONE,member));			
+			memberAccountService.update(member);
 		}
-		
-		/*1：视频认证
-		2：身份认证
-		3：导游认证
-		4：健康认证
-		5：加入伴游俱乐部申请
-		
-		1位：代表邮箱认证与否
-		2位：代表手机认证与否
-		3位：代表视频认证与否
-		4位：代表健康认证与否
-		5位：代表身份认证与否
-		6位：代表导游认证与否*/
 	}
 
 	@Override
@@ -84,8 +78,5 @@ public class ApplyAuthenticationServiceImpl extends
 	public void setEscortInfoService(EscortInfoService escortInfoService) {
 		this.escortInfoService = escortInfoService;
 	}
-
-	
-	
 
 }
