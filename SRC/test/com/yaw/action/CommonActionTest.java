@@ -13,7 +13,7 @@ public class CommonActionTest {
 	public void testSubmitAuthentication() {
 		Map<String, String> parameter=new HashMap<String, String>();		
 		parameter.put("atype", "3");
-		Common.postToUrl("submitAuthentication", parameter,"7BB1237F437B55479289D2EF8B0C8D50","common");
+		Common.postToUrl("submitAuthentication", parameter,"7A04CF76AB37BDD26B647F49A37369A5","common");
 	}
 
 	@Test
@@ -53,11 +53,11 @@ public class CommonActionTest {
 	@Test
 	public void testComfirmPaied() {
 		Map<String, String> parameter=new HashMap<String, String>();		
-		parameter.put("oid", "20150724025040572");
+		parameter.put("oid", "20150822045759709");
 		parameter.put("isOk", "1");
-		parameter.put("pm", "1");
-		parameter.put("po", "支付宝");
-		Common.postToUrl("comfirmPaied", parameter,"B039C681E017E6D7CE8F87D6E56EB3E8","common");
+		parameter.put("pm", "2");
+		parameter.put("po", "中信业银行");
+		Common.postToUrl("comfirmPaied", parameter,"28A2A814DDEA1283224EFE02C8682F93","common");
 	}
 
 	@Test
@@ -96,6 +96,7 @@ public class CommonActionTest {
 		parameter.put("content", "是的，怎么的，你也要一起去?");
 		Common.postToUrl("replay", parameter,"3CE6682A9BA834F76558AD74199B2C06","common");
 	}
+	
 	
 
 	@Test

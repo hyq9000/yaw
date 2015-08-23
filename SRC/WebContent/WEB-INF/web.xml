@@ -23,6 +23,19 @@
 	</listener>
 	
 	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>com.common.filters.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encode</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
 			<filter-name>UserAccessFilter</filter-name>
 			<filter-class>com.common.filters.UserAccessFilter</filter-class>
 			<init-param>
@@ -35,17 +48,36 @@
 				<!--请求action的某些方法不需要用户登录验证，将这些方法名配置到此 -->
 				<param-value>regist,login</param-value>
 			</init-param>
-		</filter>
+	</filter>
 	<filter-mapping>
 		<filter-name>UserAccessFilter</filter-name>
 		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
 		<url-pattern>/back/*</url-pattern>
-		<url-pattern>/mng/*</url-pattern>
 		<url-pattern>/act/common.action</url-pattern>
 		<url-pattern>/act/member.action</url-pattern>
-		<url-pattern>/act/mng.action</url-pattern>
 		<url-pattern>/act/tourist.action</url-pattern>
 		<url-pattern>/act/escort.action</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+			<filter-name>ManagerAccessFilter</filter-name>
+			<filter-class>com.common.filters.UserAccessFilter</filter-class>
+			<init-param>
+				<param-name>loginUri</param-name>
+				<!--将登陆页URI配置到此 -->
+				<param-value>/login.html</param-value>
+			</init-param>
+			<init-param>
+				<param-name>ignoredRequest</param-name>
+				<!--请求action的某些方法不需要用户登录验证，将这些方法名配置到此 -->
+				<param-value>login</param-value>
+			</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ManagerAccessFilter</filter-name>
+		<!--哪些目录的访问是需要验证用户登录的，配置至此 -->
+		<url-pattern>/mng/*</url-pattern>
+		<url-pattern>/act/mng.action</url-pattern>
 	</filter-mapping>
 
 	<filter>
@@ -61,18 +93,7 @@
 
 	</filter-mapping>
 
-	<filter>
-		<filter-name>CharacterEncodingFilter</filter-name>
-		<filter-class>com.common.filters.CharacterEncodingFilter</filter-class>
-		<init-param>
-			<param-name>encode</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>CharacterEncodingFilter</filter-name>
-		<url-pattern>*</url-pattern>
-	</filter-mapping>
+	
 
 	
 </web-app>

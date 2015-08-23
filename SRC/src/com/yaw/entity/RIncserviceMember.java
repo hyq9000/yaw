@@ -19,6 +19,7 @@ public class RIncserviceMember implements Serializable {
 	private int rimLength;
 	private String rimMid;
 	private Date rimStart;
+	private String rimOrderNO;
 
 	public RIncserviceMember() {
 	}
@@ -87,4 +88,15 @@ public class RIncserviceMember implements Serializable {
 		this.rimStart = rimStart;
 	}
 
+	@Column(name="RIM_ORDER_NO")
+	public String getRimOrderNO() {
+		return rimOrderNO;
+	}
+
+
+	public void setRimOrderNO(String rimOrderNO) {
+		this.rimOrderNO = rimOrderNO;
+	}
+
+	
 }

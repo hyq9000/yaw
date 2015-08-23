@@ -26,6 +26,7 @@
 		<property name="touristInfoService" ref="touristInfoService"/>
 		<property name="orderService" ref="orderService"/>
 		<property name="incrementServiceService" ref="incrementServiceService"></property>
+		<property name="rincService" ref="rincService"></property>
 	</bean>
 	<bean id="reportSuggestService" class="com.yaw.service.impl.ReportSuggestServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
@@ -47,7 +48,7 @@
 		<property name="sessionFactory"  ref="sessionFactory"></property>
 		<property name="servicerPhones" value="13378017839,14509098900"/>
 		<property name="memberAccountService" ref="memberAccountService"></property>
-		
+		<property name="rincService" ref="rincService"></property>
 	</bean>
 	<bean id="incrementServiceService" class="com.yaw.service.impl.IncrementServiceServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
@@ -69,6 +70,17 @@
 	</bean>
 	<bean id="messageService" class="com.yaw.service.impl.MessageServiceImpl">
 		<property name="sessionFactory"  ref="sessionFactory"></property>
+	</bean>
+	<bean id="photoService" class="com.yaw.service.impl.PhotoServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+		<property name="memberAccountService" ref="memberAccountService"></property>
+		<property name="escortInfoService" ref="escortInfoService"></property>
+		<property name="touristInfoService" ref="touristInfoService"/>
+	</bean>
+	
+	<bean id="rincService" class="com.yaw.service.impl.RIncserviceMemberServiceImpl">
+		<property name="sessionFactory"  ref="sessionFactory"></property>
+		<property name="incrementServiceService" ref="incrementServiceService"></property>
 	</bean>
 	
 </beans>

@@ -16,12 +16,23 @@ import com.yaw.entity.IncrementService;
 public interface IncrementServiceService extends
 		EntityService<IncrementService> {
 	/**城市置顶*/
-	int TOP_CITY=11;
+	byte TOP_CITY=11;
 	/**搜索置顶*/
-	int TOP_SEARCH=12;
+	byte TOP_SEARCH=12;
 	/**分类置顶*/
-	int TOP_CATEGORY=13;
-
+	byte TOP_CATEGORY=13;	
+	/**约啊币充值*/
+	byte YA_COIN=1;
+	
+	/**
+	 * VIP等级值
+	 */
+	byte VIP_GRADE_BLUE_DIAMOND=51;
+	/**黄钻*/
+	byte VIP_GRADE_YELLOW_DIAMOND=52;
+	/**皇冠*/
+	byte VIP_GRADE_IMPERIAL_CROWN=53;	
+	
 	/**
 	 * 根据增值服务Id返回会员等级名称
 	 * @param serviceId 服务ID

@@ -29,18 +29,18 @@ public class Order implements Serializable {
 	private Date orderHandleTime;
 	private int orderTotalMoney;
 	private int orderPrice;
-	private int orderMngId;
+	private String orderMngId;
 
 	public Order(){
 	}	
 	
 	@Column(name="ORDER_MNG_ID")
-	public int getOrderMngId() {
+	public String getOrderMngId() {
 		return orderMngId;
 	}
 
 
-	public void setOrderMngId(int orderMngId) {
+	public void setOrderMngId(String orderMngId) {
 		this.orderMngId = orderMngId;
 	}
 

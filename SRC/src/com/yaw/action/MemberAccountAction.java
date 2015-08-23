@@ -365,6 +365,8 @@ public class MemberAccountAction extends Struts2Action {
 			 */
 			Map data=WebUtils.generateMapData("url",memberTypeValue==0?URL_BACK_TOURIST_MAIN:URL_BACK_ESCORT_MAIN);
 			out.print(WebUtils.responseData(1, data));
+		}catch (BusinessException e) {
+			out.print(WebUtils.responseInputCheckError(e.getMessage()));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -373,19 +375,18 @@ public class MemberAccountAction extends Struts2Action {
 	}
 	
 	/**
-	 * 约啊币消费,生成一个服务认购订单,并即时修改付款状态,同时修改帐号约啊币余额;
+	 * 约啊币支付,即时修改付款状态,同时修改帐号约啊币余额;
 	 * @param sid 增值服务id
-	 * @param cc 币数
+	 * @param billId 订单号
 	 * @return {code:1,约啊币消费正常,-1,服务器异常,-2会话超时}
 	 */
 	public String yueaCoinConsume(){
 		String serviceId=request.getParameter("sid");
-		String coinCount=request.getParameter("cc");
+		String billId=request.getParameter("billId");
 		int intServiceId=Integer.parseInt(serviceId);
-		int intCoinCount=Integer.parseInt(coinCount);
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		try {
-			memberAccountService.yueaCoinConsume(user.getMaLoginName(), intServiceId, intCoinCount);
+			memberAccountService.yueaCoinConsume(user.getMaLoginName(),billId);
 			out.print(WebUtils.responseCode(1));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -408,7 +409,42 @@ public class MemberAccountAction extends Struts2Action {
 		try {
 			//生成一个消费认购订单
 			Order order=new Order();
+			int price=incrementServiceService.getServicePrice(serviceId);
 			order.setOrderCount(1);
+			order.setOrderMid(user.getMaLoginName());
+			order.setOrderNo(SystemServiceImpl.generateOrderNo());
+			order.setOrderPayMode(OrderService.PAYMODE_PAY_NO);
+			order.setOrderIncserviceId(serviceId);
+			order.setOrderPrice(price);
+			order.setOrderIncserviceName(incrementServiceService.getServiceName(serviceId));
+			order.setOrderStatus(OrderService.STATUS_PAY_NO);
+			order.setOrderSubmitTime(new Date());
+			order.setOrderTotalMoney(price);
+			//提交请求
+			orderService.submitOrder(order);
+			out.print(WebUtils.responseCode(1));
+		} catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
+		return null;
+	}
+	
+	/**
+	 * 方法功能描述：提交会员认购增值服务订单；
+	 * @param sid 增值服务ID
+	 * @return
+	 */
+	public String applyIncrementService(){
+		String sid=request.getParameter("sid");
+		try {
+			int serviceId=Integer.parseInt(sid);
+			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+			int price=incrementServiceService.getServicePrice(serviceId);
+			//生成一个增值服务的认购订单
+			Order order=new Order();
+			order.setOrderCount(1);
+			order.setOrderPrice(price);
 			order.setOrderMid(user.getMaLoginName());
 			order.setOrderNo(SystemServiceImpl.generateOrderNo());
 			order.setOrderPayMode(OrderService.PAYMODE_PAY_NO);
@@ -416,13 +452,14 @@ public class MemberAccountAction extends Struts2Action {
 			order.setOrderIncserviceName(incrementServiceService.getServiceName(serviceId));
 			order.setOrderStatus(OrderService.STATUS_PAY_NO);
 			order.setOrderSubmitTime(new Date());
-			order.setOrderTotalMoney(incrementServiceService.getServicePrice(serviceId));
+			order.setOrderTotalMoney(price);
 			//提交请求
 			orderService.submitOrder(order);
 			out.print(WebUtils.responseCode(1));
+		} catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("增值服务项无效"));
 		} catch (Exception e) {
-			long errorLogId=ExceptionLogger.writeLog(e, this);
-			out.print(WebUtils.responseServerException(errorLogId));
+			out.print(WebUtils.responseServerException(-1));
 		}
 		return null;
 	}
@@ -439,7 +476,7 @@ public class MemberAccountAction extends Struts2Action {
 		MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 		try {
 			int serviceId=incrementServiceService.getYeacoinServiceId();
-			//生成一个消费认购订单
+			//生成一个约啊币的认购订单
 			Order order=new Order();
 			order.setOrderCount(intMoney/incrementServiceService.getServicePrice(serviceId));
 			order.setOrderPrice(incrementServiceService.getServicePrice(serviceId));
@@ -540,8 +577,10 @@ public class MemberAccountAction extends Struts2Action {
 				user.setMaAuthenticated(authenticationCode);
 				//EMAIL认证后，增加诚意指数
 				user.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_EMAIL, user));
-				
 				memberAccountService.update(user);
+				
+				//因诚意度变更，则须同步更新用户的排名权重				 				
+				memberAccountService.updateOrderWeigth(user);
 				
 				session.removeAttribute(key);
 				out.print(WebUtils.responseCode(1));
@@ -595,9 +634,11 @@ public class MemberAccountAction extends Struts2Action {
 				byte authenticationCode=BusinessServiceImpl.generateAuthenticationCode(user, MemberAccountService.AUTHENTICATE_PHONE);				
 				user.setMaAuthenticated(authenticationCode);
 				//手机认证后，增加诚意指数
-				user.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_PHONE, user));
-				
+				user.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_PHONE, user));				
 				memberAccountService.update(user);
+				
+				//因诚意度变更，则须同步更新用户的排名权重				 				
+				memberAccountService.updateOrderWeigth(user);
 				out.print(WebUtils.responseCode(1));
 			}else{
 				out.print(WebUtils.responseError("验证码不正确", -5));

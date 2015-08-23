@@ -48,7 +48,7 @@ public class BusinessServiceImpl {
 		/*
 		 * 各指标的值按其权重,计算出最后的总排名权重值:
 		 * 会员等级权重:5, 会员等级所:普通10,蓝钻50,黄钻:70,皇冠:100
-		 * 诚意度权重:3,  诚意认证:email:30,手机50,视频:100,身份证认证:100,健康:100
+		 * 诚意度权重:2,  诚意认证:email:30,手机50,视频:100,身份证认证:100,健康:100
 		 * 积分值权重:2: 
 		 * 资料完善度权重:1
 		 * 在线否:+5分;
@@ -61,7 +61,7 @@ public class BusinessServiceImpl {
 			case MemberAccountService.GRADE_IMPERIAL_CROWN:gradeValue= 100;break;
 			default:break;
 		}
-		return (int)(gradeValue*0.5+sincerity*0.5+poits*0.2+completePercent*0.1+(isOnline?5:0));
+		return (int)(gradeValue*0.5+sincerity*0.2+poits*0.2+completePercent*0.1+(isOnline?5:0));
 	}
 
 	/**

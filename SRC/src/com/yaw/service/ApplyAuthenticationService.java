@@ -43,11 +43,20 @@ public interface ApplyAuthenticationService extends EntityService<ApplyAuthentic
 	void submitAuthentication(String memberId,byte authenticationType) throws Exception;
 	
 	/**
-	 * 审核 受理会员提交的认证申请案
+	 * 受理会员提交的认证申请案
 	 * @param manageId 申述管理员ID
 	 * @param applyAutheticationId 受理申请ID
 	 * @param isPass 审核通过否
 	 * @param nopassReason 未通过原因
 	 */
 	void handleAuthentication(String manageId,int applyAutheticationId,boolean isPass,String nopassReason)throws Exception;
+	
+	
+	/**
+	 * 分页查取已处理（未处理）认证申请
+	 * @Param isHandled 是否已处理  true：已处理
+	 * @param paging 分页对象
+	 * @return
+	 */
+	List<Map> queryAutheticationList(boolean isHandled,Paging paging) throws Exception;
 }

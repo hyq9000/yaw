@@ -23,7 +23,7 @@ public class ApplicationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		/*
-		 * 读取任务定时时长
+		 * 读取任务定时时长(分钟)
 		 */
 		String intervalStr=ApplicationConfig.getInstance().getProperty("task.focus");
 		int tmp=3600;
@@ -43,7 +43,7 @@ public class ApplicationListener implements ServletContextListener {
 			public void run() {	
 				while(true){
 					try {
-						Thread.currentThread().sleep(interval*1000);
+						Thread.currentThread().sleep(interval*1000*60);
 					} catch (InterruptedException e) {;}
 					
 					int rs=cb.flushToDB();

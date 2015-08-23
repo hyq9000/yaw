@@ -42,38 +42,47 @@ public class OperatingManageActionTest {
 	}
 
 	@Test
-	public void testUpgradeVip() {
+	public void testhandleUpgradeVip() {
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("mid", "admin");
 		parameter.put("grade", "2");
 		parameter.put("billId", "20150724102650270");
-		toUrl("upgradeVip", parameter,"99AC9D35B5DFFCDFBC03F52AB3546212");
+		toUrl("handleUpgradeVip", parameter,"99AC9D35B5DFFCDFBC03F52AB3546212");
 	}
 
 	@Test
-	public void testRechargeMoney() {
+	public void testHandleRechargeMoney() {
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("mid", "mng");
-		parameter.put("billId", "20150724025040572");
-		toUrl("rechargeMoney", parameter,"2F60C3654D4715373E1588BB407B8F24");
+		parameter.put("billId", "20150821021926703");
+		toUrl("handleRechargeMoney", parameter,"21135BB6B17D52C12728D0AFC059E424");
 	}
 
 	@Test
-	public void testAuthentication() {
+	public void testHandleOrder() {
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("mid", "admin");
+		parameter.put("billId", "20150822045759709");
+		toUrl("handleOrder", parameter,"6CFA2457993CCCC58824A6205E17C4B5");
+	}
+
+	
+	@Test
+	public void testHandleAuthentication() {
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("reason", "可以");
 		parameter.put("ispass", "false");
 		parameter.put("applyId", "2");
-		toUrl("authentication", parameter,"EEDD5F478DC2398B11AF6F6AB697BD8C");
+		toUrl("handleAuthentication", parameter,"EEDD5F478DC2398B11AF6F6AB697BD8C");
 	}	
 	
 	@Test
-	public void testAuditApplyEscortClub() {
+	public void testHandleApplyEscortClub() {
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("reason", "ok");
 		parameter.put("ispass", "true");
 		parameter.put("applyId", "5");
-		toUrl("auditApplyEscortClub", parameter,"149A3BF87E09C0A3CF544EBBABBD4A94");
+		toUrl("handleApplyEscortClub", parameter,"149A3BF87E09C0A3CF544EBBABBD4A94");
 	}
 
 	@Test

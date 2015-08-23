@@ -59,6 +59,9 @@ public class ApplyAuthenticationServiceImpl extends
 			//手机认证后，增加诚意指数
 			member.setMaSincerity(BusinessServiceImpl.getSincerity(MemberAccountService.AUTHENTICATE_PHONE,member));			
 			memberAccountService.update(member);
+			
+			//因诚意度变更，则须同步更新用户的排名权重				 				
+			memberAccountService.updateOrderWeigth(member);
 		}
 	}
 
@@ -71,6 +74,13 @@ public class ApplyAuthenticationServiceImpl extends
 		this.add(applyAuthentication);
 	}
 
+	@Override
+	public List<Map> queryAutheticationList(boolean isHandled, Paging paging)
+			throws Exception {
+		// TODO 分页查取已处理（未处理）认证申请
+		return null;asdfasdfa action层还要加上对应的功能；测试也要测试
+	}
+	
 	public void setMemberAccountService(MemberAccountService memberAccountService) {
 		this.memberAccountService = memberAccountService;
 	}

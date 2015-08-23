@@ -1,5 +1,8 @@
 package com.yaw.service;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import com.common.utils.EntityService;
 import com.yaw.entity.RIncserviceMember;
 
@@ -21,4 +24,13 @@ public interface RIncserviceMemberService extends
 		SERVICE_CLASS_TOP=13,
 		SERVICE_PUBLIC_CONTACT=2,
 		SERVICE_HOMEPAGE_LINE=3;
+	
+	/**
+	 * 方法功能描述：当用户实际付款成功后，将服务绑定到用户，成功后，该用户的增值服务即即刻生效
+	 * @param orderNo 订单号
+	 * @param serviceId 增值服务id
+	 * @param memberId 用户登陆名
+	 * @throws Exception
+	 */
+	public void bindIncToMember(String orderyNo,int serviceId,String memberId) throws Exception;
 }

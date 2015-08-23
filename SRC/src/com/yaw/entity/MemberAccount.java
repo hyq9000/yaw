@@ -18,7 +18,7 @@ public class MemberAccount implements Serializable {
 	private int maYaCoin;
 	private byte maCompletedPercent;
 	private int maFocusCount;
-	private int maGrade;
+	private byte maGrade;
 	private String maIpAddr;
 	private String maLoginIp;
 	private Date maLoginTime;
@@ -146,11 +146,11 @@ public class MemberAccount implements Serializable {
 
 
 	@Column(name="MA_GRADE")
-	public int getMaGrade() {
+	public byte getMaGrade() {
 		return this.maGrade;
 	}
 
-	public void setMaGrade(int maGrade) {
+	public void setMaGrade(byte maGrade) {
 		this.maGrade = maGrade;
 	}
 

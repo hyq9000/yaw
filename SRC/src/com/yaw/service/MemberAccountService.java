@@ -22,11 +22,11 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	/**普通会员*/
 	byte GRADE_GENERAL=0;
 	/**蓝钻*/
-	byte GRADE_BLUE_DIAMOND=1;
+	byte GRADE_BLUE_DIAMOND=IncrementServiceService.VIP_GRADE_BLUE_DIAMOND;
 	/**黄钻*/
-	byte GRADE_YELLOW_DIAMOND=2;
+	byte GRADE_YELLOW_DIAMOND=IncrementServiceService.VIP_GRADE_YELLOW_DIAMOND;
 	/**皇冠*/
-	byte GRADE_IMPERIAL_CROWN=3;
+	byte GRADE_IMPERIAL_CROWN=IncrementServiceService.VIP_GRADE_IMPERIAL_CROWN;
 	
 	/**游客*/
 	byte TYPE_TOURIST=0;
@@ -154,12 +154,11 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	 */
 	MemberAccount regist(String loginName,String password,char Sex,byte memberType,String ip)throws Exception;
 	/**
-	 * 约啊币消费,调用该方法前,应生成一个服务认购订单;
+	 * 约啊币支支付,支付成功后，将服务绑定给用户
 	 * @param memberId 会员帐号
-	 * @param consumeType  常量
-	 * @param money 币数
+	 * @param billId  常量
 	 */
-	void yueaCoinConsume(String memberId,int serviceId,int coinCount)throws Exception;
+	void yueaCoinConsume(String memberId,String billId)throws Exception;
 	
 	/**
 	 * 查取最新注册的前topCount位会员,按注册时间倒序排序;
@@ -201,4 +200,12 @@ public interface MemberAccountService extends  EntityService<MemberAccount> {
 	 * @return 没有则返回null;
 	 */
 	public List getAllMakeFriendOffMemeberId()throws  Exception;
+	
+	
+	/**
+	 * 修改会员的排名权重值,权重值本应设计在yaw_member_account表中，但为了方便查询，
+	 * 在对应的伴游表（yaw_escort_info)与(yaw_tourist_info)表中也冗余了一份；
+	 * @param member 会员对象
+	 */
+	public void updateOrderWeigth(MemberAccount member)throws  Exception;
 }

@@ -96,9 +96,9 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	public List<EscortInfo> simpleSearch(char sex, String city, boolean isOnline)
 			throws Exception {
 		String ql="FROM EscortInfo WHERE escortSex=? AND escortLiveAddr=? AND escortMid in("
-				+ " SELECT o.maLoginName FROM MemberAccount as o WHERE AS o.maOnline=?) "
-				+ " ORDER BY escortOrderWeight DESC";		
-		return super.query(ql, sex,city,isOnline?1:0);		
+				+ " SELECT o.maLoginName FROM MemberAccount as o WHERE  o.maOnline=?) "
+				+ " ORDER BY escortOrderWeight";		
+		return super.query(ql, sex+"",city,(byte)(isOnline?1:0));		
 	}
 
 	@Override
@@ -133,8 +133,8 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 	@Override
 	@UnShelve(property="escortMid",type=EscortInfo.class)
 	public EscortInfo findHomePageHeadline() throws Exception {
-		String ql="FROM EscortInfo WHERE escoftMid in(select o.rimMid from RIncserviceMember as o where rimIncserviceId=?) ";
-		List<EscortInfo> list=super.query(ql, RIncserviceMemberService.SERVICE_HOMEPAGE_LINE);
+		String ql="FROM EscortInfo WHERE escortMid in(select o.rimMid from RIncserviceMember as o where rimIncserviceId=?) ";
+		List<EscortInfo> list=super.query(ql, (int)RIncserviceMemberService.SERVICE_HOMEPAGE_LINE);
 		return list!=null&& list.size()>0?list.get(0):null;
 	}
 

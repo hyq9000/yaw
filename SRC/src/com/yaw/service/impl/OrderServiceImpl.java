@@ -11,14 +11,17 @@ import com.common.utils.BusinessException;
 import com.yaw.common.ApplicationConfig;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Order;
+import com.yaw.service.IncrementServiceService;
 import com.yaw.service.MemberAccountService;
 import com.yaw.service.OrderService;
+import com.yaw.service.RIncserviceMemberService;
 
 public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		OrderService {
 	MemberAccountService memberAccountService;
 	//短信服务
 	ShortMessageService sms;
+	private RIncserviceMemberService rincService;
 	//客服电话,用逗号隔开的多个号码;由spring注入
 	String servicePhones;
 	
@@ -58,11 +61,12 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		Order order=this.getById(billId);
 		order.setOrderStatus(OrderService.STATUS_HANDLED);
 		order.setOrderHandleTime(new Date());
+		order.setOrderMngId(managerId);
 		this.update(order);		
 		
 		MemberAccount member=memberAccountService.getById(memberId);
 		//会员级别就是增值服务项中的ID值；
-		member.setMaGrade(order.getOrderIncserviceId());
+		member.setMaGrade((byte)order.getOrderIncserviceId());
 		memberAccountService.update(member);
 	}
 	
@@ -75,6 +79,7 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		Order order=this.getById(billId);
 		order.setOrderStatus(OrderService.STATUS_HANDLED);
 		order.setOrderHandleTime(new Date());
+		order.setOrderMngId(memberId);
 		this.update(order);		
 		
 		/*
@@ -85,6 +90,39 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		memberAccountService.update(member);
 	}
 
+	@Override
+	public void handleOrder(String managerId,String orderId)throws Exception {
+		Order order=this.getById(orderId);
+		if(order==null){
+			throw new BusinessException("找不到此订单");
+		}
+		if(order.getOrderStatus()!=STATUS_PAY_YES){
+			throw new BusinessException("此订单未成功付款");
+		}
+			
+		/*
+		 * 修改订单受理属性
+		 */
+		order.setOrderHandleTime(new Date());
+		order.setOrderMngId(managerId);
+		order.setOrderStatus(STATUS_HANDLED);	
+		this.update(order);
+		/*
+		 * 如果是约啊币充值，则修改会员约啊币余额，否则将服务绑定到用户
+		 */
+		if(order.getOrderIncserviceId()==IncrementServiceService.YA_COIN){
+			MemberAccount member=memberAccountService.getById(order.getOrderMid());
+			int balance=member.getMaYaCoin();
+			balance+=order.getOrderTotalMoney();
+			member.setMaYaCoin(balance);
+			memberAccountService.update(member);
+		}else{
+			//将服务绑定给用户
+			rincService.bindIncToMember(orderId,order.getOrderIncserviceId(),order.getOrderMid());	
+		}
+		
+	}
+	
 	@Override
 	public List<Map> queryWaitforHandleOrderList(byte status, Paging paging) throws Exception {
 		String sql="select ORDER_INCSERVICE_NAME as serviceName,ESCORT_PHONE as phone,"
@@ -102,6 +140,7 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 		return this.executeQuery(sql, paging, status,status);
 	}
 	
+
 	
 	public void setServicerPhones(String servicePhones) {
 		this.servicePhones = servicePhones;
@@ -118,4 +157,9 @@ public class OrderServiceImpl extends DaoHibernateImpl<Order> implements
 	public void setServicePhones(String servicePhones) {
 		this.servicePhones = servicePhones;
 	}
+
+	public void setRincService(RIncserviceMemberService rincService) {
+		this.rincService = rincService;
+	}
+	
 }

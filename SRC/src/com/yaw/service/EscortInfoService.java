@@ -90,4 +90,6 @@ public interface EscortInfoService extends EntityService<EscortInfo> {
 	 * @throws Exception
 	 */
 	public List<EscortInfo> getEscortInfoListByIds(String ... memberIds)throws  Exception;
+	
+	
 }

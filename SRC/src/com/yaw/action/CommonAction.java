@@ -47,6 +47,9 @@ public class CommonAction extends Struts2Action {
 	private File image; //struts文件上传后临时文件名
 	private String imageContextType;
 	
+	
+	
+	
 	/**
 	 * 提交视频/身份/健康/导游等认证申请,并及时通知后台处理;
 	 * @param atype 认证类型 ApplyAuthenticationService.TYPE_开头的常量值

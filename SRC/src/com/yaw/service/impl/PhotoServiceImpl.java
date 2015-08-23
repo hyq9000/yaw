@@ -20,8 +20,8 @@ import com.yaw.service.PhotoService;
 public class PhotoServiceImpl extends DaoHibernateImpl<Photo> implements
 		PhotoService {
 	private MemberAccountService memberAccountService;
-	private EscortInfoServiceImpl escortInfoServiceImpl;
-	private TouristInfoServiceImpl touristInfoServiceImpl;
+	private EscortInfoServiceImpl escortInfoService;
+	private TouristInfoServiceImpl touristInfoService;
 	@Override
 	public List<Photo> getPhotoList(String memberId, Paging paging)throws Exception {
 		List<Photo> list=this.queryByProperty("photoMid",Dao.OP_EQUALS, memberId,paging) ;
@@ -58,4 +58,20 @@ public class PhotoServiceImpl extends DaoHibernateImpl<Photo> implements
 			}
 		}			
 	}
+
+	public void setMemberAccountService(MemberAccountService memberAccountService) {
+		this.memberAccountService = memberAccountService;
+	}
+
+	public void setEscortInfoService(EscortInfoServiceImpl escortInfoService) {
+		this.escortInfoService = escortInfoService;
+	}
+
+	public void setTouristInfoService(TouristInfoServiceImpl touristInfoService) {
+		this.touristInfoService = touristInfoService;
+	}
+
+	
+	
+	
 }

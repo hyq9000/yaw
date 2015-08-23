@@ -244,12 +244,15 @@ public class FrontAction extends Struts2Action{
 		String memberId=request.getParameter("mid");
 		String pageNoStr=request.getParameter("pn");
 		String pageSizeStr=request.getParameter("psize");
-		int pageNo=Integer.parseInt(pageNoStr);
-		int pageSize=Integer.parseInt(pageSizeStr);
+		
 		try {
+			int pageNo=Integer.parseInt(pageNoStr);
+			int pageSize=Integer.parseInt(pageSizeStr);
 			List<Photo> list=photoService.getPhotoList(memberId, new Paging(pageSize,pageNo));
-			out.print(WebUtils.responseData(list.size(),list));
-		} catch (Exception e) {
+			out.print(WebUtils.responseData(list!=null?list.size():0,list));
+		}catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -272,7 +275,7 @@ public class FrontAction extends Struts2Action{
 		boolean on=online!=null&& online.trim().equals("on")?true:false;
 		try {
 			List data=escortInfoService.simpleSearch(csex, city, on);
-			out.print(WebUtils.responseData(data.size(), data));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -320,7 +323,7 @@ public class FrontAction extends Struts2Action{
 		int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);		
 		try {
 			List data=escortInfoService.queryByProperty("escortLiveAddr", city, new Paging(8, pageNo));
-			out.print(WebUtils.responseData(data.size(), data));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -337,7 +340,7 @@ public class FrontAction extends Struts2Action{
 		String city=request.getParameter("city");
 		try {
 			List data=escortInfoService.query8ByProperty("escortLiveAddr", city);
-			out.print(WebUtils.responseData(data.size(), data));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -349,7 +352,7 @@ public class FrontAction extends Struts2Action{
 	 * 找取享受"头版头条"伴游对象
 	 * @return 
 	 * {
-	 * 	 	data:{photo:url,age:12,msg:'自荐信'} 		
+	 * 	 	data:{photo:url,age:12,msg:'自荐信',mid:'会员ID'} 		
 	 * }
 	 * @throws Exception
 	 */
@@ -360,6 +363,7 @@ public class FrontAction extends Struts2Action{
 			data.put("facePic", escort.getEscortFacePic());
 			data.put("age", new Date().getYear()-escort.getEscortBirthday().getYear());
 			data.put("msg", escort.getEscortRecommend());
+			data.put("mid", escort.getEscortMid());
 			out.print(WebUtils.responseData(1, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -859,8 +863,6 @@ public class FrontAction extends Struts2Action{
 	public void setEscortInfoService(EscortInfoService escortInfoService) {
 		this.escortInfoService = escortInfoService;
 	}
-
-
 
 	public void setFocusService(MemberFocusService focusService) {
 		this.focusService = focusService;

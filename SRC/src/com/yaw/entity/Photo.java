@@ -20,25 +20,10 @@ public class Photo implements Serializable {
 	private String photoTitle;
 	private int photoType;
 	private String photoUrl;
-	private byte photoDemesion;
 
 	public Photo() {
 	}
-
 	
-	@Column(name="PHOTO_DEMESION")
-	public byte getPhotoDemesion() {
-		return photoDemesion;
-	}
-
-
-
-	public void setPhotoDemesion(byte photoDemesion) {
-		this.photoDemesion = photoDemesion;
-	}
-
-
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="PHOTO_ID")

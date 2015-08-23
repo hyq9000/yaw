@@ -1,5 +1,6 @@
 package com.yaw.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,13 @@ import com.yaw.common.SystemServiceImpl;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.MemberAccount;
 import com.yaw.entity.Order;
+import com.yaw.entity.RIncserviceMember;
 import com.yaw.entity.TouristInfo;
 import com.yaw.service.EscortInfoService;
 import com.yaw.service.IncrementServiceService;
 import com.yaw.service.MemberAccountService;
 import com.yaw.service.OrderService;
+import com.yaw.service.RIncserviceMemberService;
 import com.yaw.service.TouristInfoService;
 
 /**
@@ -38,6 +41,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	private TouristInfoService touristInfoService;
 	private OrderService orderService;
 	private IncrementServiceService incrementServiceService;
+	private RIncserviceMemberService rincService;
 	
 	@Points(action=PointsActionType.POINTS_LOGIN,index=0)
 	@Override
@@ -57,6 +61,9 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 				user.setMaIpAddr(null);
 			}
 			this.update(user);
+			
+			//因用户的在线状态变更，及时同时排名权重的值
+			this.updateOrderWeigth(user);
 			return user;
 		}else
 			return null;
@@ -70,6 +77,9 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		//设置在线时长
 		member.setMaOnlineLong((int)timeLen/1000);
 		super.update(member);
+		
+		//因用户的在线状态变更，及时同时排名权重的值
+		this.updateOrderWeigth(member);
 	}
 
 	@Override
@@ -131,6 +141,10 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	@Override
 	public MemberAccount regist(String loginName, String password, char sex,
 			byte memberType,String ip)throws Exception {
+		
+		if(this.checkMemberName(loginName))
+			throw new BusinessException("该用户名已经存在！");
+		
 		MemberAccount member=new MemberAccount();
 		member.setMaLoginName(loginName);
 		member.setMaPassword(DigestUtils.md5Hex(password+ApplicationConfig.getInstance().getScretKey()));
@@ -139,6 +153,7 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 		member.setMaOnline(ONLINE);
 		member.setMaLoginIp(ip);
 		member.setMaMfStatus(MAKEFRIEND_ON);
+		member.setMaRegistTime(new Date());
 		
 		//加入商业逻辑:送约啊币
 		member.setMaYaCoin(BusinessServiceImpl.getRegistPresentYacoin());			
@@ -164,29 +179,30 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	}
 
 	@Override
-	public void yueaCoinConsume(String memberId, int serviceId, int coinCount) throws Exception{
+	public void yueaCoinConsume(String memberId,String billId) throws Exception{
 		MemberAccount member=super.getById(memberId);
 		int balance=member.getMaYaCoin();
-		balance-=coinCount;
+		Order order=orderService.getById(billId);
+		if(order==null){
+			throw new BusinessException("订单："+billId+"没有找到");
+		}
+		balance-=order.getOrderTotalMoney();
 		if(balance>=0){
+			//修改余额
 			member.setMaYaCoin(balance);
+			this.update(member);
 			
-			//生成一个消费认购订单
-			Order order=new Order();
-			order.setOrderCount(coinCount);
-			order.setOrderMid(memberId);
-			order.setOrderNo(SystemServiceImpl.generateOrderNo());
-			order.setOrderIncserviceId(serviceId);
+			//修改订单的支付及处理状态
 			order.setOrderPayMode(OrderService.PAYMODE_YUEACION);
-			order.setOrderIncserviceName(incrementServiceService.getServiceName(serviceId));
 			order.setOrderStatus(OrderService.STATUS_PAY_YES);
-			order.setOrderSubmitTime(new Date());
 			order.setOrderPayTime(new Date());
 			order.setOrderPayOrg("约啊网");
-			order.setOrderTotalMoney(incrementServiceService.getServicePrice(serviceId)*coinCount);
-			//提交订单
-			orderService.add(order);
+			orderService.update(order);
 			
+			/*
+			 * 关联用户与增值服务项关系
+			 */
+			rincService.bindIncToMember(billId,order.getOrderIncserviceId(), memberId);
 		}else
 			throw new BusinessException("约啊币余额不足!");		
 	}
@@ -215,6 +231,10 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 
 	public void setEscortInfoService(EscortInfoService escortInfoService) {
 		this.escortInfoService = escortInfoService;
+	}
+
+	public void setRincService(RIncserviceMemberService rincService) {
+		this.rincService = rincService;
 	}
 
 	public void setOrderService(OrderService orderService) {
@@ -306,5 +326,24 @@ public class MemberAccountServiceImpl extends DaoHibernateImpl<MemberAccount>
 	public List getAllMakeFriendOffMemeberId() throws  Exception{
 		String sql="select MA_LOGIN_NAME from YAW_MEMBER_ACCOUNT where A_MF_STATUS=0";
 		return super.executeQuery(sql);
+	}
+	
+	@Override
+	public void updateOrderWeigth(MemberAccount member)	throws Exception {
+		//修改用户的权重值；
+		int orderWeight=BusinessServiceImpl.generateOrderWeight(member.getMaGrade(),
+				member.getMaSincerity(), 
+				member.getMaPoints(), 
+				member.getMaCompletedPercent(),
+				member.getMaOnline()==1);		
+		member.setMaOrderWeight(orderWeight);	
+		this.update(member);
+
+		String sql="";
+		if(member.getMaType()==MemberAccountService.TYPE_ESCORT)
+			sql="update YAW_ESCORT_INFO set ESCORT_ORDER_WEIGHT=? where ESCORT_MID=?";
+		else if(member.getMaType()==MemberAccountService.TYPE_TOURIST)
+			sql="update YAW_TOURIST_INFO set TOURIST_ORDER_WEIGHT=? where TOURIST_MID=?";
+		this.executeUpdate(sql, orderWeight,member.getMaLoginName());
 	}
 }

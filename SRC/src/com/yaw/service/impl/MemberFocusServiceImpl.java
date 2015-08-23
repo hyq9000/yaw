@@ -106,13 +106,15 @@ public class MemberFocusServiceImpl extends DaoHibernateImpl<MemberFocus>
 		try {
 			int i=0;
 			if(memberFocusCache!=null && memberFocusCache.size()>0){
-				for(Map.Entry<String,FucusValue> en:memberFocusCache.entrySet()){				
-					this.executeUpdate("update yaw_member_account set MA_FOCUS_COUNT=? where MA_LOGIN_NAME=?" , en.getValue().newValue,en.getKey());
-					/*
-					 * 更新后，设置同步了的值
-					 */
-					 ensdfdfdf.getValue().oldValue=en.getValue().newValue;
-					i++;
+				for(Map.Entry<String,FucusValue> en:memberFocusCache.entrySet()){	
+					if(en.getValue().oldValue!=en.getValue().newValue){
+						this.executeUpdate("update yaw_member_account set MA_FOCUS_COUNT=? where MA_LOGIN_NAME=?" , en.getValue().newValue,en.getKey());
+						/*
+						 * 更新后，设置同步了的值
+						 */
+						 en.getValue().oldValue=en.getValue().newValue;
+						i++;
+					}
 				}
 			}
 			return i;

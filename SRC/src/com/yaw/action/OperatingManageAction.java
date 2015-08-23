@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
+import com.common.utils.BusinessException;
 import com.common.web.Struts2Action;
 import com.common.web.WebContextUtil;
 import com.common.web.WebUtils;
@@ -11,6 +12,7 @@ import com.yaw.common.ApplicationConfig;
 import com.yaw.entity.ApplyAuthentication;
 import com.yaw.entity.EscortInfo;
 import com.yaw.entity.ManagerAccount;
+import com.yaw.entity.Order;
 import com.yaw.service.ApplyAuthenticationService;
 import com.yaw.service.EscortInfoService;
 import com.yaw.service.ManagerAccountService;
@@ -94,12 +96,12 @@ public class OperatingManageAction extends Struts2Action {
 
 	
 	/**
-	 * 升级会员等级
+	 * 受理已付款的会员等级升级订单
 	 * @param mid 会员id
 	 * @param billId 订单号
 	 * @param grade 会员等级:可以是MemberAccountService.GRADE_开头的这几个常量值
 	 */
-	public String upgradeVip(){
+	public String handleUpgradeVip(){
 		String mid=request.getParameter("mid");
 		String grade=request.getParameter("grade");	
 		String billId=request.getParameter("billId");
@@ -115,8 +117,33 @@ public class OperatingManageAction extends Struts2Action {
 		return null;
 	}
 	
+	/**
+	 * 方法功能描述：授理付款成功的订单
+	 * @param billId 订单ID
+	 * @return
+	 */
+	public String handleOrder(){
+		String orderId=request.getParameter("billId");
+		ManagerAccount user=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
+		if(orderId==null || orderId.isEmpty()){
+			out.print(WebUtils.responseInputCheckError("订单号不正确"));
+		}else{
+			try {
+				orderService.handleOrder(user.getMngLoginName(), orderId);		
+				out.print(WebUtils.responseCode(1));
+			} catch (BusinessException e) {
+				out.print(WebUtils.responseInputCheckError(e.getMessage()));
+			}catch (Exception e) {
+				long errorLogId=ExceptionLogger.writeLog(e, this);
+				out.print(WebUtils.responseServerException(errorLogId));
+			}
+		}
+		return null;
+	}
+	
 	
 	/**
+	 * 受理已经付款的公员充值订单；
 	 * 给会员手工充值,一元人民币换成一个"约啊币";该请求由后台管理员,对充值的付款确认后,通过后台管理程序来完成;
 	 * @param mid 会员id
 	 * @param money 元
@@ -124,7 +151,7 @@ public class OperatingManageAction extends Struts2Action {
 	 * @return json对象
 	 * {code:1充值成功,-1服务器异常,-14:输入验证不正确}
 	 */
-	public String rechargeMoney(){
+	public String handleRechargeMoney(){
 		String mid=request.getParameter("mid");
 		String billId=request.getParameter("billId");
 		ManagerAccount user=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
@@ -146,7 +173,7 @@ public class OperatingManageAction extends Struts2Action {
 	 * @Param ispass 是否通过 0，未通，1：通过
 	 * @param reason 未通过原因
 	 */
-	public String authentication(){
+	public String handleAuthentication(){
 		try {
 			ManagerAccount user=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String reason=request.getParameter("reason");
@@ -166,12 +193,12 @@ public class OperatingManageAction extends Struts2Action {
 	}
 	
 	/**
-	 * 审批加入伴游俱乐部申请
+	 * 受理加入伴游俱乐部认证申请
 	 * @param applyId 认证申请ID
 	 * @Param ispass 是否通过
 	 * @param reason 未通过原因
 	 */
-	public String auditApplyEscortClub() {
+	public String handleApplyEscortClub() {
 		try {
 			ManagerAccount user=(ManagerAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
 			String reason=request.getParameter("reason");
@@ -240,6 +267,25 @@ public class OperatingManageAction extends Struts2Action {
 		String pn=request.getParameter("pn");
 		int pageNo=Integer.parseInt(pn);
 		return this.queryWaitforHandleOrderList(OrderService.STATUS_PAY_YES,pageNo);
+	}
+	
+	
+	/**
+	 * 分页查询待处理的认证申请
+	 * @param paging
+	 * @return 格式如原型所述
+	 */
+	public String queryWaitforHandleAuthetication(){
+		try {			
+			List data=orderService.queryWaitforHandleOrderList(status, new Paging(15, pageNo));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
+		} catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("分页数不正确"));
+		} catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
+		return null;
 	}
 	
 	/**

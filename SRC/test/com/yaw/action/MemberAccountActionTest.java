@@ -73,12 +73,13 @@ public class MemberAccountActionTest {
 	@Test
 	public void testLogin() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("loginName", "mng");//小朋友
+		parameter.put("loginName", "admin");//小朋友
 		parameter.put("pwd", "123456");
 		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!login.action",parameter);
 		try {
 			String rs=EntityUtils.toString(response.getEntity());
 			System.out.println(response);
+			System.out.println(rs);
 			assertEquals("{\"code\":1}",rs);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -89,7 +90,7 @@ public class MemberAccountActionTest {
 
 	@Test
 	public void testLogout() {
-		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!logout.action;jsessionid=C04B2734A402F5F1139F5273EDFDF285",null);
+		HttpResponse response=HttpUtils.post("http://localhost:8080/yaw/act/member!logout.action;jsessionid=81786F85A0EE3B6DF74708155D0AF71A",null);
 		try {
 			String rs=EntityUtils.toString(response.getEntity());
 			System.out.println(response);
@@ -131,7 +132,7 @@ public class MemberAccountActionTest {
 	@Test
 	public void testRegist() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("ln", "爱人与人");
+		parameter.put("ln", "男人与女人");
 		parameter.put("sex", "男");
 		parameter.put("pwd", "123456");
 		parameter.put("mt", "0");
@@ -151,23 +152,30 @@ public class MemberAccountActionTest {
 	public void testYueaCoinConsume() {
 		Map<String, String> parameter=new HashMap<String, String>();
 		parameter.put("sid", "1");
-		parameter.put("cc", "1");
-		toUrl("yueaCoinConsume", parameter, "38E60348342482025C13245438647A2D");
+		parameter.put("billId", "20150822050101459");
+		toUrl("yueaCoinConsume", parameter, "28A2A814DDEA1283224EFE02C8682F93");
 	}
 
 	@Test
 	public void testApplyUpgradeVip() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("vg", "2");
-		toUrl("applyUpgradeVip", parameter, "F617B2EA4E900F2DEE441BFC42B779BD");
+		parameter.put("vg", "4");
+		toUrl("applyUpgradeVip", parameter, "28A2A814DDEA1283224EFE02C8682F93");
 	}
 
 	@Test
 	public void testApplyRechargeMoney() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("money", "200");
-		toUrl("applyRechargeMoney", parameter, "80D00A167FF22DA1CE3CC8E206873F8B");
+		parameter.put("money", "1000");
+		toUrl("applyRechargeMoney", parameter, "28A2A814DDEA1283224EFE02C8682F93");
 	}
+	@Test
+	public void testaAplyIncrementService(){
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("sid", "3");
+		toUrl("applyIncrementService", parameter, "9CBC5FC441F13028422B620B44F1E300");
+	}
+	
 
 	@Test
 	public void testApplyAuthentication() {

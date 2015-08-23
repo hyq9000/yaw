@@ -28,11 +28,19 @@ public class FrontActionTest extends TestCase {
 	}
 
 	public void testGetPhotoList() {
-		
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("mid", "mng");
+		parameter.put("pn","1");
+		parameter.put("psize","10");
+		Common.postToUrl("getPhotoList", parameter,null,"front");
 	}
 
 	public void testEscortSimpleSearch() {
-		
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("sex", "女");
+		parameter.put("city","长沙");
+		parameter.put("online","on");
+		Common.postToUrl("escortSimpleSearch", parameter,null,"front");
 	}
 
 	public void testEscortAdvanceSearch() {
@@ -40,19 +48,27 @@ public class FrontActionTest extends TestCase {
 	}
 
 	public void testEscortQueryByCity() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("city","武汉");
+		parameter.put("pn","1");
+		Common.postToUrl("escortQueryByCity", parameter,null,"front");
+	
 	}
 
 	public void testEscortQuery8ByCity() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("city","武汉");
+		Common.postToUrl("escortQuery8ByCity", parameter,null,"front");
 	}
 
 	public void testEscortFindHomePageHeadline() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();		
+		Common.postToUrl("escortFindHomePageHeadline", parameter,null,"front");
 	}
 
 	public void testEscort8Recommend() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();		
+		Common.postToUrl("escort8Recommend", parameter,null,"front");
 	}
 
 	public void testEscortQuery8NewRegist() {

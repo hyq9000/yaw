@@ -79,12 +79,17 @@ public class UnShelveAdvice implements MethodInterceptor {
 					Map map=(Map)tmp;
 					memberId=(String)map.get(propertyName);
 				}else{
-					memberId=BeanUtils.getProperty(tmp, propertyName);
+					try {
+						memberId=BeanUtils.getProperty(tmp, propertyName);
+					} catch (NoSuchMethodException e) {
+						//如果没有该方法，则继续
+						continue;
+					}
 				}
 				/*
 				 * 存在于makeFriedOffList，则从结果集中（resultList） 移除
 				 */
-				if(memberId!=null && !memberId.equals("")){
+				if(makeFriedOffList!=null && makeFriedOffList.size()>0 && memberId!=null && !memberId.equals("")){
 					if(makeFriedOffList.contains(memberId)){
 						it.remove();
 					}

@@ -64,11 +64,19 @@ public interface OrderService extends EntityService<Order> {
 	/**
 	 * 会员约啊币充值
 	 * @param memberId 会员id
+	 * @param managerId 管理员id
 	 * @param billId 订单号
 	 * @param count 充值数(元)
 	 */
 	void rechargeMoney(String managerId, String memberId,String billId) throws Exception;
 	
+	/**
+	 * 方法功能描述：管理员受理已经付款成功的订单；
+	 * @param managerid 管理员ID
+	 * @param orderId 订单ID
+	 * @throws Exception
+	 */
+	void handleOrder(String managerId,String orderId) throws Exception;
 	
 	/**
 	 * 分页查取待处理的未付(已付)订单
@@ -77,4 +85,6 @@ public interface OrderService extends EntityService<Order> {
 	 * @return
 	 */
 	List<Map> queryWaitforHandleOrderList(byte status,Paging paging) throws Exception;
+	
+	
 }
