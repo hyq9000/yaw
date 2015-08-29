@@ -70,10 +70,10 @@ public class OperatingManageActionTest {
 	@Test
 	public void testHandleAuthentication() {
 		Map<String, String> parameter=new HashMap<String, String>();
-		parameter.put("reason", "可以");
-		parameter.put("ispass", "false");
-		parameter.put("applyId", "2");
-		toUrl("handleAuthentication", parameter,"EEDD5F478DC2398B11AF6F6AB697BD8C");
+		parameter.put("reason", "感觉还行");
+		parameter.put("ispass", "true");
+		parameter.put("applyId", "6");
+		toUrl("handleAuthentication", parameter,"73FDD5252001179E40EA40F6B79DA9B8");
 	}	
 	
 	@Test
@@ -99,6 +99,21 @@ public class OperatingManageActionTest {
 		toUrl("queryWaitforHandlePaiedOrderList", parameter,"6EFDC6D345B693FDD023AB6352100B4F");
 	}
 
+
+	@Test
+	public void testQueryAlreadyHandledAuthetication() {
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("pn", "1");
+		toUrl("queryAlreadyHandledAuthetication", parameter,"73FDD5252001179E40EA40F6B79DA9B8");
+	}
+
+	@Test
+	public void testQueryWaitforHandledAuthetication() {
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("pn", "1");
+		toUrl("queryWaitforHandledAuthetication", parameter,"73FDD5252001179E40EA40F6B79DA9B8");
+	}
+	
 	@Test
 	public void testStatisticsQueryMemeber() {
 		Map<String, String> parameter=new HashMap<String, String>();

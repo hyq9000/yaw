@@ -22,7 +22,7 @@ public class TouristInfoServiceImpl extends DaoHibernateImpl<TouristInfo>
 	@Override
 	@UnShelve(property="touristMid",type=TouristInfo.class)
 	public List<TouristInfo> queryTouristOrder(int n) throws Exception {
-		String ql="from TouristInfo order by touristWeight desc";
+		String ql="from TouristInfo order by touristOrderWeight desc";
 		return super.query(ql, new Paging(n, 1), null);		
 	}
 

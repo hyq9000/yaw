@@ -244,7 +244,7 @@ public class OperatingManageAction extends Struts2Action {
 	 * @param status 订单状态
 	 * @return
 	 */
-	private String queryWaitforHandleOrderList(byte status,int pageNo) {
+	public String queryWaitforHandleOrderList(byte status,int pageNo) {
 		try {			
 			List data=orderService.queryWaitforHandleOrderList(status, new Paging(15, pageNo));
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
@@ -275,9 +275,31 @@ public class OperatingManageAction extends Struts2Action {
 	 * @param paging
 	 * @return 格式如原型所述
 	 */
-	public String queryWaitforHandleAuthetication(){
-		try {			
-			List data=orderService.queryWaitforHandleOrderList(status, new Paging(15, pageNo));
+	public String queryWaitforHandledAuthetication(){
+		try {
+			String pn=request.getParameter("pn");
+			int pageNo=Integer.parseInt(pn);
+			List data=applyAuthenticationService.queryAutheticationList(false,new Paging(15, pageNo));
+			out.print(WebUtils.responseData(data!=null?data.size():0, data));
+		} catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("分页数不正确"));
+		} catch (Exception e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseServerException(errorLogId));
+		}
+		return null;
+	}
+	
+	/**
+	 * 分页查询已处理的认证申请
+	 * @param paging
+	 * @return 格式如原型所述
+	 */
+	public String queryAlreadyHandledAuthetication(){
+		try {	
+			String pn=request.getParameter("pn");
+			int pageNo=Integer.parseInt(pn);
+			List data=applyAuthenticationService.queryAutheticationList(true,new Paging(15, pageNo));
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("分页数不正确"));

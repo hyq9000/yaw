@@ -424,11 +424,15 @@ public class FrontAction extends Struts2Action{
 	public String escortQueryBySex(){
 		String sex=request.getParameter("sex");
 		String pn=request.getParameter("pn");
-		int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);		
+			
 		try {
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);	
 			List list=escortInfoService.queryByProperty("escortSex", sex, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -443,10 +447,15 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String escortQuery8ByImage( ){
 		String image=request.getParameter("image");
+		
 		try {
-			List list=escortInfoService.query8ByProperty("escortImage", image);
+			byte imageValue=Byte.parseByte(image);
+			List list=escortInfoService.query8ByProperty("escortImage", imageValue);
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
-		} catch (Exception e) {
+		}  catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -460,13 +469,18 @@ public class FrontAction extends Struts2Action{
 	 * @throws Exception
 	 */
 	public String escortQueryByImage(){
-		String image=request.getParameter("image");
+		String image=request.getParameter("image");	
 		String pn=request.getParameter("pn");
-		int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);		
+			
 		try {
-			List list=escortInfoService.queryByProperty("escortImage", image, new Paging(8, pageNo));
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);	
+			byte imageValue=Byte.parseByte(image);
+			List list=escortInfoService.queryByProperty("escortImage", imageValue, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
-		} catch (Exception e) {
+		}  catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -483,9 +497,13 @@ public class FrontAction extends Struts2Action{
 	public String escortQuery8ByFeel(){
 		String feel=request.getParameter("feel");
 		try {
-			List list=escortInfoService.query8ByProperty("escortFeel", feel);
+			byte feelValue=Byte.parseByte(feel);
+			List list=escortInfoService.query8ByProperty("escortFeel", feelValue);
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
-		} catch (Exception e) {
+		}  catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -500,12 +518,16 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String escortQueryByFeel( ){
 		String feel=request.getParameter("feel");
-		String pn=request.getParameter("pn");
-		int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);		
+		String pn=request.getParameter("pn");			
 		try {
-			List list=escortInfoService.queryByProperty("escortFeel", feel, new Paging(8, pageNo));
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
+			byte feelValue=Byte.parseByte(feel);
+			List list=escortInfoService.queryByProperty("escortFeel", feelValue, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null ?list.size():0, list));
-		} catch (Exception e) {
+		}  catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -566,11 +588,15 @@ public class FrontAction extends Struts2Action{
 	public String queryHisTripplanList(){
 		String memberId=request.getParameter("mid");
 		String pnstr=request.getParameter("pn");
-		int pn=pnstr==null ||pnstr.trim().equals("")?1:Integer.parseInt(pnstr);
+		
 		try {
+			int pn=pnstr==null ||pnstr.trim().equals("")?1:Integer.parseInt(pnstr);
 			List list=tripplanService.getMemberTripplanList(memberId, new Paging(5,pn));
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -585,18 +611,24 @@ public class FrontAction extends Struts2Action{
 	public String  query16Tourist(){
 		try {
 			List<TouristInfo> list=touristInfoService.queryTouristOrder(16);
-			List<Map> data=new ArrayList<Map>();
+			List data=new ArrayList();
 			//根据每个会员的形象照URL设置成对应的头像照URL；
-			for(TouristInfo touristInfo : list){
-				String imageUrl=touristInfo.getTouristImage();
-				String headUrl="";
-				if(imageUrl==null || imageUrl.trim().equals(""))
-					headUrl=PhotoService.DEFAULT_HEAD_IMAGE;
-				else{
-					headUrl=BusinessServiceImpl.generateHeadUrl(imageUrl);
-				}
-				Map map=WebUtils.generateMapData(touristInfo.getTouristNickname(),headUrl);
-				data.add(map);				
+			//for(TouristInfo touristInfo : list){
+			for(int i=0;i<list.size();i++){
+				
+				if (list.get(i) instanceof TouristInfo) {
+					TouristInfo touristInfo=(TouristInfo)list.get(i);
+					String imageUrl=touristInfo.getTouristImage();
+					String headUrl="";
+					if(imageUrl==null || imageUrl.trim().equals(""))
+						headUrl=PhotoService.DEFAULT_HEAD_IMAGE;
+					else{
+						headUrl=BusinessServiceImpl.generateHeadUrl(imageUrl);
+					}
+					Map map=WebUtils.generateMapData(touristInfo.getTouristNickname(),headUrl);
+					data.add(map);	
+				}else
+					data.add(list.get(i));
 			}
 			out.print(WebUtils.responseData(list!=null ?list.size():0,list));
 		} catch (Exception e) {
@@ -621,10 +653,14 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String queryTripplanList(){
 		String pn=request.getParameter("pn");
-		int pageNo=Integer.parseInt(pn);
+		
 		try {
+			int pageNo=Integer.parseInt(pn);
 			List<Map> list=tripplanService.queryTripplanList(new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0, list));
+		}catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -642,14 +678,17 @@ public class FrontAction extends Struts2Action{
 	 * @param depart 出发地
 	 */
 	public String simpleSearchTripplan(){
-		try {
-			String sex=request.getParameter("wantSex");			
-			String destination=request.getParameter("destination");
-			String depart=request.getParameter("deport");
-			String pn=request.getParameter("pn");
+		String sex=request.getParameter("wantSex");			
+		String destination=request.getParameter("destination");
+		String depart=request.getParameter("deport");
+		String pn=request.getParameter("pn");
+		try {		
 			int pageNo=Integer.parseInt(pn);
 			List list=tripplanService.simpleSearch(sex.charAt(0), destination, depart,new Paging(10,pageNo));
 			out.print(WebUtils.responseData(list==null?0:list.size(),list));
+		}catch (NumberFormatException e) {
+			long errorLogId=ExceptionLogger.writeLog(e, this);
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));

@@ -78,7 +78,11 @@ public class ApplyAuthenticationServiceImpl extends
 	public List<Map> queryAutheticationList(boolean isHandled, Paging paging)
 			throws Exception {
 		// TODO 分页查取已处理（未处理）认证申请
-		return null;asdfasdfa action层还要加上对应的功能；测试也要测试
+		String sql="SELECT AUTH_MID,AUTH_DATE,ESCORT_NICK_NAME,AUTH_TYPE,AUTH_RESULT,AUTH_RESON,AUTH_AUDIT_TIME,AUTH_MNG_ID "
+				+ " FROM  yaw_apply_authentication,yaw_escort_info WHERE yaw_apply_authentication.AUTH_MID=yaw_escort_info.ESCORT_MID "
+				+ " AND AUTH_RESULT=? ORDER BY AUTH_AUDIT_TIME DESC";
+		return this.executeQuery(sql, paging,(byte)(isHandled?1:0));
+		//return null;//asdfasdfa action层还要加上对应的功能；测试也要测试
 	}
 	
 	public void setMemberAccountService(MemberAccountService memberAccountService) {

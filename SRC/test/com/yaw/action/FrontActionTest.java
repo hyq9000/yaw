@@ -2,6 +2,7 @@ package com.yaw.action;
 
 
 import java.io.IOException;
+import java.security.Policy.Parameters;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,55 +73,78 @@ public class FrontActionTest extends TestCase {
 	}
 
 	public void testEscortQuery8NewRegist() {
-		fail("Not yet implemented");
+		Common.postToUrl("escortQuery8NewRegist", null,null,"front");
 	}
 
 	public void testEscortQuery8BySex() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("sex", "男");
+		Common.postToUrl("escortQuery8BySex", parameter,null,"front");
 	}
 
 	public void testEscortQueryBySex() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("sex", "女");
+		Common.postToUrl("escortQueryBySex", parameter,null,"front");
 	}
 
 	public void testEscortQuery8ByImage() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("image", "0");
+		Common.postToUrl("escortQuery8ByImage", parameter,null,"front");
 	}
 
 	public void testEscortQueryByImage() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("image", "0");
+		parameter.put("pn", "1");
+		Common.postToUrl("escortQueryByImage", parameter,null,"front");
 	}
 
 	public void testEscortQuery8ByFeel() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("feel", "0");
+		Common.postToUrl("escortQuery8ByFeel", parameter,null,"front");
 	}
 
 	public void testEscortQueryByFeel() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("feel", "0");
+		parameter.put("pn", "1");
+		Common.postToUrl("escortQueryByFeel", parameter,null,"front");
 	}
 
 	public void testQuery8NewRegist() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		Common.postToUrl("query8NewRegist", parameter,null,"front");
 	}
 
 	public void testQuery16NewRegist() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		Common.postToUrl("query16NewRegist", parameter,null,"front");
 	}
 
 	public void testQuery16RecommendTourist() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		Common.postToUrl("query16RecommendTourist", parameter,null,"front");
 	}
 
 	public void testQueryHisTripplanList() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();
+		parameter.put("pn","1");
+		parameter.put("mid","爱吹NB的兔子");		
+		Common.postToUrl("queryHisTripplanList", parameter,null,"front");
 	}
 
 	public void testQuery16Tourist() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();	
+		Common.postToUrl("query16Tourist", parameter,null,"front");
 	}
 
 	public void testQueryTripplanList() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();	
+		parameter.put("pn","1");
+		Common.postToUrl("queryTripplanList", parameter,null,"front");
 	}
 
 	public void testSimpleSearchTripplan() {

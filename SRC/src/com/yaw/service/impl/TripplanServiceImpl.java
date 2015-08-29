@@ -45,11 +45,15 @@ public class TripplanServiceImpl extends DaoHibernateImpl<Tripplan> implements
 	@Override
 	@UnShelve(property="TRIPPLAN_MID",type=Map.class)
 	public List<Map> queryTripplanList(Paging paging)  throws Exception {
-		String ql="SELECT TOURIST_NICKNAME,MA_GRADE,MA_HEAD_ICON,yaw_tripplan.* "
+		String sql="SELECT TOURIST_NICKNAME,MA_GRADE,MA_HEAD_ICON,"
+				+ "TRIPPLAN_ID,TRIPPLAN_MID,TRIPPLAN_STATUS,TRIPPLAN_TITLE,TRIPPLAN_MONEY_MODEL,"
+				+ "TRIPPLAN_TYPE,TRIPPLAN_PUBLISH_TIME,TRIPPLAN_DEPART_TIME,TRIPPLAN_DEPART_ADDR,"
+				+ "TRIPPLAN_DESTINATION,TRIPPLAN_DAY,TRIPPLAN_WANT_SEX,TRIPPLAN_WANT_AGE,TRIPPLAN_WANT_PERSONS,"
+				+ "TRIPPLAN_OTHER,TRIPPLAN_ORDER_WEIGHT,TRIPPLAN_BEFOCUS_COUNT "
 				+ "FROM yaw_tripplan,yaw_member_account,yaw_tourist_info WHERE "
 				+ "TOURIST_MID=MA_LOGIN_NAME AND MA_LOGIN_NAME=TRIPPLAN_MID "
-				+ "ORDER BY tripplanOrderWeight DESC";
-		return super.query(ql,paging);
+				+ "ORDER BY TRIPPLAN_ORDER_WEIGHT DESC";
+		return super.executeQuery(sql,paging);
 	}
 
 	@Override
