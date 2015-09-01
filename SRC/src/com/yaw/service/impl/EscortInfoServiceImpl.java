@@ -93,12 +93,12 @@ public class EscortInfoServiceImpl extends DaoHibernateImpl<EscortInfo> implemen
 
 	@Override
 	@UnShelve(property="escortMid",type=EscortInfo.class)
-	public List<EscortInfo> simpleSearch(char sex, String city, boolean isOnline)
+	public List<EscortInfo> simpleSearch(char sex, String city, boolean isOnline,Paging paging)
 			throws Exception {
 		String ql="FROM EscortInfo WHERE escortSex=? AND escortLiveAddr=? AND escortMid in("
 				+ " SELECT o.maLoginName FROM MemberAccount as o WHERE  o.maOnline=?) "
 				+ " ORDER BY escortOrderWeight";		
-		return super.query(ql, sex+"",city,(byte)(isOnline?1:0));		
+		return super.query(ql, paging,sex+"",city,(byte)(isOnline?1:0));		
 	}
 
 	@Override

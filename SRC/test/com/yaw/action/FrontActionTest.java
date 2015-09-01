@@ -39,13 +39,17 @@ public class FrontActionTest extends TestCase {
 	public void testEscortSimpleSearch() {
 		Map<String, String> parameter=new HashMap<String, String>();		
 		parameter.put("sex", "女");
-		parameter.put("city","长沙");
+		parameter.put("city","武汉");
 		parameter.put("online","on");
 		Common.postToUrl("escortSimpleSearch", parameter,null,"front");
 	}
 
 	public void testEscortAdvanceSearch() {
-		
+		Map<String, String> parameter=new HashMap<String, String>();		
+		parameter.put("pName","escortSex");
+		parameter.put("opFlag","=");
+		parameter.put("value","女");
+		Common.postToUrl("escortAdvanceSearch", parameter,null,"front");
 	}
 
 	public void testEscortQueryByCity() {
@@ -156,43 +160,29 @@ public class FrontActionTest extends TestCase {
 	}
 
 	public void testQueryNewPublishTripplan() {
-		fail("Not yet implemented");
+		Common.postToUrl("queryNewPublishTripplan", null,null,"front");
 	}
 
 	public void testQueryHomePage3Line() {
-		fail("Not yet implemented");
+		Common.postToUrl("queryHomePage3Line", null,null,"front");
 	}
 
 	public void testGetMemberTripplanList() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();	
+		parameter.put("pn","1");
+		parameter.put("mid", "爱吹NB的兔子");
+		Common.postToUrl("getMemberTripplanList", parameter,null,"front");
 	}
 
 	public void testGetPhotoDetail() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();	
+		parameter.put("photoId","1");
+		Common.postToUrl("getPhotoDetail", parameter,null,"front");
 	}
 
 	public void testGetTripplanDetail() {
-		fail("Not yet implemented");
+		Map<String, String> parameter=new HashMap<String, String>();	
+		parameter.put("tid","1");
+		Common.postToUrl("getTripplanDetail", parameter,null,"front");
 	}
-
-	public void testSetEscortInfoService() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetMemberService() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetFocusService() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetTouristInfoService() {
-		fail("Not yet implemented");
-	}
-
-	public void testSetTripplanService() {
-		fail("Not yet implemented");
-	}
-
 }

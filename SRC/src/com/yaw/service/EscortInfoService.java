@@ -40,7 +40,7 @@ public interface EscortInfoService extends EntityService<EscortInfo> {
 	 * @param city 居住城市
 	 * @param isOnline 是否在线 true为在
 	 */
-	List<EscortInfo> simpleSearch(char sex,String city,boolean isOnline)throws Exception;
+	List<EscortInfo> simpleSearch(char sex,String city,boolean isOnline,Paging page)throws Exception;
 	
 	/**
 	 * 高级查询伴游

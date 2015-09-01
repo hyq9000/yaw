@@ -246,8 +246,11 @@ public class FrontAction extends Struts2Action{
 		String pageSizeStr=request.getParameter("psize");
 		
 		try {
-			int pageNo=Integer.parseInt(pageNoStr);
-			int pageSize=Integer.parseInt(pageSizeStr);
+			int pageNo=1,pageSize=10;
+			if(pageNoStr!=null)
+				pageNo=Integer.parseInt(pageNoStr);
+			if(pageNoStr!=null)
+				pageSize=Integer.parseInt(pageSizeStr);
 			List<Photo> list=photoService.getPhotoList(memberId, new Paging(pageSize,pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0,list));
 		}catch (NumberFormatException e) {
@@ -271,10 +274,12 @@ public class FrontAction extends Struts2Action{
 		String sex=request.getParameter("sex");
 		String city=request.getParameter("city");
 		String online=request.getParameter("online");
+		String pn=request.getParameter("pn");
 		char csex=sex==null||sex.trim().equals("")?'女':sex.charAt(0);		
 		boolean on=online!=null&& online.trim().equals("on")?true:false;
 		try {
-			List data=escortInfoService.simpleSearch(csex, city, on);
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
+			List data=escortInfoService.simpleSearch(csex, city, on,new Paging(pageNo,10));
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
@@ -286,17 +291,17 @@ public class FrontAction extends Struts2Action{
 	/**
 	 * 高级查询伴游
 	 * 说明:将多个" 属性  = 值 " 纵向划分到三个集合中;
-	 * @param propertyName Tripplan的有效属性名集
-	 * @param opflags 条件比较操作符符
-	 * @param values 对应属性名的值集
+	 * @param pName EscortInfo的有效属性名集
+	 * @param opflag 条件比较操作符符
+	 * @param value 对应属性名的值集
 	 */
 	public String escortAdvanceSearch(){
+		String[] propertyNames=request.getParameterValues("pName");
+		String[] flags=request.getParameterValues("opflag");
+		String[] values=request.getParameterValues("value");
+		String pn=request.getParameter("pn");
 		try {
-			String[] propertyNames=request.getParameterValues("propertyName");
-			String[] flags=request.getParameterValues("opflag");
-			String[] values=request.getParameterValues("value");
-			String pn=request.getParameter("pn");
-			int pageNo=Integer.parseInt(pn);
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			int[] opflags=new int[flags.length];
 			for(int i=0;i<flags.length;i++)
 				opflags[i]=WebUtils.getCodeByString(flags[i]);
@@ -319,12 +324,14 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String escortQueryByCity(){
 		String city=request.getParameter("city");
-		String pn=request.getParameter("pn");
-		int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);		
+		String pn=request.getParameter("pn");	
 		try {
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			List data=escortInfoService.queryByProperty("escortLiveAddr", city, new Paging(8, pageNo));
 			out.print(WebUtils.responseData(data!=null?data.size():0, data));
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -423,8 +430,7 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String escortQueryBySex(){
 		String sex=request.getParameter("sex");
-		String pn=request.getParameter("pn");
-			
+		String pn=request.getParameter("pn");			
 		try {
 			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);	
 			List list=escortInfoService.queryByProperty("escortSex", sex, new Paging(8, pageNo));
@@ -655,7 +661,7 @@ public class FrontAction extends Struts2Action{
 		String pn=request.getParameter("pn");
 		
 		try {
-			int pageNo=Integer.parseInt(pn);
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			List<Map> list=tripplanService.queryTripplanList(new Paging(8, pageNo));
 			out.print(WebUtils.responseData(list!=null?list.size():0, list));
 		}catch (NumberFormatException e) {
@@ -683,7 +689,7 @@ public class FrontAction extends Struts2Action{
 		String depart=request.getParameter("deport");
 		String pn=request.getParameter("pn");
 		try {		
-			int pageNo=Integer.parseInt(pn);
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			List list=tripplanService.simpleSearch(sex.charAt(0), destination, depart,new Paging(10,pageNo));
 			out.print(WebUtils.responseData(list==null?0:list.size(),list));
 		}catch (NumberFormatException e) {
@@ -704,12 +710,12 @@ public class FrontAction extends Struts2Action{
 	 * @param values 对应属性名的值集
 	 */
 	public String advanceSearchTripplan(){
-		try {
-			String[] propertyNames=request.getParameterValues("propertyName");
-			String[] flags=request.getParameterValues("opflag");
-			String[] values=request.getParameterValues("value");
-			String pn=request.getParameter("pn");
-			int pageNo=Integer.parseInt(pn);
+		String[] propertyNames=request.getParameterValues("propertyName");
+		String[] flags=request.getParameterValues("opflag");
+		String[] values=request.getParameterValues("value");
+		String pn=request.getParameter("pn");
+		try {			
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			int[] opflags=new int[flags.length];
 			for(int i=0;i<flags.length;i++)
 				opflags[i]=WebUtils.getCodeByString(flags[i]);
@@ -738,16 +744,25 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String queryNewPublishTripplan(){
 		try{
-			List<Tripplan> list=tripplanService.queryNewPublish();
+			List list=tripplanService.queryNewPublish();
 			List data=new ArrayList();
-			for(Tripplan tripplan :list){
-				Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime"},
-						new Object[]{tripplan.getTripplanTitle(),
-						tripplan.getTripplanPublishTime().toLocaleString()}
-				);
-				data.add(map);
+			if(list!=null && list.size()>0){
+				for(int i=0;i<list.size();i++){
+					Object tmp=list.get(i);
+					if(tmp instanceof Tripplan){
+						Tripplan tripplan=(Tripplan)tmp;
+						Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime"},
+							new Object[]{tripplan.getTripplanTitle(),
+							tripplan.getTripplanPublishTime().toLocaleString()}
+								);
+						data.add(map);
+					}else
+						data.add(list.get(i));
+				}
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
+			}else{
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
 			}
-			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -768,14 +783,24 @@ public class FrontAction extends Struts2Action{
 		try{
 			List<Tripplan> list=tripplanService.queryHomePage3Line();
 			List data=new ArrayList();
-			for(Tripplan tripplan :list){
-				Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime"},
-						new Object[]{tripplan.getTripplanTitle(),
-						tripplan.getTripplanPublishTime().toLocaleString()}
-				);
-				data.add(map);
+			if(list!=null && list.size()>0){
+				for(int i=0;i<list.size();i++){
+					Object tmp=list.get(i);
+					if(tmp instanceof Tripplan){
+						Tripplan tripplan=(Tripplan)tmp;
+						Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime"},
+								new Object[]{tripplan.getTripplanTitle(),
+								tripplan.getTripplanPublishTime().toLocaleString()}
+						);
+						data.add(map);
+					}else
+						data.add(list.get(i));
+				}
+				
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
+			}else{
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
 			}
-			out.print(WebUtils.responseData(data!=null?data.size():0, data));
 		} catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
@@ -798,28 +823,40 @@ public class FrontAction extends Struts2Action{
 	 */
 	public String getMemberTripplanList(){
 		String mid=request.getParameter("mid");
-		String pn=request.getParameter("pn");
-		int pageNo=Integer.parseInt(pn);
+		String pn=request.getParameter("pn");		
 		try{
+			int pageNo=pn==null||pn.trim().equals("")?1:Integer.parseInt(pn);
 			List<Tripplan> list=tripplanService.getMemberTripplanList(mid,new Paging(5,pageNo));
 			List data=new ArrayList();
-			for(Tripplan tripplan :list){
-				String statusText="";
-				switch(tripplan.getTripplanStatus()){
-					case 0:statusText="约请中";break;
-					case 1:statusText="已完成";break;
-					case 2:statusText="已过期";break;
-					case 3:statusText="已取消";
+			if(list!=null && list.size()>0){
+				for(int i=0;i<list.size();i++){
+					Object tmp=list.get(i);
+					if(tmp instanceof Tripplan){
+						Tripplan tripplan=(Tripplan)tmp;
+						String statusText="";
+						switch(tripplan.getTripplanStatus()){
+							case 0:statusText="约请中";break;
+							case 1:statusText="已完成";break;
+							case 2:statusText="已过期";break;
+							case 3:statusText="已取消";
+						}
+						Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime","tripplanStatus"},
+								new Object[]{tripplan.getTripplanTitle(),
+								tripplan.getTripplanPublishTime().toLocaleString(),
+								statusText}
+						);
+						data.add(map);
+					}else
+						data.add(list.get(i));
 				}
-				Map map=WebUtils.generateMapData(new String[]{"tripplanTitle","tripplanPublishTime","tripplanStatus"},
-						new Object[]{tripplan.getTripplanTitle(),
-						tripplan.getTripplanPublishTime().toLocaleString(),
-						statusText}
-				);
-				data.add(map);
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
+			}else{
+				out.print(WebUtils.responseData(data!=null?data.size():0, data));
 			}
-			out.print(WebUtils.responseData(data!=null?data.size():0, data));
-		} catch (Exception e) {
+			
+		}catch (NumberFormatException e) {
+			out.print(WebUtils.responseInputCheckError("页号不正确"));
+		}  catch (Exception e) {
 			long errorLogId=ExceptionLogger.writeLog(e, this);
 			out.print(WebUtils.responseServerException(errorLogId));
 		}
@@ -836,13 +873,17 @@ public class FrontAction extends Struts2Action{
 			String pid=request.getParameter("photoId");
 			int photoId=Integer.parseInt(pid);
 			Photo photo=photoService.getById(photoId);
-			/*
-			 * 关注加1
-			 */
-			photo.setPhotoFocusCount(photo.getPhotoFocusCount()+1);
-			photoService.update(photo);
-			
-			out.print(WebUtils.responseData(photo));
+			if(photo!=null){
+				/*
+				 * 关注加1
+				 */
+				photo.setPhotoFocusCount(photo.getPhotoFocusCount()+1);
+				photoService.update(photo);
+				
+				out.print(WebUtils.responseData(photo));
+			}else{
+				out.print(WebUtils.responseInputCheckError("找不到该照片"));
+			}
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("相片号数据不正确!"));
 		} catch (Exception e) {
@@ -862,13 +903,17 @@ public class FrontAction extends Struts2Action{
 			String tid=request.getParameter("tid");
 			int tripplanId=Integer.parseInt(tid);
 			Tripplan tripplan=tripplanService.getById(tripplanId);
-			/*
-			 * 关注加1
-			 */
-			tripplan.setTripplanFocusCount(tripplan.getTripplanFocusCount()+1);
-			tripplanService.update(tripplan);
-			
-			out.print(WebUtils.responseData(tripplan));
+			if(tripplan!=null){
+				/*
+				 * 关注加1
+				 */
+				tripplan.setTripplanFocusCount(tripplan.getTripplanFocusCount()+1);
+				tripplanService.update(tripplan);
+				
+				out.print(WebUtils.responseData(tripplan));
+			}else{
+				out.print(WebUtils.responseInputCheckError("找不到该邀请计划"));
+			}
 		} catch (NumberFormatException e) {
 			out.print(WebUtils.responseInputCheckError("约请计划号数据不正确!"));
 		} catch (Exception e) {
