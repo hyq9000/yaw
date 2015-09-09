@@ -39,13 +39,14 @@ public class PointsAdvice implements MethodInterceptor {
 			HttpServletRequest request=ServletActionContext.getRequest();
 			user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(request.getSession());
 		}	
-		//增加积分数
-		user.setMaPoints(user.getMaPoints()+points);	
-		memberAccountService.update(user);		
-		
-		//更新用户及详情表中的“排序权重值"
-		memberAccountService.updateOrderWeigth(user);
-	
+		if(user!=null){
+			//增加积分数
+			user.setMaPoints(user.getMaPoints()+points);	
+			memberAccountService.update(user);		
+			
+			//更新用户及详情表中的“排序权重值"
+			memberAccountService.updateOrderWeigth(user);
+		}
 		return rs;		
 	}
 	

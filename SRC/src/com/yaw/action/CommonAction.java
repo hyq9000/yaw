@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.common.dbutil.Paging;
 import com.common.log.ExceptionLogger;
+import com.common.log.Log;
 import com.common.tools.ImageCompressor;
 import com.common.utils.BusinessException;
 import com.common.web.Struts2Action;
@@ -55,6 +56,7 @@ public class CommonAction extends Struts2Action {
 	 * @param atype 认证类型 ApplyAuthenticationService.TYPE_开头的常量值
 	 * @return {code:1,-1}
 	 */
+	@Log(content="提交认证申请")
 	public String submitAuthentication(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
@@ -135,6 +137,7 @@ public class CommonAction extends Struts2Action {
 	 * @title 相片标题
 	 * @return {code:1,data:{url:"url"}}
 	 */
+	@Log(content="提交认证申请")
 	public String uploadPhoto(){
 		try {
 			MemberAccount user=(MemberAccount)WebContextUtil.getIntstance(request).getCurrentUser(session);
