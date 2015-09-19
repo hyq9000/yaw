@@ -42,21 +42,13 @@
 	<bean id="pointsAdvice" class="com.yaw.business.PointsAdvice">
 		<property name="memberAccountService" ref="memberAccountService"></property>
 	</bean>
-	<aop:config>
-		<aop:pointcut expression="@annotation(com.yaw.business.Points)"
-			id="pid" />
-		<aop:advisor advice-ref="pointsAdvice" pointcut-ref="pid" />
-	</aop:config>
+
 	
 	<!-- 下架会员通知 -->
 	<bean id="unShelveAdvice" class="com.yaw.business.UnShelveAdvice">
 		<property name="memberAccountService" ref="memberAccountService"></property>
 	</bean>
-	<aop:config>
-		<aop:pointcut expression="@annotation(com.yaw.business.UnShelve)"
-			id="uid" />
-		<aop:advisor advice-ref="unShelveAdvice" pointcut-ref="uid" />
-	</aop:config>
+
 	
 	<!-- 事务管理 器 -->
 	<bean id="tm"
@@ -64,7 +56,7 @@
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 
-	<!-- 定义通知 -->
+	<!-- 定义事务通知 -->
 	<tx:advice id="tmadvice" transaction-manager="tm">
 		<tx:attributes>
 			<tx:method name="*" propagation="REQUIRED" />
@@ -73,8 +65,12 @@
 
 	<!-- 事务织入 -->
 	<aop:config>
-		<aop:pointcut expression="execution(* com.yaw.service.*.*(..))"
-			id="pcid" />
+		<aop:pointcut expression="@annotation(com.yaw.business.Points)"	id="pointPid" />		
+		<aop:pointcut expression="@annotation(com.yaw.business.UnShelve)" id="uid" />		
+		<aop:pointcut expression="execution(* com.yaw.service.*.*(..))"	id="pcid" />
+		
+		<aop:advisor advice-ref="pointsAdvice" pointcut-ref="pointPid" />
+		<aop:advisor advice-ref="unShelveAdvice" pointcut-ref="uid" />
 		<aop:advisor advice-ref="tmadvice" pointcut-ref="pcid" />
 	</aop:config>
 </beans>
