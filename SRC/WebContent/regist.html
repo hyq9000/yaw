@@ -7,11 +7,13 @@
 	<script type="text/javascript" src="resources/scripts/login.js"></script>
 </head>
 <body>
-	<input type="radio" id="mt" value="1"/>我是伴游 <input type="radio" id="memberType"  value="0"/>我是游客
+	<input type="radio" name="mt" id="mt_s"/>我是伴游 
+	<input type="radio" name="mt" id="mt_t"/>我是游客
 	<input placeholder="用户名/手机/邮箱" id="ln"/>
 	<input type="password" placeholder="密码" id="pwd"/>
-	<input type="radio" 
+	<input type="radio" name="sex" id="sex_m">男<input type="radio" name="sex" id="sex_w" >女
 	<input name="captcha" id="captcha"/><img src="act/captcha!captcha.action"/>
-	<input type="button" id="submit" value="注册"/>
+	<input type="radio" id="pro" checked>同意<a href="##">《约啊网用户协议》</a>
+	<input type="button" id="submit_regist" value="注册"/>
 </body>
 </html>
