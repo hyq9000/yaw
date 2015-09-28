@@ -49,7 +49,9 @@ public class FrontActionTest extends TestCase {
 		parameter.put("pName","escortSex");
 		parameter.put("opFlag","=");
 		parameter.put("value","女");
-		Common.postToUrl("escortAdvanceSearch", parameter,null,"front");
+		//parameter.put
+		
+		//Common.postToUrl("escortAdvanceSearch", parameter,null,"front");
 	}
 
 	public void testEscortQueryByCity() {

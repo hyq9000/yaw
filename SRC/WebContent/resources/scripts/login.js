@@ -102,4 +102,19 @@ $(function(){
 			//TODO: 未完成的（输入@时，弹选择
 		}
 	});
+	
+	
+	
+	/*
+	 * 忘记密码第一步，提交	 
+	 */
+	$("#submit_regist").click(function(){
+		var rs=checkCaptcha("captcha");
+		if(!rs)
+			return ;
+		
+		var rs=checkCaptcha("email");
+		if(!rs)
+			return ;
+	});
 });
